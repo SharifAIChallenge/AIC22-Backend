@@ -13,4 +13,4 @@ class StaffsListViewSet(
 ):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
-    permission_classes = AdminWritePermission
+    permission_classes = (AdminWritePermission, )
