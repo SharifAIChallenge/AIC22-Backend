@@ -2,8 +2,8 @@ from django.db import models
 from constants import SHORT_TEXT_MAX_LENGTH, URL_MAX_LENGTH
 
 
-def staff_upload_path(self, filename):
-    return f'staff/{self.group_title}/{self.team_title}/{filename}'
+def staff_upload_path(instance, filename):
+    return f'staff/{instance.group_title}/{instance.team_title}/{filename}'
 
 
 class Staff(models.Model):
