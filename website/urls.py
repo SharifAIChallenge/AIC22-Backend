@@ -1,5 +1,5 @@
 from routers import CustomRouter
-from views import StaffsListViewSet
+from .views import StaffsListViewSet
 
 website_router = CustomRouter()
 

@@ -1,8 +1,8 @@
 from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 
-from models import Staff
-from serializers import StaffSerializer
+from .models import Staff
+from .serializers import StaffSerializer
 from permissions import AdminWritePermission
 
 
