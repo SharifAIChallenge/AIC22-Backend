@@ -132,3 +132,44 @@ class ProfileSerializer(serializers.ModelSerializer):
                     profile=instance
                 )
         return instance
+
+
+class LimitedProfileSerializer(serializers.ModelSerializer):
+    skills = SkillSerializer(many=True, read_only=True)
+    jobs = JobExperienceSerializer(many=True, read_only=True)
+    skills_list = StringListField(write_only=True, allow_null=True,
+                                  allow_empty=True)
+    jobs_list = StringListField(write_only=True, allow_null=True,
+                                allow_empty=True)
+    is_complete = serializers.SerializerMethodField('_is_complete')
+    image_link = serializers.SerializerMethodField('_get_image_link')
+    has_team = serializers.SerializerMethodField('_has_team')
+    is_finalist = serializers.SerializerMethodField('_is_finalist')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is not None
+
+    @staticmethod
+    def _is_finalist(obj: Profile):
+        if obj.user.team:
+            return obj.user.team.is_finalist
+        return False
+
+    @staticmethod
+    def _is_complete(obj: Profile):
+        return obj.is_complete
+
+    @staticmethod
+    def _get_image_link(obj: Profile):
+        if not obj.image:
+            return ''
+        url = obj.image.url
+        if settings.DOMAIN not in url:
+            return settings.DOMAIN + url
+        return url
+
+    class Meta:
+        model = Profile
+        exclude = ('id', 'user', 'phone_number', 'hide_profile_info',
+                   'can_sponsors_see', 'province', 'resume', 'national_code')
