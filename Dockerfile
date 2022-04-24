@@ -1,4 +1,4 @@
-FROM registry.cafebazaar.ir:5000/divar/infra/common-images:python3.8
+FROM docker.repos.balad.ir/python:3.8
 
 # Set the timezone.
 RUN echo "Asia/Tehran" > /etc/timezone
