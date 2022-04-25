@@ -16,3 +16,7 @@ class Staff(models.Model):
     role = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=False)
     url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
     image = models.ImageField(upload_to=staff_upload_path)
+
+
+class Tweet(models.Model):
+    url = models.URLField(max_length=URL_MAX_LENGTH, null=False, blank=False)
