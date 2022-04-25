@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Staff
+from .models import Staff, Tweet
 
 
 @admin.register(Staff)
@@ -10,3 +10,8 @@ class StaffAdmin(admin.ModelAdmin):
     search_fields = ['group_title', 'team_title', 'first_name_en', 'last_name_en', ]
     sortable_by = ['id', 'group_title', 'team_title', 'first_name_en', 'last_name_en', ]
     list_filter = ['group_title', 'team_title', ]
+
+
+@admin.register(Tweet)
+class TweetAdmin(admin.ModelAdmin):
+    pass
