@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Staff, Tweet
+from .models import Staff, Tweet, Prize
 
 
 @admin.register(Staff)
@@ -14,4 +14,9 @@ class StaffAdmin(admin.ModelAdmin):
 
 @admin.register(Tweet)
 class TweetAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Prize)
+class PrizeAdmin(admin.ModelAdmin):
     pass

@@ -20,3 +20,11 @@ class Staff(models.Model):
 
 class Tweet(models.Model):
     url = models.URLField(max_length=URL_MAX_LENGTH)
+
+
+class Prize(models.Model):
+    title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    prize_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    prize_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    team_name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)

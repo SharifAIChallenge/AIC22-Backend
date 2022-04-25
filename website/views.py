@@ -1,8 +1,8 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
-from .models import Staff, Tweet
-from .serializers import StaffSerializer, TweetSerializer
+from .models import Staff, Tweet, Prize
+from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer
 from permissions import AdminWritePermission
 
 
@@ -23,4 +23,14 @@ class TweetsListViewSet(
 ):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
+    permission_classes = (AdminWritePermission,)
+
+
+class PrizesListViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin
+):
+    queryset = Prize.objects.all()
+    serializer_class = PrizeSerializer
     permission_classes = (AdminWritePermission,)
