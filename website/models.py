@@ -19,4 +19,4 @@ class Staff(models.Model):
 
 
 class Tweet(models.Model):
-    url = models.URLField(max_length=URL_MAX_LENGTH, null=False, blank=False)
+    url = models.URLField(max_length=URL_MAX_LENGTH)
