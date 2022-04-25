@@ -2,7 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from .models import Staff, Tweet, Prize
+from .models import Staff, Tweet, Prize, PastAIC
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -21,4 +21,10 @@ class TweetSerializer(serializers.ModelSerializer):
 class PrizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prize
+        exclude = ('id',)
+
+
+class PastAICSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PastAIC
         exclude = ('id',)
