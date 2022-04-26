@@ -25,4 +25,5 @@ AIC_v1_router.extend(website_router)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(AIC_v1_router.urls)),
+    path('api/v1/account/', include('account.urls'))
 ]

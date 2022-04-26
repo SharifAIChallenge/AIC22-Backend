@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
-from team.models import Team
+# from team.models import Team
 from .utils import send_email
 
 
@@ -28,9 +28,9 @@ class DegreeTypes:
 
 
 class User(AbstractUser):
-    team = models.ForeignKey(to='team.Team',
-                             on_delete=models.SET_NULL,
-                             related_name='members', null=True, blank=True)
+    # team = models.ForeignKey(to='team.Team',
+    #                          on_delete=models.SET_NULL,
+    #                          related_name='members', null=True, blank=True)
 
     def send_activation_email(self):
         activate_user_token = ActivateUserToken(
@@ -47,7 +47,7 @@ class User(AbstractUser):
         }
 
         send_email(
-            subject='فعالسازی اکانت AIC21',
+            subject='فعالسازی اکانت AIC22',
             context=context,
             template_name='accounts/email/registerifinal.htm',
             receipts=[self.email]
