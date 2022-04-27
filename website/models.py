@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH
 
 
@@ -19,7 +20,11 @@ class Staff(models.Model):
 
 
 class Tweet(models.Model):
-    url = models.URLField(max_length=URL_MAX_LENGTH)
+    name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    text = models.TextField(max_length=LONG_TEXT_MAX_LENGTH)
+    image = models.ImageField(null=True, blank=True)
+    create_time = models.DateTimeField(default=timezone.now)
+    url = models.URLField(max_length=URL_MAX_LENGTH, null=True, blank=True)
 
 
 class Prize(models.Model):
