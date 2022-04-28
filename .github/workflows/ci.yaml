@@ -1,4 +1,4 @@
-name: CI/CD Workflow
+name: django ci/cd flow
 
 on:
   pull_request:
