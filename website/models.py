@@ -20,10 +20,10 @@ class Staff(models.Model):
 
 
 class Tweet(models.Model):
-    name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
-    text = models.TextField(max_length=LONG_TEXT_MAX_LENGTH)
-    image = models.ImageField(null=True, blank=True)
-    create_time = models.DateTimeField(default=timezone.now)
+    author = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True)
+    text = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
+    image = models.ImageField(null=True)
+    post_time = models.DateTimeField(null=True)
     url = models.URLField(max_length=URL_MAX_LENGTH, null=True, blank=True)
 
 
