@@ -47,7 +47,7 @@ class User(AbstractUser):
         }
 
         send_email(
-            subject='فعالسازی اکانت AIC22',
+            subject='فعالسازی حساب AIC22',
             context=context,
             template_name='accounts/email/registerifinal.htm',
             receipts=[self.email]
@@ -137,10 +137,7 @@ class Profile(models.Model):
     @staticmethod
     def sensitive_fields():
         return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
-                'province', 'is_complete', 'national_code', 'resume', )
-
-    def __str__(self):
-        pass
+                'province', 'is_complete', 'national_code', 'resume',)
 
 
 class Skill(models.Model):

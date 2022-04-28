@@ -29,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'phone_number', 'password_1', 'password_2',
                   'profile']
+        read_only_fields = ['profile']
 
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
@@ -52,3 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+
+class EmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
