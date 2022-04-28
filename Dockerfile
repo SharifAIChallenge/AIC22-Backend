@@ -7,9 +7,9 @@ RUN apt-get update
 
 WORKDIR /code
 
-ADD ./requirement.txt /code/requirement.txt
+ADD requirements.txt /code/requirement.txt
 RUN pip3 install --upgrade setuptools
-RUN pip3 install -r requirement.txt
+RUN pip3 install -r requirements.txt
 
 ADD . /code
 
