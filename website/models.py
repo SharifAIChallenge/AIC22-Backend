@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH
 
 
