@@ -1,5 +1,5 @@
 from django.db import models
-from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH
+from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH
 
 
 def staff_upload_path(instance, filename):
@@ -44,3 +44,11 @@ class PastAIC(models.Model):
     firstTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
     secondTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
     thirdTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+
+class FrequentlyAskedQuestions(models.Model):
+    title = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH)
+    question_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+    question_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+    answer_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+    answer_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
