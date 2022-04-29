@@ -1,0 +1,44 @@
+name: django ci/cd workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  #      - master
+
+  push:
+    branches:
+      #      - master
+      - main
+
+
+jobs:
+  health-check-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Cache dependency
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Setup python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Check Python version
+        run: python --version
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Check Syntax
+        run: pycodestyle --statistics .
+      - name: Lint with Flake8
+        run: |
+          flake8 .
+      - name: Run Migrations
+        run: python manage.py migrate
+      - name: Run Test
+        run: python manage.py test

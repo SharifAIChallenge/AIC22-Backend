@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ko^^x2))7s(n#ypjs+eakp^-#kf@ku=^07k!p8lfu4zl$w91o3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'account',
     'website',
     'rest_framework',
+    'drf_yasg',
     'rest_framework.authtoken'
 ]
 
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'AIC22_Backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / "db.sqlite3"),
     }
 }
 
