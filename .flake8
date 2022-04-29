@@ -8,4 +8,6 @@ exclude =
     build,
     dist,
     account/migrations,
+    AIC22_Backend/settings,
+    env,
     venv
