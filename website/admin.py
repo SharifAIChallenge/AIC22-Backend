@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Staff, Tweet, Prize, PastAIC
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions
 
 
 @admin.register(Staff)
@@ -25,3 +25,16 @@ class PrizeAdmin(admin.ModelAdmin):
 @admin.register(PastAIC)
 class PastAICAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(FrequentlyAskedQuestions)
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'question_en', 'question_fa',
+                    'answer_en', 'answer_fa']
+    list_editable = ['title', 'question_en', 'question_fa',
+                     'answer_en', 'answer_fa']
+    list_display_links = ['id']
+    sortable_by = ['id', 'title', 'question_en', 'question_fa',
+                   'answer_en', 'answer_fa']
+    search_fields = ['title', 'question_en', 'question_fa',
+                     'answer_en', 'answer_fa']

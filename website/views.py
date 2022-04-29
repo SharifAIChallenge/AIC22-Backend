@@ -1,8 +1,8 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
-from .models import Staff, Tweet, Prize, PastAIC
-from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions
+from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer
 from permissions import AdminWritePermission
 
 
@@ -44,3 +44,13 @@ class PastAICsListViewSet(
     queryset = PastAIC.objects.all()
     serializer_class = PastAICSerializer
     permission_classes = (AdminWritePermission,)
+
+
+class FAQListViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin
+):
+    queryset = FrequentlyAskedQuestions.objects.all()
+    serializer_class = FAQSerializer
+    permission_classes = (AdminWritePermission, )
