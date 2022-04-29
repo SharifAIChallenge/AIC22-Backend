@@ -3,13 +3,8 @@ from AIC22_Backend.settings.base import *
 DEBUG = True
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aic_database',
-        'HOST': '127.0.0.1',
-        'USER': 'aic',
-        'PASSWORD': '123',
-        'PORT': '5432',
-        'AUTOCOMMIT': True,
-    },
+    "default": {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
