@@ -7,6 +7,8 @@ services:
       - aic22_postgres
     environment:
       - ENV=development
+    env_file:
+      - .env
 
   aic22_postgres:
     container_name: aic22_postgres

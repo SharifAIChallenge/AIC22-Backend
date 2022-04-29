@@ -5,7 +5,7 @@ RUN echo "Asia/Tehran" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 RUN apt-get update
 
-RUN apt-get -y install netcat --fix-missing
+RUN apt-get -y install netcat postgresql postgresql-contrib --fix-missing
 
 WORKDIR /code
 
