@@ -10,7 +10,7 @@ services:
 
   aic22_postgres:
     container_name: aic22_postgres
-    image: registry.cafebazaar.ir:5000/divar/infra/common-images:postgres9.6
+    image: docker.repos.balad.ir/postgres:14.1-alpine
     environment:
       - POSTGRES_USER=aic
       - POSTGRES_PASSWORD=123
