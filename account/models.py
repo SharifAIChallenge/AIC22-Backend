@@ -92,7 +92,7 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(to=User, on_delete=models.RESTRICT, related_name='profile')
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='profile')
 
     # Personal Information
     firstname_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
