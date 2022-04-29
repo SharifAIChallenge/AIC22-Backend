@@ -1,12 +1,9 @@
-from django.shortcuts import render, get_object_or_404
-
-# Create your views here.
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User
 from account.serializers import UserSerializer, EmailSerializer

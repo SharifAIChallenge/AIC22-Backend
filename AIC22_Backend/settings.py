@@ -146,4 +146,3 @@ EMAIL_HOST_USER = 'ar.hosseinkhani.test@gmail.com'
 EMAIL_HOST_PASSWORD = 'tplink@8096'
 EMAIL_PORT = '587'
 DOMAIN = 'http://127.0.0.1:8000'
-
