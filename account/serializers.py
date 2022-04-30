@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
-from account.models import User, Profile
+from account.models import User, Profile, Skill, JobExperience
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,3 +57,43 @@ class UserSerializer(serializers.ModelSerializer):
 
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ('skill',)
+
+    def create(self, validated_data):
+        validated_data['profile'] = self.context['request'].user.profile
+
+        return Skill.objects.create(**validated_data)
+
+
+class JobExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobExperience
+        fields = ('company', 'position', 'working_years',  'description')
+
+    def create(self, validated_data):
+        validated_data['profile'] = self.context['request'].user.profile
+
+        return JobExperience.objects.create(**validated_data)
+
+
+class StringListField(serializers.ListField):
+    child = serializers.CharField(max_length=256, allow_null=True,
+                                  allow_blank=True)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    skills = SkillSerializer(many=True, read_only=True)
+    jobs = JobExperienceSerializer(many=True, read_only=True)
+    skills_list = StringListField(write_only=True, allow_null=True,
+                                  allow_empty=True)
+    jobs_list = StringListField(write_only=True, allow_null=True,
+                                allow_empty=True)
+
+    class Meta:
+        model = Profile
+        exclude = ['user', 'id', ]
