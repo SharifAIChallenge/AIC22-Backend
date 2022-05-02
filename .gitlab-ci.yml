@@ -12,3 +12,12 @@ build:
   script:
     - docker build -t reg.aichallenge.ir/aic22-backend:latest .
     - docker push reg.aichallenge.ir/aic22-backend:latest
+
+deploy:
+  stage: deploy
+  before_script:
+    - ssh -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend:latest"
+    - ssh -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker container stop $(docker container ls -q --filter name=reg.aichallenge.ir/aic22-backend:latest)"
+    - ssh -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker container rm $(docker container ls -q --filter name=reg.aichallenge.ir/aic22-backend:latest)"
+  script:
+    - ssh -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
