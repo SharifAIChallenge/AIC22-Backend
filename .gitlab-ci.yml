@@ -5,8 +5,8 @@ stages:
 build:
   stage: build
   image: docker:dind
-  before_script:
-    - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
+  # before_script:
+  #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
-    - docker build -t $AIC_DOCKERID/AIC22-BackEnd:latest .
-    - docker push $AIC_DOCKERID/AIC22-BackEnd:latest
+    - docker build -t reg.aichallenge.ir/AIC22-BackEnd:latest .
+    - docker push reg.aichallenge.ir/AIC22-BackEnd:latest
