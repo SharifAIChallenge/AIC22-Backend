@@ -4,7 +4,9 @@ stages:
 
 build:
   stage: build
-  image: docker:dind
+  image: reg.aichallenge.ir/docker:20.10.3-dind
+  tags:
+    - docker
   # before_script:
   #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
