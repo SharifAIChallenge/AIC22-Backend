@@ -10,5 +10,5 @@ build:
   # before_script:
   #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
-    - docker build -t reg.aichallenge.ir/AIC22-BackEnd:latest .
-    - docker push reg.aichallenge.ir/AIC22-BackEnd:latest
+    - docker build -t reg.aichallenge.ir/aic22-backend:latest .
+    - docker push reg.aichallenge.ir/aic22-backend:latest
