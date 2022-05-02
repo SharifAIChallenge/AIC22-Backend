@@ -52,3 +52,16 @@ class FrequentlyAskedQuestions(models.Model):
     question_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+
+
+class News(models.Model):
+    title = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH)
+    preview = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
+    body = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
+    post_time = models.DateTimeField(null=True)
+
+
+class NewsTag(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='tags')
