@@ -1,8 +1,9 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions
-from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag
+from .serializers import (StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer,
+                          NewsSerializer, NewsTagSerializer)
 from permissions import AdminWritePermission
 
 
@@ -54,3 +55,23 @@ class FAQListViewSet(
     queryset = FrequentlyAskedQuestions.objects.all()
     serializer_class = FAQSerializer
     permission_classes = (AdminWritePermission, )
+
+
+class NewsListViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin
+):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = (AdminWritePermission,)
+
+
+class NewsTagListViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin
+):
+    queryset = NewsTag.objects.all()
+    serializer_class = NewsTagSerializer
+    permission_classes = (AdminWritePermission,)
