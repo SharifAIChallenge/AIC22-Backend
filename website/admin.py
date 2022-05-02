@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag
 
 
 @admin.register(Staff)
@@ -38,3 +38,13 @@ class FAQAdmin(admin.ModelAdmin):
                    'answer_en', 'answer_fa']
     search_fields = ['title', 'question_en', 'question_fa',
                      'answer_en', 'answer_fa']
+
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(NewsTag)
+class NewsTagAdmin(admin.ModelAdmin):
+    pass
