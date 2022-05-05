@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -31,4 +31,20 @@ class FAQSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FrequentlyAskedQuestions
+        exclude = ('id',)
+
+
+class NewsSerializer(serializers.ModelSerializer):
+    tags = serializers.SlugRelatedField(
+        slug_field='title', many=True, queryset=NewsTag.objects.all()
+    )
+
+    class Meta:
+        model = News
+        exclude = ('id',)
+
+
+class NewsTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsTag
         exclude = ('id',)
