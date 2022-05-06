@@ -2,8 +2,8 @@ stages:
   - build
   - deploy
 
-variables:
-  DOCKER_HOST: tcp://docker:2376
+    #variables:
+    #  DOCKER_HOST: tcp://docker:2376
 
 build:
   image: docker:19.03.12
