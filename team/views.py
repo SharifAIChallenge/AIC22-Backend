@@ -8,7 +8,7 @@ from rest_framework import status
 
 from .serializers import TeamSerializer, TeamInfoSerializer, UserReceivedInvitationSerializer, \
     TeamPendingInvitationSerializer, TeamToUserInvitationSerializer, UserToTeamInvitationSerializer
-from .models import Team, Invitation
+from .models import Team, Invitation, InvitationStatusTypes, InvitationTypes
 from .permissions import HasTeam, NoTeam
 from account.permissions import ProfileComplete
 
@@ -135,8 +135,8 @@ class UserReceivedPendingInvitationListAPIView(GenericAPIView):
 
     def get(self, request):
         invitations = self.get_queryset().filter(user=request.user,
-                                                 status='pending',
-                                                 type='team_to_user')
+                                                 status=InvitationStatusTypes.PENDING,
+                                                 type=InvitationTypes.TEAM_TO_USER)
         data = self.get_serializer(instance=invitations, many=True).data
         return Response(
             data={'data': data},
@@ -151,7 +151,8 @@ class UserReceivedResolvedInvitationListAPIView(GenericAPIView):
 
     def get(self, request):
         invitations = self.get_queryset().filter(user=request.user,
-                                                 type='team_to_user').exclude(status="pending")
+                                                 type=InvitationTypes.TEAM_TO_USER).\
+            exclude(status=InvitationStatusTypes.PENDING)
         data = self.get_serializer(instance=invitations, many=True).data
 
         return Response(
@@ -167,8 +168,8 @@ class TeamPendingInvitationListAPIView(GenericAPIView):
 
     def get(self, request):
         invitations = self.get_queryset().filter(team=request.user.team,
-                                                 status='pending',
-                                                 type='user_to_team')
+                                                 status=InvitationStatusTypes.PENDING,
+                                                 type=InvitationTypes.USER_TO_TEAM)
         data = self.get_serializer(instance=invitations, many=True).data
 
         return Response(
@@ -247,7 +248,7 @@ class TeamSentInvitationListAPIView(GenericAPIView):
 
     def get(self, request):
         invitations = self.get_queryset().filter(team=request.user.team,
-                                                 type='team_to_user')
+                                                 type=InvitationTypes.TEAM_TO_USER)
         data = self.get_serializer(instance=invitations, many=True).data
 
         return Response(
@@ -273,7 +274,7 @@ class UserSentInvitationListAPIView(GenericAPIView):
 
     def get(self, request):
         invitations = self.get_queryset().filter(user=request.user,
-                                                 type='user_to_team')
+                                                 type=InvitationTypes.USER_TO_TEAM)
         data = self.get_serializer(instance=invitations, many=True).data
         return Response(
             data={'data': data},
