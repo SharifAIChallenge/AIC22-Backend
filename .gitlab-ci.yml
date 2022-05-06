@@ -8,7 +8,7 @@ build:
   tags:
     - docker
   before_script:
-    - ping reg.aichallenge.ir
+    - ping -c 5 reg.aichallenge.ir
   script:
     - docker build -t reg.aichallenge.ir/aic22-backend:latest .
     - docker push reg.aichallenge.ir/aic22-backend:latest
