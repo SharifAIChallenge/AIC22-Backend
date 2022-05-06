@@ -3,12 +3,12 @@ stages:
   - deploy
 
 build:
-  stage: build
   image: reg.aichallenge.ir/docker:20.10.3-dind
+  stage: build
   tags:
     - docker
-  # before_script:
-  #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
+  before_script:
+    - ping reg.aichallenge.ir
   script:
     - docker build -t reg.aichallenge.ir/aic22-backend:latest .
     - docker push reg.aichallenge.ir/aic22-backend:latest
