@@ -6,7 +6,7 @@ stages:
     #  DOCKER_TLS_CERTDIR: ""
 
 build:
-  image: docker:19.03.12
+  image: reg.aichallenge.ir/docker:19.03.12
     #  services:
     #    - name: reg.aichallenge.ir/docker:20.10.3-dind
     #      alias: docker
