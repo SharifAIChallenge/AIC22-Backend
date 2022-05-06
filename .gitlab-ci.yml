@@ -2,17 +2,14 @@ stages:
   - build
   - deploy
 
-variables:
-  DOCKER_TLS_CERTDIR: ""
-    #  DOCKER_HOST: tcp://docker:2376
-
-
+    #variables:
+    #  DOCKER_TLS_CERTDIR: ""
 
 build:
   image: docker:19.03.12
-  services:
-    - name: reg.aichallenge.ir/docker:20.10.3-dind
-      alias: docker
+    #  services:
+    #    - name: reg.aichallenge.ir/docker:20.10.3-dind
+    #      alias: docker
   stage: build
   tags:
     - docker
