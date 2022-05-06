@@ -3,6 +3,7 @@ stages:
   - deploy
 
 build:
+  image: docker:19.03.12
   services:
     - reg.aichallenge.ir/docker:20.10.3-dind
   stage: build
