@@ -8,7 +8,7 @@ stages:
 build:
   image: docker:19.03.12
   services:
-    - reg.aichallenge.ir/docker:20.10.3-dind
+    - name: reg.aichallenge.ir/docker:20.10.3-dind
       alias: docker
   stage: build
   tags:
