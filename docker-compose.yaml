@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   thebackend_nginx:
-    image: nginx:latest
+    image: reg.aichallenge.ir/nginx:latest
     container_name: AIC22_Backend_nginx
     restart: always
     ports:
@@ -43,7 +43,7 @@ services:
       - .env
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3-management
+    image: reg.aichallenge.ir/rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=aic
       - RABBITMQ_DEFAULT_PASS=aic22challenge
@@ -65,7 +65,7 @@ services:
 
   postgres:
     restart: always
-    image: postgres:latest
+    image: reg.aichallenge.ir/postgres:latest
     volumes:
       - ./media/:/media/
       - pgdata:/var/lib/postgresql/data/
@@ -79,7 +79,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
 
   redis:
-    image: redis:latest
+    image: reg.aichallenge.ir/redis:latest
     container_name: redis
     ports:
       - 6379:6379
