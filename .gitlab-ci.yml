@@ -1,0 +1,31 @@
+stages:
+  - build
+  - deploy
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: always
+    - when: never
+
+build:
+  stage: build
+  image: reg.aichallenge.ir/docker:20.10.3-dind
+  tags:
+    - docker
+  # before_script:
+  #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
+  script:
+    - docker build -t reg.aichallenge.ir/aic22-backend:latest .
+    - docker push reg.aichallenge.ir/aic22-backend:latest
+
+deploy:
+  stage: deploy
+  before_script:
+    - chmod -R 700 $SSH_PRIVATE_KEY
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend:latest"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend"
+  script:
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 3000:8181 --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
