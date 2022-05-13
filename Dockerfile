@@ -16,6 +16,7 @@ RUN pip3 install -r requirements.txt
 FROM base AS build
 
 ENV STATIC_ROOT /app/static
+ENV MEDIA_ROOT /app/media
 
 COPY . /app
 
