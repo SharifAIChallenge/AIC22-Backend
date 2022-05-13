@@ -28,4 +28,4 @@ deploy:
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend:latest"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 3000:8181 --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 8181:8000 --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
