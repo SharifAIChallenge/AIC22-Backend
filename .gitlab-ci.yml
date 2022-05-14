@@ -18,14 +18,18 @@ build:
   # before_script:
   #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
-    - docker build -t reg.aichallenge.ir/aic22-backend:latest .
-    - docker push reg.aichallenge.ir/aic22-backend:latest
+    - docker build -t reg.aichallenge.ir/aic22-backend/core .
+    - docker build -t reg.aichallenge.ir/aic22-backend/static .
+    - docker push reg.aichallenge.ir/aic22-backend/core
+    - docker push reg.aichallenge.ir/aic22-backend/static
 
 deploy:
   stage: deploy
   before_script:
     - chmod -R 700 $SSH_PRIVATE_KEY
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend:latest"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 8181:8000 --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static reg.aichallenge.ir/aic22-backend/static"
