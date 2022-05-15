@@ -16,6 +16,7 @@ class StaffTeamAdmin(admin.ModelAdmin):
 class StaffGroupAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Tweet)
 class TweetAdmin(admin.ModelAdmin):
     pass

@@ -42,7 +42,6 @@ class StaffsListViewSet(
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class TweetsListViewSet(
     GenericViewSet,
     mixins.ListModelMixin,

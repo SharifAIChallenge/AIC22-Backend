@@ -32,7 +32,7 @@ class Staff(models.Model):
     image = models.ImageField(upload_to=staff_upload_path)
 
     def __str__(self):
-        return f"%s %s" % (self.first_name_en, self.last_name_en)
+        return "%s %s" % (self.first_name_en, self.last_name_en)
 
 
 class Tweet(models.Model):
