@@ -1,6 +1,18 @@
 from rest_framework import serializers
 
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam
+
+
+class StaffGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffGroup
+        fields = '__all__'
+
+
+class StaffTeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffTeam
+        fields = '__all__'
 
 
 class StaffSerializer(serializers.ModelSerializer):
