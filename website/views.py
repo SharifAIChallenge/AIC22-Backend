@@ -34,7 +34,7 @@ class StaffsListViewSet(
     @action(
         detail=False,
         serializer_class=StaffTeamSerializer,
-        url_path=r'/groups/(?P<group_pk>\w+)'
+        url_path=r'teams/(?P<group_pk>\w+)'
     )
     def teams(self, request, group_pk):
         queryset = StaffTeam.objects.filter(group=group_pk)
