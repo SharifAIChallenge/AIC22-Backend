@@ -3,12 +3,26 @@ from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGT
 
 
 def staff_upload_path(instance, filename):
-    return f'staff/{instance.group_title}/{instance.team_title}/{filename}'
+    return f'staff/{instance.team.group.title}/{instance.team.title}/{filename}'
+
+
+class StaffGroup(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+    def __str__(self):
+        return self.title
+
+
+class StaffTeam(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    group = models.ForeignKey(StaffGroup, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
 
 
 class Staff(models.Model):
-    group_title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
-    team_title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
+    team = models.ForeignKey(StaffTeam, on_delete=models.SET_NULL, null=True, blank=True)
     first_name_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     first_name_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     last_name_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
@@ -16,6 +30,9 @@ class Staff(models.Model):
     role = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=False)
     url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
     image = models.ImageField(upload_to=staff_upload_path)
+
+    def __str__(self):
+        return "%s %s" % (self.first_name_en, self.last_name_en)
 
 
 class Tweet(models.Model):
@@ -52,3 +69,16 @@ class FrequentlyAskedQuestions(models.Model):
     question_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+
+
+class News(models.Model):
+    title = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH)
+    preview = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
+    body = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
+    post_time = models.DateTimeField(null=True)
+
+
+class NewsTag(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='tags')

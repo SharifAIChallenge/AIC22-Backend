@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -32,6 +32,7 @@ LoginAPIView = ObtainAuthToken
 class LogoutAPIView(GenericAPIView):
     queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
+    serializer_class = serializers.Serializer
 
     def post(self, request):
         request.user.auth_token.delete()
@@ -39,6 +40,7 @@ class LogoutAPIView(GenericAPIView):
 
 
 class ActivateAPIView(GenericAPIView):
+    serializer_class = serializers.Serializer
 
     def get(self, request, eid, token):
         User.activate(eid, token)

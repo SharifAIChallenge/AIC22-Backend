@@ -2,28 +2,36 @@ stages:
   - build
   - deploy
 
-    #variables:
-    #  DOCKER_TLS_CERTDIR: ""
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: always
+    - when: never
 
-build:
-  image: reg.aichallenge.ir/docker:19.03.12
-    #  services:
-    #    - name: reg.aichallenge.ir/docker:20.10.3-dind
-    #      alias: docker
-  stage: build
-  tags:
-    - docker
-  before_script:
-    - docker info
-  script:
-    - docker build -t reg.aichallenge.ir/aic22-backend:latest .
-    - docker push reg.aichallenge.ir/aic22-backend:latest
+# build:
+#   image: reg.aichallenge.ir/docker:19.03.12
+#   stage: build
+#   tags:
+#     - docker
+#   before_script:
+#     - docker info
+#   script:
+#     - docker build -t reg.aichallenge.ir/aic22-backend/core --target build .
+#     - docker build -t reg.aichallenge.ir/aic22-backend/static --target static .
+#     - docker push reg.aichallenge.ir/aic22-backend/core
+#     - docker push reg.aichallenge.ir/aic22-backend/static
 
 deploy:
   stage: deploy
+  image: dockerhub.ir/kroniak/ssh-client:latest
   before_script:
+    - echo $ENV_FILE
     - chmod -R 700 $SSH_PRIVATE_KEY
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend:latest"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker container rm -f aic_backend"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d --name=aic_backend reg.aichallenge.ir/aic22-backend:latest"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --env-file $ENV_FILE -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core && docker exec -it aic_backend_core python manage.py migrate"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static reg.aichallenge.ir/aic22-backend/static"
