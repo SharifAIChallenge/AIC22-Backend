@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, \
+                    StaffTeam, TimelineEvent
 
 
 class StaffGroupSerializer(serializers.ModelSerializer):
@@ -59,4 +60,10 @@ class NewsSerializer(serializers.ModelSerializer):
 class NewsTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsTag
+        exclude = ('id',)
+
+
+class TimelineEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimelineEvent
         exclude = ('id',)
