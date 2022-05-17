@@ -25,9 +25,7 @@ workflow:
 
 deploy:
   stage: deploy
-  image: dockerhub.ir/kroniak/ssh-client:latest
   before_script:
-    - echo $ENV_FILE
     - chmod -R 700 $SSH_PRIVATE_KEY
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
