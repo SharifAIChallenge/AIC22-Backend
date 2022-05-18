@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffTeam, StaffGroup
+from .models import (Staff, TimelineEvent, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag,
+                     StaffTeam, StaffGroup)
 
 
 @admin.register(Staff)
@@ -52,4 +53,9 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(NewsTag)
 class NewsTagAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(TimelineEvent)
+class TimelineEventAdmin(admin.ModelAdmin):
     pass

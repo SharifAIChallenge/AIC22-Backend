@@ -82,3 +82,19 @@ class NewsTag(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
 
     news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='tags')
+
+
+class TimelineEvent(models.Model):
+    date = models.DateTimeField(null=True, blank=True)
+    title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    text_en = models.TextField()
+    text_fa = models.TextField()
+
+    day = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
+    month = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
+
+    order = models.PositiveSmallIntegerField(default=1)
+
+    def __str__(self):
+        return self.title_en

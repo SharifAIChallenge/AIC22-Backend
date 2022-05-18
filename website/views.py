@@ -4,9 +4,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam
+from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam, \
+                    TimelineEvent
 from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer, \
-                          NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer
+                         NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer, \
+                         TimelineEventSerializer
 from permissions import AdminWritePermission
 
 
@@ -99,4 +101,14 @@ class NewsTagListViewSet(
 ):
     queryset = NewsTag.objects.all()
     serializer_class = NewsTagSerializer
+    permission_classes = (AdminWritePermission,)
+
+
+class TimelineEventListViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin
+):
+    queryset = TimelineEvent.objects.all()
+    serializer_class = TimelineEventSerializer
     permission_classes = (AdminWritePermission,)
