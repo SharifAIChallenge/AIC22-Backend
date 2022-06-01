@@ -28,7 +28,7 @@ class TeamSerializer(serializers.ModelSerializer):
     @staticmethod
     def _image_url(obj: Team):
         if not obj.image:
-            return ''
+            return None
         path = obj.image.url
         if settings.DOMAIN not in path:
             return settings.DOMAIN + path

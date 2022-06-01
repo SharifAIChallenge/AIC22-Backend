@@ -4,15 +4,15 @@ from constants import SHORT_TEXT_MAX_LENGTH, TEAM_MAX_MEMBERS
 from account.models import User
 
 
-class Team(models.Model):  # maybe TimeStampedModel
+class Team(models.Model):
     name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, unique=True)
     image = models.ImageField(upload_to='team_images', null=True, blank=True)
-    creator = models.ForeignKey(to=User, on_delete=models.RESTRICT, related_name='created_team')
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='created_team')
 
     def is_complete(self):
         return self.members.count() == TEAM_MAX_MEMBERS
 
-    def reject_all_pending_invitations(self):  # todo: add this method for user
+    def reject_all_pending_invitations(self):
         invitations = self.invitations.filter(status="pending")
         invitations.update(status="rejected")
 
