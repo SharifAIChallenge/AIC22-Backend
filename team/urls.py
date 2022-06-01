@@ -1,26 +1,24 @@
-from routers import CustomRouter
+from django.urls import path
 from .views import TeamAPIView, TeamSearchAPIView, TeamInfoAPIView, IncompleteTeamInfoListAPIView,\
     UserReceivedPendingInvitationListAPIView, UserReceivedResolvedInvitationListAPIView,\
     TeamPendingInvitationListAPIView, UserAnswerInvitationAPIView, TeamAnswerInvitationAPIView,\
     TeamSentInvitationListAPIView, UserSentInvitationListAPIView
 
-team_router = CustomRouter()
+urlpatterns = [
+    path('', view=TeamAPIView.as_view(), name="team_api"),
+    path('search', view=TeamSearchAPIView.as_view(), name="team_search_api"),
+    path('<int:team_id>', view=TeamInfoAPIView.as_view(), name="team_info_api"),
+    path('incomplete', view=IncompleteTeamInfoListAPIView.as_view(), name="incomplete_team_api"),
+    path('invitations/user_pending', view=UserReceivedPendingInvitationListAPIView.as_view(),
+         name="user_pending_invite_api"),
+    path('invitations/user_resolved', view=UserReceivedResolvedInvitationListAPIView.as_view(),
+         name="user_resolved_invite_api"),
+    path('invitations/team_pending', view=TeamPendingInvitationListAPIView.as_view(), name="team_pending_invite_api"),
+    path('invitations/user_pending/<int:invitation_id>', view=UserAnswerInvitationAPIView.as_view(),
+         name="user_answer_invitation_api"),
+    path('invitations/team_pending/<str:invitation_id>', view=TeamAnswerInvitationAPIView.as_view(),
+         name="team_answer_invitation_api"),
+    path('invitations/team_sent', view=TeamSentInvitationListAPIView.as_view(), name="team_sent_invitation_api"),
+    path('invitations/user_sent', view=UserSentInvitationListAPIView.as_view(), name="user_sent_invitation_api"),
 
-team_router.register(r'team', TeamAPIView, basename='team_api')
-team_router.register(r'team/search', TeamSearchAPIView, basename='team_search_api')
-team_router.register(r'team/<int:team_id>', TeamInfoAPIView, basename='team_info_api')
-team_router.register(r'team/incomplete', IncompleteTeamInfoListAPIView, basename='incomplete_team_api')
-team_router.register(r'team/invitations/user_pending', UserReceivedPendingInvitationListAPIView,
-                     basename='user_pending_invite_api')
-team_router.register(r'team/invitations/user_resolved', UserReceivedResolvedInvitationListAPIView,
-                     basename='user_resolved_invite_api')
-team_router.register(r'team/invitations/team_pending', TeamPendingInvitationListAPIView,
-                     basename='team_pending_invite_api')
-team_router.register(r'team/invitations/user_pending/<int:invitation_id>',
-                     UserAnswerInvitationAPIView, basename='user_answer_invitation_api')
-team_router.register(r'team/invitations/team_pending/<str:invitation_id>',
-                     TeamAnswerInvitationAPIView, basename='team_answer_invitation_api')
-team_router.register(r'team/invitations/team_sent', TeamSentInvitationListAPIView,
-                     basename='team_sent_invitation_api')
-team_router.register(r'team/invitations/user_sent', UserSentInvitationListAPIView,
-                     basename='user_sent_invitation_api')
+]

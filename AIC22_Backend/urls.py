@@ -40,8 +40,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(AIC_v1_router.urls)),
     path('api/v1/account/', include('account.urls')),
+    path('api/v1/team/', include('team.urls')),
     re_path(r'^api-doc/swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL,
-                      document_root=settings.MEDIA_ROOT)
