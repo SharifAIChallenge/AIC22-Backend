@@ -1,42 +1,35 @@
-name: django ci/cd workflow
+stages:
+  - build
+  - deploy
 
-on:
-  pull_request:
-    branches:
-      - main
-  #      - master
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: always
+    - when: never
 
-  push:
-    branches:
-      #      - master
-      - main
+build:
+  stage: build
+  image: reg.aichallenge.ir/docker:20.10.3-dind
+  tags:
+    - docker
+  # before_script:
+  #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
+  script:
+    - docker build -t reg.aichallenge.ir/aic22-backend/core --target build .
+    - docker build -t reg.aichallenge.ir/aic22-backend/static --target static .
+    - docker push reg.aichallenge.ir/aic22-backend/core
+    - docker push reg.aichallenge.ir/aic22-backend/static
 
-
-jobs:
-  health-check-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Cache dependency
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Setup python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - name: Check Python version
-        run: python --version
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Lint with Flake8
-        run: |
-          flake8 .
-      - name: Run Migrations
-        run: python manage.py migrate
-      - name: Run Test
-        run: python manage.py test
+deploy:
+  stage: deploy
+  before_script:
+    - chmod -R 700 $SSH_PRIVATE_KEY
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
+  script:
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static reg.aichallenge.ir/aic22-backend/static"
