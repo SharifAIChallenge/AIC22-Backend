@@ -30,6 +30,7 @@ deploy:
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
+    - scp -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" $ENV_FILE ubuntu@188.121.111.163:/tmp/
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --env-file /tmp/ENV_FILE -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core && docker exec -i aic_backend_core python manage.py migrate"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static reg.aichallenge.ir/aic22-backend/static"
