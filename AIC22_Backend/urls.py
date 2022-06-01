@@ -16,8 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf.urls.static import static
-from django.conf import settings
 
+from AIC22_Backend.settings import STATIC_URL, MEDIA_URL, STATIC_ROOT, MEDIA_ROOT
 from routers import CustomRouter
 from website.urls import website_router
 from rest_framework import permissions
@@ -28,18 +28,21 @@ AIC_v1_router = CustomRouter()
 AIC_v1_router.extend(website_router)
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="API",
-      default_version="V1"
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="API",
+        default_version="V1"
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/v1/', include(AIC_v1_router.urls)),
-    path('api/v1/account/', include('account.urls')),
-    path('api/v1/team/', include('team.urls')),
-    re_path(r'^api-doc/swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-]
+urlpatterns = (
+        [
+            path('admin/', admin.site.urls),
+            path('api/v1/', include(AIC_v1_router.urls)),
+            path('api/v1/account/', include('account.urls')),
+            re_path(r'^api-doc/swagger/$', schema_view.with_ui('swagger', cache_timeout=0),
+                    name='schema-swagger-ui'),
+        ] + static(STATIC_URL, document_root=STATIC_ROOT)
+        + static(MEDIA_URL, document_root=MEDIA_ROOT)
+)
