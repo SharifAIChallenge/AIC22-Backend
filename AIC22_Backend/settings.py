@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'account',
     'website',
     'drf_yasg',
+    'team',
 ]
 
 MIDDLEWARE = [
