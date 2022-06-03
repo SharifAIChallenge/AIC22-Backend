@@ -93,6 +93,11 @@ class ProfileSerializer(serializers.ModelSerializer):
                                   allow_empty=True)
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
+    email = serializers.SerializerMethodField('_email')
+
+    @staticmethod
+    def _email(obj: Profile):
+        return obj.user.email
 
     class Meta:
         model = Profile
