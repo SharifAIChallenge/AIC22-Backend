@@ -24,15 +24,8 @@ class JobExperienceInline(admin.StackedInline):
 
 
 @admin.register(Profile)
-class ProfileAdmin(ImportExportModelAdmin):
-    inlines = (SkillInline, JobExperienceInline)
-    list_display = ('id', 'firstname_fa', 'lastname_fa', 'birth_date', 'province',
-                    'phone_number', 'national_code', 'university', 'major', 'university_degree')
-
-    list_filter = ('university', 'major', 'university_degree')
-
-    search_fields = ('firstname_fa', 'lastname_fa', 'major', 'province',
-                     'phone_number', 'university', 'national_code')
+class ProfileAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Skill)
