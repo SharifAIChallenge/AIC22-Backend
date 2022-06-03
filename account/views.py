@@ -67,13 +67,13 @@ class ProfileAPIView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    parser_classes = (MultiPartParser, )
 
     def get(self, request):
         user = request.user
         serializer = self.get_serializer(instance=user.profile)
         return Response(
-            data={'data': serializer.data},
+            data=serializer.data,
             status=status.HTTP_200_OK
         )
 
@@ -86,8 +86,8 @@ class ProfileAPIView(GenericAPIView):
         serializer.save()
 
         return Response(
-            data={'data': serializer.data},
-            status=status.HTTP_200_OK
+            data=serializer.data,
+            status=status.HTTP_201_CREATED
         )
 
     def delete(self, request):

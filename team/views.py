@@ -18,7 +18,7 @@ from constants import TEAM_MAX_MEMBERS
 class TeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamSerializer
-    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    parser_classes = [MultiPartParser, ]
     queryset = Team.objects.all()
 
     def get(self, request):
