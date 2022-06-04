@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework import status, serializers
+from rest_framework import status, serializers, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -8,7 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User
-from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer
+from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
+    ChangePasswordSerializer
 
 
 class GoogleLoginAPIView(GenericAPIView):
@@ -70,6 +71,22 @@ class ActivateAPIView(GenericAPIView):
         User.activate(eid, token)
         return Response(data={'detail': _('Account Activated')},
                         status=status.HTTP_200_OK)
+
+
+class ChangePasswordAPIView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            data={'detail': _('password changed successfully')},
+            status=200
+        )
 
 
 class ResendActivationEmailAPIView(GenericAPIView):
