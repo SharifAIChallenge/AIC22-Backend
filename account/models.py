@@ -12,6 +12,8 @@ from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_M
 # from team.models import Team
 from .utils import send_email
 
+from multiselectfield import MultiSelectField
+
 
 class DegreeTypes:
     ST = 'دانش‌ آموز'
@@ -24,6 +26,18 @@ class DegreeTypes:
         ('BA', BA),
         ('MA', MA),
         ('DO', DO)
+    )
+
+
+class ProgrammingLanguages:
+    JAVA = 'JAVA'
+    PYTHON3 = 'PYTHON3'
+    CPP = 'CPP'
+
+    TYPES = (
+        ('Java', JAVA),
+        ('Python 3', PYTHON3),
+        ('C++', CPP)
     )
 
 
@@ -73,7 +87,7 @@ class User(AbstractUser):
             'token': reset_password_token.token,
         }
         send_email(
-            subject='تغییر رمز عبور AIC21',
+            subject='تغییر رمز عبور AIC22',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
@@ -118,6 +132,7 @@ class Profile(models.Model):
     linkedin = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
     github = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, null=True, blank=True)
     resume = models.FileField(upload_to="resumes", null=True, blank=True)
+    programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
 
     # Others
     image = models.ImageField(upload_to='profile_images', null=True, blank=True)
@@ -175,3 +190,14 @@ class ResetPasswordToken(models.Model):
     uid = models.CharField(max_length=100)
     token = models.CharField(max_length=100)
     expiration_date = models.DateTimeField()
+
+
+class GoogleLogin(models.Model):
+    access_token = models.CharField(max_length=1024)
+    expires_at = models.PositiveIntegerField()
+    expires_in = models.PositiveIntegerField()
+    id_token = models.TextField()
+    scope = models.TextField()
+    is_signup = models.BooleanField(default=False)
+    email = models.EmailField(blank=True, null=True)
+
