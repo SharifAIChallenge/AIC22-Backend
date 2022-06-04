@@ -8,7 +8,21 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User
-from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer
+from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer
+
+
+class GoogleLoginAPIView(GenericAPIView):
+    serializer_class = GoogleLoginSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.save()
+
+        return Response(
+            data={'token': token.key},
+            status=status.HTTP_200_OK
+        )
 
 
 class SignUpAPIView(GenericAPIView):
@@ -77,7 +91,7 @@ class ProfileAPIView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, )
+    parser_classes = (MultiPartParser,)
 
     def get(self, request):
         user = request.user

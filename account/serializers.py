@@ -1,11 +1,11 @@
-
-
+import requests
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
-
-from account.models import User, Profile, Skill, JobExperience
+from rest_framework.authtoken.models import Token
+from account.models import User, Profile, Skill, JobExperience, GoogleLogin
+from account.utils import password_generator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -102,3 +102,42 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         exclude = ['user', 'id', ]
+
+
+class GoogleLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoogleLogin
+        exclude = ('id',)
+
+    def create(self, validated_data):
+
+        response = requests.get(
+            f'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token='
+            f'{validated_data["id_token"]}'
+        )
+
+        if response.status_code != 200:
+            raise ValidationError("Error occurred with google login")
+
+        data = response.json()
+        validated_data['email'] = data['email']
+
+        user = User.objects.filter(email=data['email']).last()
+        if user and not user.is_active:
+            user.is_active = True
+            user.save()
+        if not user:
+            validated_data['is_signup'] = True
+            user = User.objects.create(
+                username=data['email'],
+                email=data['email'],
+                password=password_generator(),
+                is_active=True
+            )
+            profile = Profile.objects.create(
+                user=user
+            )
+
+        google_login = super().create(validated_data)
+        token, created = Token.objects.get_or_create(user=user)
+        return token
