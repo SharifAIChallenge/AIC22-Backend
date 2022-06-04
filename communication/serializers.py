@@ -75,7 +75,7 @@ class TicketSerializer(serializers.ModelSerializer):
     def to_representation(self, instance: Ticket):
         data = super().to_representation(instance)
 
-        replies = instance.replies.all().order_by('created')
+        replies = instance.replies.all()
         data['replies'] = ReplySerializer(
             instance=replies,
             many=True,
