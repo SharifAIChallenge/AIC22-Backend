@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import status, serializers
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -17,8 +18,17 @@ class SignUpAPIView(GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        user.send_activation_email()
+        try:
+            with transaction.atomic():
+                user = serializer.save()
+                user.send_activation_email()
+        except Exception as e:
+            print(e)
+            # TODO: logger.error
+            return Response(
+                data={'detail': _('An error occurred. Please try again later.')},
+                status=500
+            )
 
         return Response(
             data={'detail': _('Check your email for confirmation link')},
