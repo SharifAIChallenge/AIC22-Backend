@@ -73,7 +73,7 @@ class User(AbstractUser):
             'token': reset_password_token.token,
         }
         send_email(
-            subject='تغییر رمز عبور AIC21',
+            subject='تغییر رمز عبور AIC22',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
