@@ -87,7 +87,7 @@ class User(AbstractUser):
             'token': reset_password_token.token,
         }
         send_email(
-            subject='تغییر رمز عبور AIC21',
+            subject='تغییر رمز عبور AIC22',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
@@ -190,3 +190,14 @@ class ResetPasswordToken(models.Model):
     uid = models.CharField(max_length=100)
     token = models.CharField(max_length=100)
     expiration_date = models.DateTimeField()
+
+
+class GoogleLogin(models.Model):
+    access_token = models.CharField(max_length=1024)
+    expires_at = models.PositiveIntegerField()
+    expires_in = models.PositiveIntegerField()
+    id_token = models.TextField()
+    scope = models.TextField()
+    is_signup = models.BooleanField(default=False)
+    email = models.EmailField(blank=True, null=True)
+

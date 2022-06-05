@@ -1,4 +1,11 @@
+import random
+import string
+
 from django.conf import settings
+
+LETTERS = string.ascii_letters
+NUMBERS = string.digits
+PUNCTUATION = string.punctuation
 
 
 def send_email(subject, template_name, context,
@@ -29,3 +36,14 @@ def send_email(subject, template_name, context,
         email.attach(filename=file_name, content=file_content,
                      mimetype=mime_type)
     email.send()
+
+
+def password_generator(length=32):
+    printable = f'{LETTERS}{NUMBERS}{PUNCTUATION}'
+
+    printable = list(printable)
+    random.shuffle(printable)
+
+    random_password = random.choices(printable, k=length)
+    random_password = ''.join(random_password)
+    return random_password
