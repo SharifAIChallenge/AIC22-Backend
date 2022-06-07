@@ -6,6 +6,10 @@ def staff_upload_path(instance, filename):
     return f'staff/{instance.team.group.title}/{instance.team.title}/{filename}'
 
 
+def tweet_upload_path(instance, filename):
+    return f'tweet/{filename}'
+
+
 class StaffGroup(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
 
@@ -38,7 +42,7 @@ class Staff(models.Model):
 class Tweet(models.Model):
     author = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True)
     text = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to=tweet_upload_path)
     post_time = models.DateTimeField(null=True)
     url = models.URLField(max_length=URL_MAX_LENGTH, null=True, blank=True)
 
