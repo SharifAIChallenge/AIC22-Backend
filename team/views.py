@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -24,6 +24,7 @@ class TeamAPIView(GenericAPIView):
     def get(self, request):
         team = request.user.team
         data = self.get_serializer(team).data
+        data = {'shit': get_current_site(request).domain} #just testing
         return Response(
             data=data,
             status=status.HTTP_200_OK
