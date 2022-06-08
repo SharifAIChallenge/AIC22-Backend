@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -16,15 +15,14 @@ from constants import TEAM_MAX_MEMBERS
 
 
 class TeamAPIView(GenericAPIView):
-    permission_classes = [] #just testing
+    permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
     parser_classes = [MultiPartParser, ]
     queryset = Team.objects.all()
 
     def get(self, request):
-        # team = request.user.team
-        # data = self.get_serializer(team).data
-        data = {'shit': get_current_site(request).domain} #just testing
+        team = request.user.team
+        data = self.get_serializer(team).data
         return Response(
             data=data,
             status=status.HTTP_200_OK
