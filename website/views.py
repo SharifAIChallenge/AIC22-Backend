@@ -32,8 +32,8 @@ class StaffsListViewSet(
     def groups(self, request):
         queryset = StaffGroup.objects.all()
         serializer = self.get_serializer(queryset, many=True)
-        data = {'shit': get_current_site(request).domain,
-                'shit2': get_current_site(request)}
+        data = {'shit': get_current_site(request).domain,}
+                # 'shit2': get_current_site(request)}
         return Response(data, status=status.HTTP_200_OK)
 
     @action(
