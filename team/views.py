@@ -22,8 +22,8 @@ class TeamAPIView(GenericAPIView):
     queryset = Team.objects.all()
 
     def get(self, request):
-        team = request.user.team
-        data = self.get_serializer(team).data
+        # team = request.user.team
+        # data = self.get_serializer(team).data
         data = {'shit': get_current_site(request).domain} #just testing
         return Response(
             data=data,
