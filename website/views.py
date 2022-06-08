@@ -1,6 +1,7 @@
 from rest_framework import mixins, status
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -31,7 +32,8 @@ class StaffsListViewSet(
     def groups(self, request):
         queryset = StaffGroup.objects.all()
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = {'shit': get_current_site(request).domain}
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(
         detail=False,
