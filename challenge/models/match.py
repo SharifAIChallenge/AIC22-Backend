@@ -81,7 +81,14 @@ class Match(TimeStampedModel):
         return match
 
     def run_match(self, priority=0):
+        # from apps.infra_gateway.functions import run_match
+        # self.infra_token = run_match(
+        #     match=self,
+        #     priority=priority
+        # )
+        # self.save()
         pass # TODO
+
 
     @staticmethod
     def run_matches(matches, priority=0):
