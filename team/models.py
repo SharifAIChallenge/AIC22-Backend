@@ -16,6 +16,9 @@ class Team(models.Model):
     def has_final_submission(self):
         return self.submissions.filter(is_final=True).first() is not None
 
+    def final_submission(self):
+        return self.submissions.filter(is_final=True).first()
+
     def rival_teams_wins(self):
         as_second_teams = self.matches_first.exclude(winner=None).exclude(
             winner=self).values_list(
