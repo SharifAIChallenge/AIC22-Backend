@@ -30,9 +30,9 @@ class DegreeTypes:
 
 
 class ProgrammingLanguages:
-    JAVA = 'JAVA'
-    PYTHON3 = 'PYTHON3'
-    CPP = 'CPP'
+    JAVA = 'Java'
+    PYTHON3 = 'Python 3'
+    CPP = 'C++'
 
     TYPES = (
         ('Java', JAVA),
