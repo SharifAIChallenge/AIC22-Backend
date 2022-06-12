@@ -46,10 +46,13 @@ INSTALLED_APPS = [
     'allauth',
     'website',
     'drf_yasg',
+    'django.contrib.sites',
     'team',
     'django_filters',
     'challenge',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
