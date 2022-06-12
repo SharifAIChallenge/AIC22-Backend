@@ -24,3 +24,4 @@ flake8==3.8.4
 drf-yasg==1.20.0
 django_filter~=2.4.0
 django-multiselectfield==0.1.12
+drf_spectacular==0.22.1

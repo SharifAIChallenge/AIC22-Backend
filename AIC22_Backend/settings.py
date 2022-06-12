@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'account',
+    'drf_spectacular',
+    'django.contrib.sites',
+    'allauth',
+    # 'allauth.account',
     'website',
     'drf_yasg',
     'team',
@@ -158,6 +162,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # should be placed in .env file later
