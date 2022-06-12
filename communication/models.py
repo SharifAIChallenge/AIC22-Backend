@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils.models import TimeStampedModel
 
 from account.models import User
 from constants import SHORT_TEXT_MAX_LENGTH
@@ -24,7 +25,7 @@ class ReplyStatus:
     )
 
 
-class Ticket(models.Model):
+class Ticket(TimeStampedModel):
     author = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -51,7 +52,7 @@ class Ticket(models.Model):
         return f'{self.title} {self.author.username}'
 
 
-class Reply(models.Model):
+class Reply(TimeStampedModel):
     ticket = models.ForeignKey(
         to=Ticket,
         on_delete=models.CASCADE,
@@ -74,7 +75,7 @@ class Reply(models.Model):
         return f'{self.user}'
 
 
-class Tag(models.Model):
+class Tag(TimeStampedModel):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
 
     def __str__(self):
