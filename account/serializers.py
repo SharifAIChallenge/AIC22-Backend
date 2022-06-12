@@ -1,11 +1,13 @@
 import requests
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
 from account.utils import password_generator
+
+from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -109,6 +111,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
     email = serializers.SerializerMethodField('_email')
+    programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
 
     @staticmethod
     def _email(obj: Profile):

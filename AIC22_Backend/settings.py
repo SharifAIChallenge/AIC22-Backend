@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'team',
     'django_filters',
     'communication',
+    'challenge',
 ]
 
 MIDDLEWARE = [
