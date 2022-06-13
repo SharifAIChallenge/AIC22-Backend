@@ -42,13 +42,18 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'account',
+    'drf_spectacular',
+    'allauth',
     'website',
     'drf_yasg',
+    'django.contrib.sites',
     'team',
     'django_filters',
     'communication',
     'challenge',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -159,13 +164,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # should be placed in .env file later
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = '587'
-DOMAIN = config("EMAIL_DOMAIN")
+AIC_DOMAIN = config("AIC_DOMAIN", 'stg.aichallenge.ir')
+EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
+EMAIL_PORT = config("EMAIL_PORT", 587)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", 'aic22test@gmail.com')
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')

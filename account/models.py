@@ -4,10 +4,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from django.conf import settings
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
+from AIC22_Backend import settings
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 # from team.models import Team
 from .utils import send_email
@@ -54,7 +54,7 @@ class User(AbstractUser):
         activate_user_token.save()
 
         context = {
-            'domain': settings.DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'eid': activate_user_token.eid,
             'token': activate_user_token.token,
             'first_name': self.profile.firstname_en
@@ -81,7 +81,7 @@ class User(AbstractUser):
         )
         reset_password_token.save()
         context = {
-            'domain': settings.DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'username': self.username,
             'uid': reset_password_token.uid,
             'token': reset_password_token.token,
