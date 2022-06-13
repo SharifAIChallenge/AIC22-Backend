@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'team',
     'django_filters',
+    'communication',
     'challenge',
 ]
 
