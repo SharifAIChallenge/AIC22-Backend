@@ -43,9 +43,9 @@ workflow:
   #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
     - docker build -t ${CORE_IMAGE} --target build .
-    - docker build -t ${STATICS_IMAGE} --target static .
+    - docker build -t ${STATIC_IMAGE} --target static .
     - docker push ${CORE_IMAGE}
-    - docker push ${STATICS_IMAGE}
+    - docker push ${STATIC_IMAGE}
 
 .deploy:
   stage: deploy
