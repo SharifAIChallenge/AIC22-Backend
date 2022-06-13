@@ -2,14 +2,6 @@ stages:
   - build
   - deploy
 
-workflow:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-    - if: '$CI_COMMIT_BRANCH == "add-production-deployment"'
-      when: always
-    - when: never
-
 .stg-vars:
   variables:
     ENVIRONMENT: stg
