@@ -73,6 +73,7 @@ class FrequentlyAskedQuestions(models.Model):
     question_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+    show_on_landing_page = models.BooleanField(default=False)
 
 
 class News(models.Model):
@@ -80,6 +81,7 @@ class News(models.Model):
     preview = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     body = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     post_time = models.DateTimeField(null=True)
+    importance = models.PositiveSmallIntegerField(default=0)
 
 
 class NewsTag(models.Model):

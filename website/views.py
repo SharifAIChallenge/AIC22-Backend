@@ -1,4 +1,4 @@
-from rest_framework import mixins, status
+from rest_framework import mixins, status, filters
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from django.contrib.sites.shortcuts import get_current_site
@@ -45,6 +45,15 @@ class StaffsListViewSet(
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(
+        detail=False,
+        url_path=r'random/(?P<number>\d+)'
+    )
+    def random(self, request, number):
+        queryset = Staff.objects.order_by('?')[:int(number)]
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class TweetsListViewSet(
     GenericViewSet,
@@ -84,6 +93,8 @@ class FAQListViewSet(
     queryset = FrequentlyAskedQuestions.objects.all()
     serializer_class = FAQSerializer
     permission_classes = (AdminWritePermission, )
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['show_on_landing_page']
 
 
 class NewsListViewSet(
@@ -94,6 +105,9 @@ class NewsListViewSet(
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = (AdminWritePermission,)
+    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ['importance']
+    ordering_fields = ['post_time']
 
 
 class NewsTagListViewSet(
