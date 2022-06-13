@@ -15,6 +15,8 @@ workflow:
     ENVIRONMENT: stg
     CORE_IMAGE: reg.aichallenge.ir/aic22-backend/core:stg
     STATICS_IMAGE: reg.aichallenge.ir/aic22-backend/static:stg
+    CORE_CONTAINER_NAME: aic_backend_core_stg
+    STATIC_CONTAINER_NAME: aic_backend_static_stg
   rules:
     - if: '$CI_COMMIT_BRANCH == "add-production-deployment"'
       when: always
@@ -24,6 +26,8 @@ workflow:
     ENVIRONMENT: production
     CORE_IMAGE: reg.aichallenge.ir/aic22-backend/core:${CI_COMMIT_SHORT_SHA}
     STATICS_IMAGE: reg.aichallenge.ir/aic22-backend/static${CI_COMMIT_SHORT_SHA}
+    CORE_CONTAINER_NAME: aic_backend_core_production
+    STATIC_CONTAINER_NAME: aic_backend_static_production
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
@@ -47,11 +51,11 @@ workflow:
     - chmod -R 700 $SSH_PRIVATE_KEY
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull ${CORE_IMAGE}"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull ${STATICS_IMAGE}"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f ${CORE_CONTAINER_NAME} ${STATIC_CONTAINER_NAME}"
     - scp -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" $ENV_FILE ubuntu@188.121.111.163:/tmp/
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --env-file /tmp/ENV_FILE -d -p 8181:8000 --name=aic_backend_core ${CORE_IMAGE} && docker exec -i aic_backend_core python manage.py migrate"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static ${STATICS_IMAGE}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --env-file /tmp/ENV_FILE -d -p 8181:8000 --name=${CORE_CONTAINER_NAME} ${CORE_IMAGE} && docker exec -i ${CORE_CONTAINER_NAME} python manage.py migrate"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=${STATIC_CONTAINER_NAME} ${STATICS_IMAGE}"
 
 
 stg-build:
