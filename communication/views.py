@@ -39,7 +39,6 @@ class UserTicketsListAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ProfileComplete | IsAdminUser]
 
     def post(self, request):
-        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         ticket = serializer.save()
@@ -86,7 +85,7 @@ class ReplyListAPIView(GenericAPIView):
 
     def get(self, request, ticket_id):
         replies = self.get_queryset().filter(ticket__id=ticket_id)
-        data = ReplySerializer(replies, many=True).data
+        data = ReplySerializer(replies, many=True, context={'request': request}).data
         return Response(data)
 
     def post(self, request, ticket_id):
@@ -104,10 +103,9 @@ class ReplyListAPIView(GenericAPIView):
         return Response({"detail": "Your Reply has been submitted"})
 
     def get_serializer_context(self):
-        ctx = super().get_serializer_context()
-        ctx['ticket_id'] = self.kwargs.get('ticket_id')
-
-        return ctx
+        context = super().get_serializer_context()
+        context['ticket_id'] = self.kwargs.get('ticket_id')
+        return context
 
 
 class ReplyAPIView(GenericAPIView):
