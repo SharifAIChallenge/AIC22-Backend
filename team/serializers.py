@@ -30,8 +30,8 @@ class TeamSerializer(serializers.ModelSerializer):
         if not obj.image:
             return None
         path = obj.image.url
-        if settings.DOMAIN not in path:
-            return settings.DOMAIN + path
+        if settings.AIC_DOMAIN not in path:
+            return settings.AIC_DOMAIN + path
         return path
 
     class Meta:
@@ -68,8 +68,8 @@ class TeamInfoSerializer(serializers.ModelSerializer):
         if not obj.image:
             return ''
         path = obj.image.url
-        if settings.DOMAIN not in path:
-            return settings.DOMAIN + path
+        if settings.AIC_DOMAIN not in path:
+            return settings.AIC_DOMAIN + path
         return path
 
     class Meta:

@@ -169,8 +169,8 @@ REST_FRAMEWORK = {
 # should be placed in .env file later
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
+AIC_DOMAIN = config("EMAIL_DOMAIN")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = '587'
-DOMAIN = config("EMAIL_DOMAIN")
