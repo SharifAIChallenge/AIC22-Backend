@@ -2,35 +2,67 @@ stages:
   - build
   - deploy
 
-workflow:
+.stg-vars:
+  variables:
+    ENVIRONMENT: stg
+    CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:stg
+    STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static:stg
+    CORE_CONTAINER_NAME: aic_backend_core_stg
+    STATIC_CONTAINER_NAME: aic_backend_static_stg
+    SWARM_MASTER_NODE: ${STG_SWARM_MASTER_NODE}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+
+.production-vars:
+  variables:
+    ENVIRONMENT: production
+    CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:${CI_COMMIT_SHORT_SHA}
+    STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static${CI_COMMIT_SHORT_SHA}
+    CORE_CONTAINER_NAME: aic_backend_core_production
+    STATIC_CONTAINER_NAME: aic_backend_static_production
+    SWARM_MASTER_NODE: ${PRD_SWARM_MASTER_NODE}
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-    - if: '$CI_COMMIT_BRANCH == "dev"'
-      when: always
-    - when: never
 
-build:
+.build:
   stage: build
-  image: reg.aichallenge.ir/docker:20.10.3-dind
+  image: ${DOCKER_REGISTRY}/docker:20.10.3-dind
   tags:
     - docker
   # before_script:
   #   - docker login -u $AIC_DOCKERID -p $AIC_DOCKERPASS
   script:
-    - docker build -t reg.aichallenge.ir/aic22-backend/core --target build .
-    - docker build -t reg.aichallenge.ir/aic22-backend/static --target static .
-    - docker push reg.aichallenge.ir/aic22-backend/core
-    - docker push reg.aichallenge.ir/aic22-backend/static
+    - docker build -t ${CORE_IMAGE} --target build .
+    - docker build -t ${STATIC_IMAGE} --target static .
+    - docker push ${CORE_IMAGE}
+    - docker push ${STATIC_IMAGE}
 
-deploy:
+.deploy:
   stage: deploy
   before_script:
     - chmod -R 700 $SSH_PRIVATE_KEY
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/core"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker pull reg.aichallenge.ir/aic22-backend/static"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker rm -f aic_backend_core aic_backend_static"
-    - scp -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" $ENV_FILE ubuntu@188.121.111.163:/tmp/
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run --env-file /tmp/ENV_FILE -d -p 8181:8000 --name=aic_backend_core reg.aichallenge.ir/aic22-backend/core && docker exec -i aic_backend_core python manage.py migrate"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ubuntu@188.121.111.163 -t "docker run -d -p 81:80 --name=aic_backend_static reg.aichallenge.ir/aic22-backend/static"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
+
+stg-build:
+  extends:
+    - .stg-vars
+    - .build
+
+production-build:
+  extends:
+    - .production-vars
+    - .build
+
+stg-deploy:
+  extends:
+    - .stg-vars
+    - .deploy
+
+production-deploy:
+  extends:
+    - .production-vars
+    - .deploy
