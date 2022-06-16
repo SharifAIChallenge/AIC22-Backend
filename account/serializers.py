@@ -111,11 +111,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
     email = serializers.SerializerMethodField('_email')
+    is_complete = serializers.SerializerMethodField('_is_complete')
     programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
 
     @staticmethod
     def _email(obj: Profile):
         return obj.user.email
+
+    @staticmethod
+    def _is_complete(obj: Profile):
+        return obj.is_complete
 
     class Meta:
         model = Profile
