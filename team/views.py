@@ -55,7 +55,7 @@ class TeamAPIView(GenericAPIView):
     def delete(self, request):
         current_user = request.user
 
-        if current_user.team.member_count() == 1:
+        if current_user.team.members.count() == 1:
             current_user.team.delete()
         current_user.team = None
         current_user.save()
