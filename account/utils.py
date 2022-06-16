@@ -1,7 +1,7 @@
 import random
 import string
 
-from django.conf import settings
+from AIC22_Backend import settings
 
 LETTERS = string.ascii_letters
 NUMBERS = string.digits
