@@ -32,7 +32,10 @@ class TeamAPIView(GenericAPIView):
         team = self.get_serializer(data=request.data)
         team.is_valid(raise_exception=True)
         team.save()
-        request.user.reject_all_pending_invites()
+        _user = request.user
+        _user.team = team
+        _user.save()
+        _user.reject_all_pending_invites()
 
         return Response(
             data=team.data,
