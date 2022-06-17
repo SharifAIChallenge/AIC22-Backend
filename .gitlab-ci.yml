@@ -24,7 +24,7 @@ stages:
     SWARM_MASTER_NODE: 94.101.187.20
     LOGIN_USER: ubuntu
   rules:
-    - if: '$CI_COMMIT_BRANCH == "stg-pipeline"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 .build:
   stage: build
