@@ -46,8 +46,8 @@ stages:
     - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
     - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
   script:
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --env-file /home/ubuntu/backend/prod.env --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --env-file /home/ubuntu/backend/prod.env --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
 
 stg-build:
   extends:
