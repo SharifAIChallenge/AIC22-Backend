@@ -16,8 +16,8 @@ stages:
 .production-vars:
   variables:
     ENVIRONMENT: prod
-    CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:prod
-    STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static:prod
+    CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:${CI_COMMIT_SHORT_SHA}
+    STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static:${CI_COMMIT_SHORT_SHA}
     CORE_CONTAINER_NAME: aic_backend_core_production
     STATIC_CONTAINER_NAME: aic_backend_static_production
     SWARM_MASTER_NODE: ${PRD_SWARM_MASTER_NODE}
