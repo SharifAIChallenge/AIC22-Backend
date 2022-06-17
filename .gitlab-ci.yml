@@ -23,7 +23,7 @@ stages:
     STATIC_CONTAINER_NAME: aic_backend_static_production
     SWARM_MASTER_NODE: ${PRD_SWARM_MASTER_NODE}
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "stg-pipeline"'
 
 .build:
   stage: build
