@@ -22,7 +22,7 @@ COPY . /app
 
 RUN ["./manage.py", "collectstatic", "--no-input"]
 
-CMD ["./manage.py" ,"migrate" , "&&", "gunicorn", "--bind=0.0.0.0:8000", "--timeout=90", "--preload", "AIC22_Backend.wsgi:application"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "--timeout=90", "--preload", "AIC22_Backend.wsgi:application"]
 
 FROM reg.aichallenge.ir/nginx:1.17.6 AS static
 
