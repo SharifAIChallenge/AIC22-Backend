@@ -115,7 +115,6 @@ class Profile(models.Model):
     lastname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
-    national_code = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     province = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     city = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     address = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
@@ -145,14 +144,14 @@ class Profile(models.Model):
             (
                 self.university, self.university_degree, self.major,
                 self.phone_number, self.birth_date, self.firstname_fa,
-                self.lastname_fa, self.national_code
+                self.lastname_fa
             )
         )
 
     @staticmethod
     def sensitive_fields():
         return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
-                'province', 'is_complete', 'national_code', 'resume',)
+                'province', 'is_complete', 'resume',)
 
 
 class Skill(models.Model):
