@@ -10,7 +10,6 @@ stages:
     CORE_CONTAINER_NAME: aic_backend_core_stg
     STATIC_CONTAINER_NAME: aic_backend_static_stg
     SWARM_MASTER_NODE: ${STG_SWARM_MASTER_NODE}
-    LOGIN_USER: 'gitlab-runner'
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
 
@@ -22,7 +21,6 @@ stages:
     CORE_CONTAINER_NAME: aic_backend_core_prod
     STATIC_CONTAINER_NAME: aic_backend_static_prod
     SWARM_MASTER_NODE: 94.101.187.20
-    LOGIN_USER: ubuntu
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
@@ -43,11 +41,11 @@ stages:
   stage: deploy
   before_script:
     - chmod -R 700 $SSH_PRIVATE_KEY
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
   script:
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
-    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
 
 stg-build:
   extends:
