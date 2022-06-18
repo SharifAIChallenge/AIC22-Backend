@@ -134,13 +134,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 class GoogleLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoogleLogin
-        exclude = ('id',)
+        exclude = ('id', )
 
     def create(self, validated_data):
 
         response = requests.get(
-            f'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token='
-            f'{validated_data["id_token"]}'
+            f'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token='
+            f'{validated_data["access_token"]}'
         )
 
         if response.status_code != 200:

@@ -193,10 +193,7 @@ class ResetPasswordToken(models.Model):
 
 class GoogleLogin(models.Model):
     access_token = models.CharField(max_length=1024)
-    expires_at = models.PositiveIntegerField()
-    expires_in = models.PositiveIntegerField()
-    id_token = models.TextField()
-    scope = models.TextField()
+    code = models.CharField(max_length=1024, blank=True, null=True)
     is_signup = models.BooleanField(default=False)
     email = models.EmailField(blank=True, null=True)
 
