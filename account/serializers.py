@@ -113,7 +113,7 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     email = serializers.SerializerMethodField('_email')
     programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
     image_url = serializers.SerializerMethodField('_image_url')
-
+    resume_url = serializers.SerializerMethodField('_resume_url')
 
     @staticmethod
     def _email(obj: Profile):
