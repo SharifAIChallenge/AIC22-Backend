@@ -1,4 +1,4 @@
-import requests
+import requests, re
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers, fields
 from rest_framework.exceptions import ValidationError
@@ -36,6 +36,11 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
             raise ValidationError(_("Passwords not match"))
+
+        phone_number = attrs.get('phone_number')
+        if phone_number:
+            if not re.match('^\+?\d{11,12}$', phone_number):
+                raise ValidationError(_("Phone number is not valid"))
 
         return attrs
 
@@ -75,7 +80,6 @@ class ResetPasswordConfirmSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
@@ -90,7 +94,7 @@ class SkillSerializer(serializers.ModelSerializer):
 class JobExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobExperience
-        fields = ('company', 'position', 'working_years',  'description')
+        fields = ('company', 'position', 'working_years', 'description')
 
     def create(self, validated_data):
         validated_data['profile'] = self.context['request'].user.profile
@@ -187,4 +191,3 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
-
