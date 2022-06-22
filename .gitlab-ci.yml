@@ -10,20 +10,21 @@ stages:
     CORE_CONTAINER_NAME: aic_backend_core_stg
     STATIC_CONTAINER_NAME: aic_backend_static_stg
     SWARM_MASTER_NODE: ${STG_SWARM_MASTER_NODE}
+    LOGIN_USER: 'gitlab-runner'
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
 
 .production-vars:
   variables:
-    # TODO: change to production
-    ENVIRONMENT: stg
+    ENVIRONMENT: prod
     CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:${CI_COMMIT_SHORT_SHA}
     STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static:${CI_COMMIT_SHORT_SHA}
-    CORE_CONTAINER_NAME: aic_backend_core_production
-    STATIC_CONTAINER_NAME: aic_backend_static_production
-    SWARM_MASTER_NODE: ${PRD_SWARM_MASTER_NODE}
+    CORE_CONTAINER_NAME: aic_backend_core_prod
+    STATIC_CONTAINER_NAME: aic_backend_static_prod
+    SWARM_MASTER_NODE: 94.101.187.20
+    LOGIN_USER: ubuntu
   rules:
-    - if: '$CI_COMMIT_BRANCH == "stg-pipeline"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 .build:
   stage: build
@@ -42,11 +43,11 @@ stages:
   stage: deploy
   before_script:
     - chmod -R 700 $SSH_PRIVATE_KEY
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
+    - ssh -l ${LOGIN_USER} -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
 
 stg-build:
   extends:
