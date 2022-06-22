@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
 from account.utils import password_generator
-
+from utils import ImageURL
 from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages
 
 
@@ -103,7 +103,7 @@ class StringListField(serializers.ListField):
                                   allow_blank=True)
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     skills = SkillSerializer(many=True, read_only=True)
     jobs = JobExperienceSerializer(many=True, read_only=True)
     skills_list = StringListField(write_only=True, allow_null=True,
@@ -111,16 +111,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
     email = serializers.SerializerMethodField('_email')
-    is_complete = serializers.SerializerMethodField('_is_complete')
     programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
+    image_url = serializers.SerializerMethodField('_image_url')
+    resume_url = serializers.SerializerMethodField('_resume_url')
 
     @staticmethod
     def _email(obj: Profile):
         return obj.user.email
-
-    @staticmethod
-    def _is_complete(obj: Profile):
-        return obj.is_complete
 
     class Meta:
         model = Profile
@@ -187,4 +184,3 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
-
