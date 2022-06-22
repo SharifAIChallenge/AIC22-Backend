@@ -47,7 +47,7 @@ class StaffsListViewSet(
     @action(
         detail=False,
         url_path=r'random/(?P<number>\d+)',
-        filter_backends=DjangoFilterBackend,
+        filter_backends=[DjangoFilterBackend],
         filterset_fields=['team__group', 'team', 'role'],
     )
     def random(self, request, number):
