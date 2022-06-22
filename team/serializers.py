@@ -1,11 +1,10 @@
-from django.conf import settings
+from AIC22_Backend import settings
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from constants import IMAGE_MAX_SIZE
-from utils import ImageURL
 from account.serializers import ProfileSerializer
 from account.models import User
 from .models import Team, Invitation
@@ -20,11 +19,20 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'id', 'profile']
 
 
-class TeamSerializer(serializers.ModelSerializer, ImageURL):
+class TeamSerializer(serializers.ModelSerializer):
     members = MemberSerializer(many=True, read_only=True)
     creator = MemberSerializer(read_only=True)
 
     image_url = serializers.SerializerMethodField('_image_url')
+
+    @staticmethod
+    def _image_url(obj: Team):
+        if not obj.image:
+            return None
+        path = obj.image.url
+        if settings.AIC_DOMAIN not in path:
+            return settings.AIC_DOMAIN + path
+        return path
 
     class Meta:
         model = Team
@@ -50,10 +58,19 @@ class TeamSerializer(serializers.ModelSerializer, ImageURL):
         return attrs
 
 
-class TeamInfoSerializer(serializers.ModelSerializer, ImageURL):
+class TeamInfoSerializer(serializers.ModelSerializer):
     members = MemberSerializer(many=True, read_only=True)
     creator = MemberSerializer(read_only=True)
     image_url = serializers.SerializerMethodField('_image_url')
+
+    @staticmethod
+    def _image_url(obj: Team):
+        if not obj.image:
+            return ''
+        path = obj.image.url
+        if settings.AIC_DOMAIN not in path:
+            return settings.AIC_DOMAIN + path
+        return path
 
     class Meta:
         model = Team

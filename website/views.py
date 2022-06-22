@@ -1,14 +1,15 @@
 from rest_framework import mixins, status, filters
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam, \
-    TimelineEvent, Statistic
+                    TimelineEvent
 from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer, \
                          NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer, \
-                         TimelineEventSerializer, StatisticSerializer
+                         TimelineEventSerializer
 from permissions import AdminWritePermission
 
 
@@ -126,10 +127,4 @@ class TimelineEventListViewSet(
 ):
     queryset = TimelineEvent.objects.all()
     serializer_class = TimelineEventSerializer
-    permission_classes = (AdminWritePermission,)
-
-
-class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
-    queryset = Statistic.objects.all()
-    serializer_class = StatisticSerializer
     permission_classes = (AdminWritePermission,)
