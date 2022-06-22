@@ -59,7 +59,7 @@ class PastAIC(models.Model):
     event_year = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     image = models.ImageField()
     title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True)
-    description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH)
+    description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
 
 
 class FrequentlyAskedQuestions(models.Model):
