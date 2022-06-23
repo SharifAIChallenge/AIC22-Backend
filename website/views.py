@@ -31,7 +31,6 @@ class StaffsListViewSet(
     def groups(self, request):
         queryset = StaffGroup.objects.all()
         serializer = self.get_serializer(queryset, many=True)
-        # data = {'shit': get_current_site(request).domain}
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
@@ -51,7 +50,8 @@ class StaffsListViewSet(
         filterset_fields=['team__group', 'team', 'role'],
     )
     def random(self, request, number):
-        queryset = Staff.objects.order_by('?')[:int(number)]
+        queryset = self.filter_queryset(queryset=self.get_queryset())
+        queryset = queryset.order_by('?')[:int(number)]
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
