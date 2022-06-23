@@ -52,7 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data.get('email'),
             email=validated_data.get('email'),
             password=validated_data.get('password'),
-            is_active=False
+            is_active=True
         )
         Profile.objects.create(
             user=user,

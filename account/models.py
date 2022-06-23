@@ -67,6 +67,19 @@ class User(AbstractUser):
             receipts=[self.email]
         )
 
+    def send_successful_register_email(self):
+        context = {
+            'domain': settings.AIC_DOMAIN,
+            'first_name': self.profile.firstname_en
+        }
+        send_email(
+            subject='ثبت نام موفق AIC22',
+            context=context,
+            template_name='accounts/email/successful_register.htm',
+            receipts=[self.email]
+        )
+
+
     def reject_all_pending_invites(self):
         invitations = self.invitations.filter(status="pending")
         invitations.update(status="rejected")
