@@ -101,7 +101,8 @@ class FAQListViewSet(
 class NewsListViewSet(
     GenericViewSet,
     mixins.ListModelMixin,
-    mixins.CreateModelMixin
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
 ):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
