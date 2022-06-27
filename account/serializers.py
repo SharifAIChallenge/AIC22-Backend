@@ -114,6 +114,11 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
     image_url = serializers.SerializerMethodField('_image_url')
     resume_url = serializers.SerializerMethodField('_resume_url')
+    is_complete = serializers.SerializerMethodField('_is_complete')
+
+    @staticmethod
+    def _is_complete(obj: Profile):
+        return obj.is_complete
 
     @staticmethod
     def _email(obj: Profile):

@@ -7,5 +7,5 @@ exclude =
     old,
     build,
     dist,
-    account/migrations,
+    */migrations,
     venv
