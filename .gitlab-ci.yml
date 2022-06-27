@@ -15,15 +15,14 @@ stages:
 
 .production-vars:
   variables:
-    # TODO: change to production
-    ENVIRONMENT: stg
+    ENVIRONMENT: prod
     CORE_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/core:${CI_COMMIT_SHORT_SHA}
     STATIC_IMAGE: ${DOCKER_REGISTRY}/aic22-backend/static:${CI_COMMIT_SHORT_SHA}
     CORE_CONTAINER_NAME: aic_backend_core_production
     STATIC_CONTAINER_NAME: aic_backend_static_production
     SWARM_MASTER_NODE: ${PRD_SWARM_MASTER_NODE}
   rules:
-    - if: '$CI_COMMIT_BRANCH == "stg-pipeline"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 .build:
   stage: build
@@ -45,8 +44,8 @@ stages:
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${CORE_IMAGE}"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker pull ${STATIC_IMAGE}"
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} aic_backend_core_${ENVIRONMENT}"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} aic_backend_static_${ENVIRONMENT}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} --constraint-add node.labels.job==backend  --mount-add type=volume,source=django-volume,target=/app/media aic_backend_core_${ENVIRONMENT}"
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} --constraint-add node.labels.job==backend --mount-add type=volume,source=django-volume,target=/app/media aic_backend_static_${ENVIRONMENT}"
 
 stg-build:
   extends:
