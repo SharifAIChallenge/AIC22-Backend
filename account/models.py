@@ -54,7 +54,7 @@ class User(AbstractUser):
         activate_user_token.save()
 
         context = {
-            'domain': settings.AIC_BACKEND_DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'eid': activate_user_token.eid,
             'token': activate_user_token.token,
             'first_name': self.profile.firstname_en
@@ -81,7 +81,7 @@ class User(AbstractUser):
         )
         reset_password_token.save()
         context = {
-            'domain': settings.AIC_BACKEND_DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'username': self.username,
             'uid': reset_password_token.uid,
             'token': reset_password_token.token,
