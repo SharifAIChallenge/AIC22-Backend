@@ -81,9 +81,11 @@ class PastAICsListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin
 ):
-    queryset = PastAIC.objects.all().order_by('year')
     serializer_class = PastAICSerializer
     permission_classes = (AdminWritePermission,)
+
+    def get_queryset(self):
+        return PastAIC.objects.all().order_by('year')
 
 
 class FAQListViewSet(
