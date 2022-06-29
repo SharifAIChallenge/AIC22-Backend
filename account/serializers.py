@@ -6,8 +6,9 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
 from account.utils import password_generator
+from constants import MEDIUM_TEXT_MAX_LENGTH
 from utils import ImageURL
-from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages
+from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages, ProgrammingLanguage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,6 +76,16 @@ class ResetPasswordConfirmSerializer(serializers.ModelSerializer):
         return data
 
 
+class ProgrammingLanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProgrammingLanguage
+        fields = ('programming_language_title',)
+
+    def create(self, validated_data):
+        validated_data['profile'] = self.context['request'].user.profile
+
+        return ProgrammingLanguage.objects.create(**validated_data)
+
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,7 +101,7 @@ class SkillSerializer(serializers.ModelSerializer):
 class JobExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobExperience
-        fields = ('company', 'position', 'working_years',  'description')
+        fields = ('company', 'position', 'working_years', 'description')
 
     def create(self, validated_data):
         validated_data['profile'] = self.context['request'].user.profile
@@ -99,19 +110,22 @@ class JobExperienceSerializer(serializers.ModelSerializer):
 
 
 class StringListField(serializers.ListField):
-    child = serializers.CharField(max_length=256, allow_null=True,
+    child = serializers.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, allow_null=True,
                                   allow_blank=True)
 
 
 class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     skills = SkillSerializer(many=True, read_only=True)
     jobs = JobExperienceSerializer(many=True, read_only=True)
+    programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
     skills_list = StringListField(write_only=True, allow_null=True,
                                   allow_empty=True)
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
+    programming_languages_list = StringListField(write_only=True, allow_null=True,
+                                                 allow_empty=True)
     email = serializers.SerializerMethodField('_email')
-    programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
+    # programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
     image_url = serializers.SerializerMethodField('_image_url')
     resume_url = serializers.SerializerMethodField('_resume_url')
     is_complete = serializers.SerializerMethodField('_is_complete')
