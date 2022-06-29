@@ -11,7 +11,6 @@ from account.models import User, Profile, Skill, JobExperience, ProgrammingLangu
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # profile = ProfileSerializer(read_only=True)
 
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
