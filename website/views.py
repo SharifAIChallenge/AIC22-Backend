@@ -17,12 +17,14 @@ class StaffsListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin
 ):
-    queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     permission_classes = (AdminWritePermission, )
     filter_backends = [DjangoFilterBackend]
 
     filterset_fields = ['team__group', 'team', 'role']
+
+    def get_queryset(self):
+        return Staff.objects.all().order_by('team', '-role')
 
     @action(
         detail=False,
