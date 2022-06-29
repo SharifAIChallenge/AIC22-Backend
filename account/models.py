@@ -63,7 +63,7 @@ class User(AbstractUser):
         send_email(
             subject='فعالسازی حساب AIC22',
             context=context,
-            template_name='accounts/email/registerifinal.htm',
+            template_name='accounts/email/registerifinal.html',
             receipts=[self.email]
         )
 
