@@ -75,7 +75,6 @@ class ResetPasswordConfirmSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
@@ -115,6 +114,11 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     image_url = serializers.SerializerMethodField('_image_url')
     resume_url = serializers.SerializerMethodField('_resume_url')
     is_complete = serializers.SerializerMethodField('_is_complete')
+    has_team = serializers.SerializerMethodField('_has_team')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is None
 
     @staticmethod
     def _is_complete(obj: Profile):
