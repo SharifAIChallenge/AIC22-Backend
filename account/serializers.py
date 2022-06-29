@@ -110,7 +110,7 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
 
     @staticmethod
     def _has_team(obj: Profile):
-        return obj.user.team is None
+        return obj.user.team is not None
 
     @staticmethod
     def _is_complete(obj: Profile):
