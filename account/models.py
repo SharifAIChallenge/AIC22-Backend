@@ -67,6 +67,19 @@ class User(AbstractUser):
             receipts=[self.email]
         )
 
+    def send_successful_register_email(self):
+        context = {
+            'domain': settings.AIC_DOMAIN,
+            'first_name': self.profile.firstname_en
+        }
+        send_email(
+            subject='ثبت نام موفق AIC22',
+            context=context,
+            template_name='accounts/email/successful_register.htm',
+            receipts=[self.email]
+        )
+
+
     def reject_all_pending_invites(self):
         invitations = self.invitations.filter(status="pending")
         invitations.update(status="rejected")
@@ -193,10 +206,7 @@ class ResetPasswordToken(models.Model):
 
 class GoogleLogin(models.Model):
     access_token = models.CharField(max_length=1024)
-    expires_at = models.PositiveIntegerField()
-    expires_in = models.PositiveIntegerField()
-    id_token = models.TextField()
-    scope = models.TextField()
+    code = models.CharField(max_length=1024, blank=True, null=True)
     is_signup = models.BooleanField(default=False)
     email = models.EmailField(blank=True, null=True)
 
