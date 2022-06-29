@@ -87,7 +87,7 @@ class PastAICsListViewSet(
     permission_classes = (AdminWritePermission,)
 
     def get_queryset(self):
-        return PastAIC.objects.all().order_by('year')
+        return PastAIC.objects.all().order_by('event_year')
 
 
 class FAQListViewSet(
