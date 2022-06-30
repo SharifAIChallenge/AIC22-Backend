@@ -10,7 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
-from account.models import Profile, User, ResetPasswordToken
+from account.models import MyProfile, User, ResetPasswordToken
 from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
     ChangePasswordSerializer, ResetPasswordConfirmSerializer
 
@@ -30,7 +30,7 @@ class GoogleLoginAPIView(GenericAPIView):
 
 
 class SignUpAPIView(GenericAPIView):
-    queryset = Profile.objects.all()
+    queryset = MyProfile.objects.all()
     serializer_class = UserSerializer
 
     def post(self, request):
@@ -58,7 +58,7 @@ LoginAPIView = ObtainAuthToken
 
 
 class LogoutAPIView(GenericAPIView):
-    queryset = Profile.objects.all()
+    queryset = MyProfile.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.Serializer
 

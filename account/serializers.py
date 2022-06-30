@@ -4,11 +4,11 @@ from rest_framework import serializers, fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
-from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
+from account.models import User, MyProfile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
 from utils import ImageURL
-from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages, ProgrammingLanguage
+from account.models import User, MyProfile, Skill, JobExperience, ProgrammingLanguages, ProgrammingLanguage
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data.get('password'),
             is_active=False
         )
-        Profile.objects.create(
+        MyProfile.objects.create(
             user=user,
         )
 
@@ -124,19 +124,19 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     has_team = serializers.SerializerMethodField('_has_team')
 
     @staticmethod
-    def _has_team(obj: Profile):
+    def _has_team(obj: MyProfile):
         return obj.user.team is not None
 
     @staticmethod
-    def _is_complete(obj: Profile):
+    def _is_complete(obj: MyProfile):
         return obj.is_complete
 
     @staticmethod
-    def _email(obj: Profile):
+    def _email(obj: MyProfile):
         return obj.user.email
 
     class Meta:
-        model = Profile
+        model = MyProfile
         exclude = ['user', 'id', ]
 
 
@@ -170,7 +170,7 @@ class GoogleLoginSerializer(serializers.ModelSerializer):
                 password=password_generator(),
                 is_active=True
             )
-            profile = Profile.objects.create(
+            profile = MyProfile.objects.create(
                 user=user
             )
 
