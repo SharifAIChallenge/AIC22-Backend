@@ -12,12 +12,7 @@ from account.models import User, Profile, Skill, JobExperience, ProgrammingLangu
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # profile = ProfileSerializer(read_only=True)
 
-    phone_number = serializers.CharField(
-        max_length=32,
-        required=True,
-    )
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -30,9 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'phone_number', 'password_1', 'password_2',
-                  'profile']
-        read_only_fields = ['profile']
+        fields = ['email', 'password_1', 'password_2']
 
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
@@ -52,7 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
         )
         Profile.objects.create(
             user=user,
-            phone_number=validated_data.get('phone_number')
         )
 
         return user
@@ -129,6 +121,11 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     image_url = serializers.SerializerMethodField('_image_url')
     resume_url = serializers.SerializerMethodField('_resume_url')
     is_complete = serializers.SerializerMethodField('_is_complete')
+    has_team = serializers.SerializerMethodField('_has_team')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is not None
 
     @staticmethod
     def _is_complete(obj: Profile):
