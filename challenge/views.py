@@ -3,17 +3,20 @@ from django.utils import timezone
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
 from team.permissions import HasTeam, IsFinalist
+from .models.level_based_tournament import LevelBasedTournament
 from .models.match import Match
 from .models.submission import Submission
 from .models.tournament import TournamentTypes, Tournament
+from .serializers.level_based_tournament import LevelBasedTournamentCreateSerializer, \
+    LevelBasedTournamentAddTeamsSerializer
 from .serializers.submission import SubmissionSerializer
 from .serializers.match import MatchSerializer
-from .serializers.tournament import TournamentSerializer
+from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUpdateSerializer
 
 
 class SubmissionsListAPIView(GenericAPIView):
@@ -77,9 +80,28 @@ class TournamentAPIView(GenericAPIView):
     ).filter(is_hidden=False)
 
     def get(self, request):
-        curr_time = timezone.now()
         queryset = self.get_queryset().order_by('id')
         data = self.get_serializer(queryset, many=True).data
+
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )
+
+
+class NextTournamentAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated, HasTeam)
+    serializer_class = TournamentSerializer
+
+    def get(self, request):
+        curr_time = timezone.now()
+        tournament = Tournament.objects.filter(
+            type=TournamentTypes.NORMAL
+        ).exclude(start_time=None).filter(
+            start_time__gt=curr_time
+        ).order_by('start_time').first()
+
+        data = self.get_serializer(tournament).data
 
         return Response(
             data={'data': data},
@@ -139,3 +161,45 @@ class MatchAPIView(GenericAPIView):
             )
 
         return queryset.order_by('-id')
+
+
+class LevelBasedTournamentAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request):
+        serializer = LevelBasedTournamentCreateSerializer(
+            data=request.data
+        )
+
+        serializer.save()
+
+        return Response(data="OK", status=status.HTTP_200_OK)
+
+    def put(self, request):
+        level_based_tournament = get_object_or_404(
+            LevelBasedTournament.objects.all(), pk=request.id)
+
+        serializer = LevelBasedTournamentUpdateSerializer(
+            data=request,
+            instance=level_based_tournament.tournament,
+            partial=True
+        )
+
+        serializer.save()
+
+        return Response(data="OK", status=status.HTTP_200_OK)
+        # TODO : Return the object data if needed
+
+
+class LevelBasedTournamentAddTeamsAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request):
+        serializer = LevelBasedTournamentAddTeamsSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(data="OK", status=status.HTTP_200_OK)
