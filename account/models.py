@@ -105,7 +105,7 @@ class User(AbstractUser):
         user.save()
 
 
-class Profile(models.Model):
+class MyProfile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='profile')
 
     # Personal Information
