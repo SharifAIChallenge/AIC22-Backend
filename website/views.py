@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, StaffTeam, \
-    TimelineEvent, Statistic
+    TimelineEvent, Statistic, UTMTracker
 from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer, \
-                         NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer, \
-                         TimelineEventSerializer, StatisticSerializer
+    NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer, \
+    TimelineEventSerializer, StatisticSerializer, UTMTrackerSerializer
 from permissions import AdminWritePermission
 
 
@@ -140,3 +140,13 @@ class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
     queryset = Statistic.objects.all()
     serializer_class = StatisticSerializer
     permission_classes = (AdminWritePermission,)
+
+
+class UTMTrackerViewSet(GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
+    queryset = UTMTracker.objects.all()
+    serializer_class = UTMTrackerSerializer
+    permission_classes = (AdminWritePermission,)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.get_object().increase()
+        return Response({}, status=status.HTTP_200_OK)
