@@ -11,7 +11,7 @@ from team.permissions import HasTeam, IsFinalist
 from .models.match import Match
 from .models.submission import Submission
 from .models.tournament import TournamentTypes, Tournament
-from .serializers import SubmissionSerializer
+from .serializers.submission import SubmissionSerializer
 from .serializers.match import MatchSerializer
 from .serializers.tournament import TournamentSerializer
 
