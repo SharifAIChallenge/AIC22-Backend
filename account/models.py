@@ -105,7 +105,7 @@ class User(AbstractUser):
         user.save()
 
 
-class MyProfile(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='profile')
 
     # Personal Information
@@ -156,7 +156,7 @@ class MyProfile(models.Model):
 
 class ProgrammingLanguage(models.Model):
     programming_language_title = models.CharField(choices=ProgrammingLanguages.TYPES, max_length=SHORT_TEXT_MAX_LENGTH)
-    profile = models.ForeignKey(to=MyProfile,
+    profile = models.ForeignKey(to=Profile,
                                 related_name='programming_languages',
                                 on_delete=models.CASCADE)
 
@@ -166,7 +166,7 @@ class ProgrammingLanguage(models.Model):
 
 class Skill(models.Model):
     skill = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH)
-    profile = models.ForeignKey(to=MyProfile,
+    profile = models.ForeignKey(to=Profile,
                                 related_name='skills',
                                 on_delete=models.CASCADE)
 
@@ -181,7 +181,7 @@ class JobExperience(models.Model):
     working_years = models.PositiveSmallIntegerField(blank=True, null=True)
     description = models.CharField(max_length=LONG_TEXT_MAX_LENGTH, blank=True, null=True)
     profile = models.ForeignKey(
-        to=MyProfile,
+        to=Profile,
         related_name='jobs',
         on_delete=models.CASCADE
     )

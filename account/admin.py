@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
 # Register your models here.
-from account.models import User, Skill, JobExperience, MyProfile
+from account.models import User, Skill, JobExperience, Profile
 
 
 @admin.register(User)
@@ -23,7 +23,7 @@ class JobExperienceInline(admin.StackedInline):
     model = JobExperience
 
 
-@admin.register(MyProfile)
+@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     pass
 
