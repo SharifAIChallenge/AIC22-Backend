@@ -113,7 +113,7 @@ class Profile(models.Model):
     firstname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
-    birth_date = models.IntegerField(null=True, blank=True)
+    birth_year = models.IntegerField(null=True, blank=True)
     phone_number = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     province = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     city = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
@@ -143,7 +143,7 @@ class Profile(models.Model):
         return all(
             (
                 self.university, self.university_degree, self.major,
-                self.phone_number, self.birth_date, self.firstname_fa,
+                self.phone_number, self.birth_year, self.firstname_fa,
                 self.lastname_fa
             )
         )
