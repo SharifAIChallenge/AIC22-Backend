@@ -60,7 +60,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        exclude = ('id',)
+        fields = '__all__'
 
 
 class NewsTagSerializer(serializers.ModelSerializer):
