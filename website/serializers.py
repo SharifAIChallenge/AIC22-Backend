@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, \
-                    StaffTeam, TimelineEvent, Statistic
+    StaffTeam, TimelineEvent, Statistic, UTMTracker
 from utils import ImageURL
 
 
@@ -48,7 +48,6 @@ class PastAICSerializer(serializers.ModelSerializer, ImageURL):
 
 
 class FAQSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = FrequentlyAskedQuestions
         exclude = ('id',)
@@ -61,7 +60,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        exclude = ('id',)
+        fields = '__all__'
 
 
 class NewsTagSerializer(serializers.ModelSerializer):
@@ -77,7 +76,12 @@ class TimelineEventSerializer(serializers.ModelSerializer):
 
 
 class StatisticSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Statistic
         exclude = ('id',)
+
+
+class UTMTrackerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UTMTracker
+        exclude = ('count',)

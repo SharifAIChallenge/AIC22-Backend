@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (Staff, TimelineEvent, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag,
-                     StaffTeam, StaffGroup, Statistic)
+                     StaffTeam, StaffGroup, Statistic, UTMTracker)
 
 
 @admin.register(Staff)
@@ -62,5 +62,10 @@ class TimelineEventAdmin(admin.ModelAdmin):
 
 
 @admin.register(Statistic)
-class TimelineEventAdmin(admin.ModelAdmin):
+class StatisticAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UTMTracker)
+class UTMTrackerAdmin(admin.ModelAdmin):
     pass

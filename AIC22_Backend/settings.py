@@ -170,6 +170,7 @@ REST_FRAMEWORK = {
 # should be placed in .env file later
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
+AIC_BACKEND_DOMAIN = config("AIC_DOMAIN", 'https://stg.aichallenge.ir')
 AIC_DOMAIN = config("AIC_DOMAIN", 'https://stg.aichallenge.ir')
 EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", 587)

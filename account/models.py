@@ -126,7 +126,7 @@ class Profile(models.Model):
     firstname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
+    birth_year = models.IntegerField(null=True, blank=True)
     phone_number = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     province = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     city = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
@@ -144,7 +144,7 @@ class Profile(models.Model):
     linkedin = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
     github = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, null=True, blank=True)
     resume = models.FileField(upload_to="resumes", null=True, blank=True)
-    programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
+    # programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
 
     # Others
     image = models.ImageField(upload_to='profile_images', null=True, blank=True)
@@ -156,7 +156,7 @@ class Profile(models.Model):
         return all(
             (
                 self.university, self.university_degree, self.major,
-                self.phone_number, self.birth_date, self.firstname_fa,
+                self.phone_number, self.birth_year, self.firstname_fa,
                 self.lastname_fa
             )
         )
@@ -165,6 +165,16 @@ class Profile(models.Model):
     def sensitive_fields():
         return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
                 'province', 'is_complete', 'resume',)
+
+
+class ProgrammingLanguage(models.Model):
+    programming_language_title = models.CharField(choices=ProgrammingLanguages.TYPES, max_length=SHORT_TEXT_MAX_LENGTH)
+    profile = models.ForeignKey(to=Profile,
+                                related_name='programming_languages',
+                                on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.programming_language_title
 
 
 class Skill(models.Model):

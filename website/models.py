@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH
 
@@ -105,3 +107,13 @@ class Statistic(models.Model):
     value = models.IntegerField(default=0)
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+
+class UTMTracker(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
+    count = models.IntegerField(default=0)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    def increase(self):
+        self.count += 1
+        self.save()
