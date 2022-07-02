@@ -146,7 +146,6 @@ class UTMTrackerViewSet(GenericViewSet, mixins.CreateModelMixin, mixins.Retrieve
     queryset = UTMTracker.objects.all()
     serializer_class = UTMTrackerSerializer
     permission_classes = (AdminWritePermission,)
-    lookup_field = 'code'
 
     def retrieve(self, request, *args, **kwargs):
         self.get_object().increase()
