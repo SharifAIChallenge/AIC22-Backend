@@ -148,7 +148,6 @@ class ResetPasswordConfirmAPIView(GenericAPIView):
                         status=200)
 
 
-
 class ProfileAPIView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
