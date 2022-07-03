@@ -5,7 +5,6 @@ from .models import Tag, Reply, Ticket
 from account.models import User
 
 
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -81,5 +80,5 @@ class TicketSerializer(serializers.ModelSerializer):
             many=True,
             context={'request': self.context['request']}
         ).data
-        
+
         return data
