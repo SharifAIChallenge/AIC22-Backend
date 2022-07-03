@@ -41,18 +41,20 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'account',
+    'django.contrib.sites',
     'drf_spectacular',
     'allauth',
-    'website',
     'drf_yasg',
-    'django.contrib.sites',
-    'team',
     'django_filters',
+    'django_summernote',
     'communication',
+    'account',
+    'website',
+    'team',
     'challenge',
 ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 SITE_ID = 1
 
 MIDDLEWARE = [
