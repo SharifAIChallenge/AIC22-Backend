@@ -112,7 +112,7 @@ class Statistic(models.Model):
 class UTMTracker(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     count = models.IntegerField(default=0)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    code = models.CharField(max_length=4, null=False, blank=False)
 
     def increase(self):
         self.count += 1
