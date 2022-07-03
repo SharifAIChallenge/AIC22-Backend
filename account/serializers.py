@@ -140,6 +140,15 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
         model = Profile
         exclude = ['user', 'id', ]
 
+    def update(self, instance, validated_data):
+        ProgrammingLanguage.objects.filter(profile=instance).delete()
+        for language in validated_data.get('programming_languages_list', []):
+            ProgrammingLanguage.objects.create(
+                profile=instance,
+                programming_language_title=language,
+            )
+        return super().update(instance, validated_data)
+
 
 class GoogleLoginSerializer(serializers.ModelSerializer):
     class Meta:

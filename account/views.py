@@ -152,11 +152,10 @@ class ProfileAPIView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser,)
 
     def get(self, request):
         user = request.user
-        serializer = self.get_serializer(instance=user.profile)
+        serializer = self.get_serializer(instance=user.profile)   # todo warning
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK
