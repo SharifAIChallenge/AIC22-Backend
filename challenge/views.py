@@ -7,13 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
-from team.permissions import HasTeam, IsFinalist
+from team.permissions import HasTeam, IsFinalist, TeamHasFinalSubmission
+from .models.lobby import LobbyQueue
 from .models.match import Match
 from .models.submission import Submission
 from .models.tournament import TournamentTypes, Tournament
+from .serializers.lobby import LobbyQueueSerializer
 from .serializers.submission import SubmissionSerializer
 from .serializers.match import MatchSerializer
 from .serializers.tournament import TournamentSerializer
+from .services.lobby import LobbyService
 
 
 class SubmissionsListAPIView(GenericAPIView):
@@ -139,3 +142,30 @@ class MatchAPIView(GenericAPIView):
             )
 
         return queryset.order_by('-id')
+
+
+class LobbyAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated, HasTeam, TeamHasFinalSubmission,
+                          IsFinalist]
+    serializer_class = LobbyQueueSerializer
+    queryset = LobbyQueue.objects.all()
+
+    def get(self, request):
+        lobby_queues = request.user.team.lobby_queues.all()
+        data = self.get_serializer(
+            instance=lobby_queues,
+            many=True
+        ).data
+
+        return Response(data={
+            'data': data
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        lobby_q = self.get_serializer(data=request.data)
+        lobby_q.is_valid(raise_exception=True)
+        lobby_queue = lobby_q.save()
+
+        LobbyService.run_tournament_after_team_join(lobby_queue)
+
+        return Response(data={"status": True}, status=status.HTTP_200_OK)
