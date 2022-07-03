@@ -141,12 +141,34 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
         exclude = ['user', 'id', ]
 
     def update(self, instance, validated_data):
+        print(validated_data)
         ProgrammingLanguage.objects.filter(profile=instance).delete()
         for language in validated_data.get('programming_languages_list', []):
+            if language.lower() not in ['java', 'c++', 'python 3']:
+                raise Exception
             ProgrammingLanguage.objects.create(
                 profile=instance,
                 programming_language_title=language,
             )
+        Skill.objects.filter(profile=instance).delete()
+        for skill in validated_data.get('skills_list', []):
+            Skill.objects.create(
+                profile=instance,
+                skill=skill
+            )
+        JobExperience.objects.filter(profile=instance).delete()
+        job_data = validated_data.get('jobs_list', [])
+        if len(job_data) % 4 != 0:
+            raise Exception
+        for i in range(0, len(job_data), 4):
+            JobExperience.objects.create(
+                profile=instance,
+                company=job_data[i],
+                position=job_data[i+1],
+                working_years=int(job_data[i+2]),
+                description=job_data[i+3]
+            )
+
         return super().update(instance, validated_data)
 
 
