@@ -1,18 +1,20 @@
-import requests, re
+import re
+import requests
+
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers, fields
+from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
-from rest_framework.authtoken.models import Token
-from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
+
+from account.models import GoogleLogin, ResetPasswordToken
+from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguage
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
 from utils import ImageURL
-from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages, ProgrammingLanguage
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -148,7 +150,7 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
 class GoogleLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoogleLogin
-        exclude = ('id', )
+        exclude = ('id',)
 
     def create(self, validated_data):
 
@@ -175,7 +177,7 @@ class GoogleLoginSerializer(serializers.ModelSerializer):
                 password=password_generator(),
                 is_active=True
             )
-            profile = Profile.objects.create(
+            Profile.objects.create(
                 user=user
             )
 
