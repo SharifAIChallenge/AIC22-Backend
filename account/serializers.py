@@ -33,11 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
         if attrs.get('password_1') != attrs.get('password_2'):
             raise ValidationError(_("Passwords not match"))
 
-        phone_number = attrs.get('phone_number')
-        if phone_number:
-            if not re.match('^\+?\d{11,12}$', phone_number):
-                raise ValidationError(_("Phone number is not valid"))
-
         return attrs
 
     def create(self, validated_data):
