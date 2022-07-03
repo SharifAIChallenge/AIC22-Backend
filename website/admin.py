@@ -47,17 +47,11 @@ class FAQAdmin(admin.ModelAdmin):
                      'answer_en', 'answer_fa', 'show_on_landing_page']
 
 
-class NewsAdminArea(admin.AdminSite):
-    site_header = 'News Admin Area'
-
-
 class SummerAdmin(SummernoteModelAdmin):
     summernote_fields = '__all__'
 
 
-news_site = NewsAdminArea(name='NewsAdmin')
 admin.site.register(News, SummerAdmin)
-news_site.register(News, SummerAdmin)
 
 
 @admin.register(NewsTag)
