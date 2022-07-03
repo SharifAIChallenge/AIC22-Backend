@@ -151,16 +151,26 @@ class Profile(models.Model):
     def is_complete(self):
         return all(
             (
-                self.university, self.university_degree, self.major,
-                self.phone_number, self.birth_year, self.firstname_fa,
+                self.university,
+                self.university_degree,
+                self.major,
+                self.phone_number,
+                self.birth_year,
+                self.firstname_fa,
                 self.lastname_fa
             )
         )
 
     @staticmethod
     def sensitive_fields():
-        return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
-                'province', 'is_complete', 'resume',)
+        return (
+            'hide_profile_info',
+            'can_sponsors_see',
+            'phone_number',
+            'province',
+            'is_complete',
+            'resume',
+        )
 
 
 class ProgrammingLanguage(models.Model):
