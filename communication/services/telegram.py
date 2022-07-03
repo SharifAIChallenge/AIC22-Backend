@@ -1,8 +1,3 @@
-import re
-import requests
-
-from django.template.loader import render_to_string
-# from django.conf import settings
 
 # proxies = {
 #     'http': f'{settings.PROXY_PROTOCOL}h://{settings.PROXY_HOST}:'
