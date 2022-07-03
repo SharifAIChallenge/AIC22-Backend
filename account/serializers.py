@@ -1,4 +1,3 @@
-import re
 import requests
 
 from django.utils.translation import gettext_lazy as _
@@ -176,7 +175,7 @@ class GoogleLoginSerializer(serializers.ModelSerializer):
                 user=user
             )
 
-        google_login = super().create(validated_data)
+        super().create(validated_data)
         token, created = Token.objects.get_or_create(user=user)
         return token
 
