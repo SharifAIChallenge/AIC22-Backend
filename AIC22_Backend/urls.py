@@ -44,6 +44,7 @@ urlpatterns = (
             path('api/v1/', include(AIC_v1_router.urls)),
             path('api/v1/account/', include('account.urls')),
             path('api-doc/schema/', SpectacularAPIView.as_view(), name='schema'),
+            path('summernote/', include('django_summernote.urls')),
             path(
                 'api-doc/schema/swagger-ui/',
                 SpectacularSwaggerView.as_view(url_name='schema'),
