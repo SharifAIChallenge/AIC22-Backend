@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -16,7 +15,7 @@ from constants import TEAM_MAX_MEMBERS
 
 
 class TeamAPIView(GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
     parser_classes = [MultiPartParser, ]
     queryset = Team.objects.all()
@@ -33,7 +32,10 @@ class TeamAPIView(GenericAPIView):
         team = self.get_serializer(data=request.data)
         team.is_valid(raise_exception=True)
         team.save()
-        request.user.reject_all_pending_invites()
+        _user = request.user
+        _user.team = team
+        _user.save()
+        _user.reject_all_pending_invites()
 
         return Response(
             data=team.data,
@@ -56,7 +58,7 @@ class TeamAPIView(GenericAPIView):
     def delete(self, request):
         current_user = request.user
 
-        if current_user.team.member_count() == 1:
+        if current_user.team.members.count() == 1:
             current_user.team.delete()
         current_user.team = None
         current_user.save()
@@ -200,6 +202,7 @@ class UserAnswerInvitationAPIView(GenericAPIView):
             instance=invitation,
             data=request.data
         )
+        serializer.context['invitation_id'] = invitation_id
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -217,10 +220,10 @@ class UserAnswerInvitationAPIView(GenericAPIView):
             status=status.HTTP_201_CREATED
         )
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['invitation_id'] = self.kwargs['invitation_id']
-        return context
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     context['invitation_id'] = self.kwargs['invitation_id']
+    #     return context
 
 
 class TeamAnswerInvitationAPIView(GenericAPIView):
@@ -232,6 +235,7 @@ class TeamAnswerInvitationAPIView(GenericAPIView):
         invitation = get_object_or_404(Invitation, id=invitation_id)
         serializer = self.get_serializer(instance=invitation,
                                          data=request.data)
+        serializer.context['invitation_id'] = invitation_id
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -248,10 +252,10 @@ class TeamAnswerInvitationAPIView(GenericAPIView):
             status=status.HTTP_201_CREATED
         )
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['invitation_id'] = self.kwargs['invitation_id']
-        return context
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     context['invitation_id'] = self.kwargs['invitation_id']
+    #     return context
 
 
 class TeamSentInvitationListAPIView(GenericAPIView):

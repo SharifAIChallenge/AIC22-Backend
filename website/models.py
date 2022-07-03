@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH
 
@@ -59,12 +61,7 @@ class PastAIC(models.Model):
     event_year = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     image = models.ImageField()
     title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True)
-    title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
-    description_en = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, blank=True)
-    description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH)
-    firstTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
-    secondTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
-    thirdTeam = models.TextField(max_length=SHORT_TEXT_MAX_LENGTH)
+    description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
 
 
 class FrequentlyAskedQuestions(models.Model):
@@ -73,6 +70,7 @@ class FrequentlyAskedQuestions(models.Model):
     question_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_en = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
     answer_fa = models.CharField(max_length=LONG_TEXT_MAX_LENGTH)
+    show_on_landing_page = models.BooleanField(default=False)
 
 
 class News(models.Model):
@@ -80,6 +78,7 @@ class News(models.Model):
     preview = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     body = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     post_time = models.DateTimeField(null=True)
+    importance = models.PositiveSmallIntegerField(default=0)
 
 
 class NewsTag(models.Model):
@@ -102,3 +101,19 @@ class TimelineEvent(models.Model):
 
     def __str__(self):
         return self.title_en
+
+
+class Statistic(models.Model):
+    value = models.IntegerField(default=0)
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+    title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
+
+
+class UTMTracker(models.Model):
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
+    count = models.IntegerField(default=0)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    def increase(self):
+        self.count += 1
+        self.save()

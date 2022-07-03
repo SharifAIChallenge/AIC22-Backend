@@ -4,10 +4,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from django.conf import settings
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
+from AIC22_Backend import settings
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 # from team.models import Team
 from .utils import send_email
@@ -30,9 +30,9 @@ class DegreeTypes:
 
 
 class ProgrammingLanguages:
-    JAVA = 'JAVA'
-    PYTHON3 = 'PYTHON3'
-    CPP = 'CPP'
+    JAVA = 'Java'
+    PYTHON3 = 'Python 3'
+    CPP = 'C++'
 
     TYPES = (
         ('Java', JAVA),
@@ -54,7 +54,7 @@ class User(AbstractUser):
         activate_user_token.save()
 
         context = {
-            'domain': settings.DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'eid': activate_user_token.eid,
             'token': activate_user_token.token,
             'first_name': self.profile.firstname_en
@@ -63,7 +63,7 @@ class User(AbstractUser):
         send_email(
             subject='فعالسازی حساب AIC22',
             context=context,
-            template_name='accounts/email/registerifinal.htm',
+            template_name='accounts/email/registerifinal.html',
             receipts=[self.email]
         )
 
@@ -81,13 +81,13 @@ class User(AbstractUser):
         )
         reset_password_token.save()
         context = {
-            'domain': settings.DOMAIN,
+            'domain': settings.AIC_DOMAIN,
             'username': self.username,
             'uid': reset_password_token.uid,
             'token': reset_password_token.token,
         }
         send_email(
-            subject='تغییر رمز عبور AIC21',
+            subject='تغییر رمز عبور AIC22',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
@@ -113,9 +113,8 @@ class Profile(models.Model):
     firstname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     lastname_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
+    birth_year = models.IntegerField(null=True, blank=True)
     phone_number = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
-    national_code = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     province = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     city = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=True)
     address = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
@@ -132,7 +131,7 @@ class Profile(models.Model):
     linkedin = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
     github = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, null=True, blank=True)
     resume = models.FileField(upload_to="resumes", null=True, blank=True)
-    programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
+    # programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
 
     # Others
     image = models.ImageField(upload_to='profile_images', null=True, blank=True)
@@ -144,15 +143,25 @@ class Profile(models.Model):
         return all(
             (
                 self.university, self.university_degree, self.major,
-                self.phone_number, self.birth_date, self.firstname_fa,
-                self.lastname_fa, self.national_code
+                self.phone_number, self.birth_year, self.firstname_fa,
+                self.lastname_fa
             )
         )
 
     @staticmethod
     def sensitive_fields():
         return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
-                'province', 'is_complete', 'national_code', 'resume',)
+                'province', 'is_complete', 'resume',)
+
+
+class ProgrammingLanguage(models.Model):
+    programming_language_title = models.CharField(choices=ProgrammingLanguages.TYPES, max_length=SHORT_TEXT_MAX_LENGTH)
+    profile = models.ForeignKey(to=Profile,
+                                related_name='programming_languages',
+                                on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.programming_language_title
 
 
 class Skill(models.Model):
@@ -190,3 +199,14 @@ class ResetPasswordToken(models.Model):
     uid = models.CharField(max_length=100)
     token = models.CharField(max_length=100)
     expiration_date = models.DateTimeField()
+
+
+class GoogleLogin(models.Model):
+    access_token = models.CharField(max_length=1024)
+    expires_at = models.PositiveIntegerField()
+    expires_in = models.PositiveIntegerField()
+    id_token = models.TextField()
+    scope = models.TextField()
+    is_signup = models.BooleanField(default=False)
+    email = models.EmailField(blank=True, null=True)
+
