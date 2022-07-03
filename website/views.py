@@ -131,9 +131,11 @@ class TimelineEventListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin
 ):
-    queryset = TimelineEvent.objects.all()
     serializer_class = TimelineEventSerializer
     permission_classes = (AdminWritePermission,)
+
+    def get_queryset(self):
+        return TimelineEvent.objects.all().order_by('id')
 
 
 class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
