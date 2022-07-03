@@ -9,10 +9,7 @@ from django.shortcuts import get_object_or_404
 
 from AIC22_Backend import settings
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
-# from team.models import Team
 from .utils import send_email
-
-from multiselectfield import MultiSelectField
 
 
 class DegreeTypes:
@@ -78,7 +75,6 @@ class User(AbstractUser):
             template_name='accounts/email/successful_register.htm',
             receipts=[self.email]
         )
-
 
     def reject_all_pending_invites(self):
         invitations = self.invitations.filter(status="pending")
@@ -219,4 +215,3 @@ class GoogleLogin(models.Model):
     code = models.CharField(max_length=1024, blank=True, null=True)
     is_signup = models.BooleanField(default=False)
     email = models.EmailField(blank=True, null=True)
-

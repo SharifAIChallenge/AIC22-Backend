@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH
 
