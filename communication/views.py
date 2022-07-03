@@ -10,6 +10,7 @@ from .serializers import LimitedTicketSerializer, ReplySerializer, TagSerializer
 from .models import Reply, Tag, Ticket
 from .services.telegram import TelegramInterface
 
+
 class TicketAPIView(GenericAPIView):
     serializer_class = TicketSerializer
     permission_classes = [IsAuthenticated, IsAdminUser | ProfileComplete]
@@ -22,7 +23,7 @@ class TicketAPIView(GenericAPIView):
             data={'data': data},
             status=status.HTTP_200_OK
         )
-    
+
     def put(self, request, ticket_id):
         ticket = get_object_or_404(Ticket, id=ticket_id)
         serializer = self.get_serializer(instance=ticket, data=request.data,
@@ -33,6 +34,7 @@ class TicketAPIView(GenericAPIView):
             data={"detail": "Your change has been submitted"},
             status=status.HTTP_200_OK
         )
+
 
 class UserTicketsListAPIView(GenericAPIView):
     serializer_class = TicketSerializer
@@ -53,7 +55,7 @@ class UserTicketsListAPIView(GenericAPIView):
             data={"detail": "Your ticket has been submitted"},
             status=status.HTTP_201_CREATED
         )
-    
+
     def get(self, request):
         tickets = Ticket.objects.filter(
             author=request.user
