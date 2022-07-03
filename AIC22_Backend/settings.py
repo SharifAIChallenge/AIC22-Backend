@@ -178,3 +178,5 @@ EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", 587)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", 'aic22test@gmail.com')
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
+
+IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
