@@ -135,7 +135,7 @@ class TimelineEventListViewSet(
     permission_classes = (AdminWritePermission,)
 
     def get_queryset(self):
-        return TimelineEvent.objects.all().order_by('id')
+        return TimelineEvent.objects.all().order_by('order')
 
 
 class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
