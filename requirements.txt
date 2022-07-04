@@ -10,7 +10,6 @@ psycopg2-binary==2.8.6
 requests==2.25.1
 martor==1.5.8
 django-decouple==2.1
-Pillow==8.1.0
 python-telegram-bot==13.2
 django-allauth==0.44.0
 google-auth==1.26.1
