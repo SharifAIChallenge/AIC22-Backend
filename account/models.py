@@ -45,7 +45,7 @@ class User(AbstractUser):
 
     def send_activation_email(self):
         activate_user_token = ActivateUserToken(
-            token=secrets.token_urlsafe(32)[:32],
+            token=secrets.token_urlsafe(32)[:15],
             eid=urlsafe_base64_encode(force_bytes(self.email)),
         )
         activate_user_token.save()
@@ -85,7 +85,7 @@ class User(AbstractUser):
         ResetPasswordToken.objects.filter(uid=uid).delete()
         reset_password_token = ResetPasswordToken(
             uid=uid,
-            token=secrets.token_urlsafe(32)[:32],
+            token=secrets.token_urlsafe(32)[:15],
             expiration_date=timezone.now() + timezone.timedelta(hours=24),
         )
         reset_password_token.save()
