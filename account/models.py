@@ -58,7 +58,7 @@ class User(AbstractUser):
         }
 
         send_email(
-            subject='فعالسازی حساب AIC22',
+            subject='فعالسازی حساب AI Challenge 2022',
             context=context,
             template_name='accounts/email/registerifinal.html',
             receipts=[self.email]
@@ -70,7 +70,7 @@ class User(AbstractUser):
             'first_name': self.profile.firstname_en
         }
         send_email(
-            subject='ثبت نام موفق AIC22',
+            subject='ثبت نام موفق AI Challenge 2022',
             context=context,
             template_name='accounts/email/successful_register.htm',
             receipts=[self.email]
@@ -96,7 +96,7 @@ class User(AbstractUser):
             'token': reset_password_token.token,
         }
         send_email(
-            subject='بازیابی رمز عبور AIC22',
+            subject='بازیابی رمز عبور AI Challenge 2022',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
