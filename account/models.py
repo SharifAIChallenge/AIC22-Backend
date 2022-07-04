@@ -46,7 +46,7 @@ class User(AbstractUser):
     def send_activation_email(self):
         activate_user_token = ActivateUserToken(
             token=secrets.token_urlsafe(32)[:32],
-            eid=urlsafe_base64_encode(force_bytes(self.email))[:20],
+            eid=urlsafe_base64_encode(force_bytes(self.email)),
         )
         activate_user_token.save()
 
@@ -81,7 +81,7 @@ class User(AbstractUser):
         invitations.update(status="rejected")
 
     def send_password_confirm_email(self):
-        uid = urlsafe_base64_encode(force_bytes(self.id))[:20]
+        uid = urlsafe_base64_encode(force_bytes(self.id))
         ResetPasswordToken.objects.filter(uid=uid).delete()
         reset_password_token = ResetPasswordToken(
             uid=uid,
@@ -104,8 +104,7 @@ class User(AbstractUser):
 
     @classmethod
     def activate(cls, eid, token):
-        activate_user_token = get_object_or_404(ActivateUserToken,
-                                                eid=eid, token=token)
+        activate_user_token = get_object_or_404(ActivateUserToken, eid=eid, token=token)
 
         email = urlsafe_base64_decode(eid).decode('utf-8')
         user = cls.objects.get(email=email)
