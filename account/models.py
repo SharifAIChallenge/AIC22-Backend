@@ -147,10 +147,10 @@ class Profile(models.Model):
     hide_profile_info = models.BooleanField(default=False)
     can_sponsors_see = models.BooleanField(default=True)
 
-    def save(self, *args, **kwargs):
-        instance = super(Profile, self).save(*args, **kwargs)
-        compress_image(image=instance.image)
-        return instance
+    # def save(self, *args, **kwargs):
+    #     instance = super(Profile, self).save(*args, **kwargs)
+    #     compress_image(image=instance.image)
+    #     return instance
 
     @property
     def is_complete(self):
