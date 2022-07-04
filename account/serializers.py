@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
+from account.exceptions import ProgrammingLanguageNotFound
 from account.models import GoogleLogin, ResetPasswordToken
 from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguage
 from account.utils import password_generator
@@ -115,8 +116,7 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
                                   allow_empty=True)
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
-    programming_languages_list = StringListField(write_only=True, allow_null=True,
-                                                 allow_empty=True)
+    programming_languages_list = serializers.CharField(write_only=True, allow_null=True)
     email = serializers.SerializerMethodField('_email')
     # programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
     image_url = serializers.SerializerMethodField('_image_url')
@@ -141,11 +141,11 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
         exclude = ['user', 'id', ]
 
     def update(self, instance, validated_data):
-        print(validated_data)
         ProgrammingLanguage.objects.filter(profile=instance).delete()
-        for language in validated_data.get('programming_languages_list', []):
+        languages = validated_data.get('programming_languages_list', "").split(',')
+        for language in languages:
             if language.lower() not in ['java', 'c++', 'python 3']:
-                raise Exception
+                raise ProgrammingLanguageNotFound()
             ProgrammingLanguage.objects.create(
                 profile=instance,
                 programming_language_title=language,
