@@ -10,6 +10,10 @@ def tweet_upload_path(instance, filename):
     return f'tweet/{filename}'
 
 
+def pastaic_upload_path(instance, filename):
+    return f'pastaic/{instance.title_en}/{filename}'
+
+
 class StaffGroup(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
 
@@ -58,7 +62,7 @@ class Prize(models.Model):
 
 class PastAIC(models.Model):
     event_year = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
-    image = models.ImageField()
+    image = models.ImageField(upload_to=pastaic_upload_path)
     title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True)
     description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
 
