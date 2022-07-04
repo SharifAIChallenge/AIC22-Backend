@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from constants import IMAGE_MAX_SIZE
-from utils import ImageURL
+from utils.image_url import ImageURL
 from account.serializers import ProfileSerializer
 from account.models import User
 from .models import Team, Invitation
