@@ -110,7 +110,7 @@ class NewsListViewSet(
 ):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
-    permission_classes = (AdminWritePermission,)
+    # permission_classes = (AdminWritePermission,)
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_fields = ['importance']
     ordering_fields = ['post_time']
