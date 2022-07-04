@@ -47,11 +47,16 @@ class FAQAdmin(admin.ModelAdmin):
                      'answer_en', 'answer_fa', 'show_on_landing_page']
 
 
-class SummerAdmin(SummernoteModelAdmin):
-    summernote_fields = '__all__'
+# class SummerAdmin(SummernoteModelAdmin):
+#     summernote_fields = '__all__'
+#
+#
+# admin.site.register(News, SummerAdmin)
 
 
-admin.site.register(News, SummerAdmin)
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(NewsTag)
