@@ -32,7 +32,8 @@ class Staff(models.Model):
     last_name_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     last_name_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     role = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=False)
-    url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
+    linkedin_url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
+    github_url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
     image = models.ImageField(upload_to=staff_upload_path)
 
     def __str__(self):
