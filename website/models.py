@@ -116,6 +116,7 @@ class UTMTracker(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     count = models.IntegerField(default=0)
     code = models.CharField(max_length=4, null=False, blank=False)
+    sign_up_count = models.PositiveSmallIntegerField(default=0)
 
     def increase(self):
         self.count += 1
