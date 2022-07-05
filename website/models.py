@@ -121,3 +121,7 @@ class UTMTracker(models.Model):
     def increase(self):
         self.count += 1
         self.save()
+
+    def increase_sign_up_count(self):
+        self.sign_up_count += 1
+        self.save(update_fields=['sign_up_count'])
