@@ -12,6 +12,7 @@ from account.models import User, Profile, Skill, JobExperience, ProgrammingLangu
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
 from utils import ImageURL
+from website.models import UTMTracker
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,10 +25,11 @@ class UserSerializer(serializers.ModelSerializer):
     password_2 = serializers.CharField(
         style={'input_type': 'password'}
     )
+    utm_id = serializers.CharField(write_only=True, allow_null=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password_1', 'password_2']
+        fields = ['email', 'password_1', 'password_2', 'utm_id']
 
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
@@ -48,7 +50,10 @@ class UserSerializer(serializers.ModelSerializer):
         Profile.objects.create(
             user=user,
         )
-
+        utm_tracker = UTMTracker.objects.filter(code=validated_data['utm_id'])
+        if utm_tracker.count() == 1:
+            utm_tracker = utm_tracker.first()
+            utm_tracker.increase_sign_up_count()
         return user
 
 
