@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'password_1', 'password_2']
+        fields = ['email', 'password_1', 'password_2', 'utm_id']
 
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
