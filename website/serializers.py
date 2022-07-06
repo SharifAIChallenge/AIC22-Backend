@@ -91,4 +91,4 @@ class StatisticSerializer(serializers.ModelSerializer):
 class UTMTrackerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UTMTracker
-        exclude = ('count',)
+        fields = '__all__'

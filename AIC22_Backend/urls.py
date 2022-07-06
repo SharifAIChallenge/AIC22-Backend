@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
-from AIC22_Backend.settings import STATIC_URL, MEDIA_URL, STATIC_ROOT, MEDIA_ROOT, IS_PRODUCTION
+from AIC22_Backend.settings import STATIC_URL, MEDIA_URL, STATIC_ROOT, MEDIA_ROOT, IS_PRODUCTION, SENTRY_ENABLED
 from routers import CustomRouter
 from website.urls import website_router
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
@@ -47,4 +47,12 @@ if not IS_PRODUCTION:
     urlpatterns += [
         path('api/v1/communication/', include('communication.urls')),
         path('api/v1/team/', include('team.urls')),
+    ]
+
+if SENTRY_ENABLED:  # todo remove this after while
+    def trigger_error(request):
+        division_by_zero = 1 / 0
+
+    urlpatterns += [
+        path('sentry-debug/', trigger_error),
     ]
