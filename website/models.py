@@ -107,6 +107,7 @@ class TimelineEvent(models.Model):
 
 
 class Statistic(models.Model):
+    model = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     value = models.IntegerField(default=0)
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
