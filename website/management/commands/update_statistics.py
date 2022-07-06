@@ -16,4 +16,3 @@ class Command(BaseCommand):
             model_counter = model.objects.count()
             statistic.value = model_counter
             statistic.save()
-
