@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('firstname_fa', models.CharField(blank=True, max_length=100, null=True)),
                 ('lastname_en', models.CharField(blank=True, max_length=100, null=True)),
                 ('lastname_fa', models.CharField(blank=True, max_length=100, null=True)),
-                ('birth_date', models.DateField(blank=True, null=True)),
+                ('birth_date', models.IntegerField(blank=True, null=True)),
                 ('phone_number', models.CharField(blank=True, max_length=100, null=True)),
                 ('national_code', models.CharField(blank=True, max_length=100, null=True)),
                 ('province', models.CharField(blank=True, max_length=100, null=True)),
