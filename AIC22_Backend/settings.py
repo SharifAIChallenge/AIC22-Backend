@@ -19,10 +19,11 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 SENTRY_ENABLED = os.getenv('SENTRY_ENABLED', 'False') == 'True'
+SENTRY_DSN = os.getenv('SENTRY_DSN', 'https://sentry.aichallenge.ir/2')
 
 if SENTRY_ENABLED:
     sentry_sdk.init(
-        dsn="https://bdb9842948744092805650a722c331e4@sentry.aichallenge.ir/2",
+        dsn=SENTRY_DSN,
         integrations=[
             DjangoIntegration(),
         ],
