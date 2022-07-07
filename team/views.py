@@ -111,9 +111,7 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
     serializer_class = TeamInfoSerializer
 
     def get(self, request):
-        incomplete_teams = Team.objects.annotate(
-            memebers_count=Count('members')
-        ).exclude(members_count=TEAM_MAX_MEMBERS)
+        incomplete_teams = self.get_queryset()
         page = self.paginate_queryset(incomplete_teams)
         data = self.get_serializer(instance=page, many=True).data
 
@@ -122,9 +120,13 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
         )
 
     def get_queryset(self):
-        name = self.request.query_params.get('name')
-        queryset = Team.objects.all()
+        queryset = Team.objects.annotate(
+            memebers_count=Count('members')
+        ).exclude(
+            members_count=TEAM_MAX_MEMBERS
+        )
 
+        name = self.request.query_params.get('name')
         if name:
             queryset = queryset.filter(name__icontains=name)
 
