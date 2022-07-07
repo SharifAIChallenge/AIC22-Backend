@@ -78,8 +78,10 @@ class TeamSearchAPIView(GenericAPIView):
     def get(self, request):
         term = request.GET.get('search')
         if term is None or term == '':
-            return Response(data={"message": "Provide search parameter"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                data={"message": "Provide search parameter"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         teams = self.get_queryset().filter(name__icontains=term)
         page = self.paginate_queryset(teams)
         results = self.get_serializer(page, many=True).data
@@ -107,12 +109,11 @@ class TeamInfoAPIView(GenericAPIView):
 class IncompleteTeamInfoListAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamInfoSerializer
-    queryset = Team.objects.all()
 
     def get(self, request):
         incomplete_teams = Team.objects.annotate(
             memebers_count=Count('members')
-        ).filter(members_count=TEAM_MAX_MEMBERS)
+        ).exclude(members_count=TEAM_MAX_MEMBERS)
         page = self.paginate_queryset(incomplete_teams)
         data = self.get_serializer(instance=page, many=True).data
 
