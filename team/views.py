@@ -228,8 +228,7 @@ class TeamAnswerInvitationAPIView(GenericAPIView):
 
     def put(self, request, invitation_id):
         invitation = get_object_or_404(Invitation, id=invitation_id)
-        serializer = self.get_serializer(instance=invitation,
-                                         data=request.data)
+        serializer = self.get_serializer(instance=invitation, data=request.data)
         serializer.context['invitation_id'] = invitation_id
         serializer.is_valid(raise_exception=True)
         serializer.save()
