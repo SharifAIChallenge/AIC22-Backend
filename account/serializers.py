@@ -259,3 +259,11 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+    profile = ShortProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['profile', 'email', 'id']
