@@ -1,4 +1,5 @@
 from rest_framework import mixins, status, filters
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News
 from .serializers import StaffSerializer, TweetSerializer, PrizeSerializer, PastAICSerializer, FAQSerializer, \
     NewsSerializer, NewsTagSerializer, StaffGroupSerializer, StaffTeamSerializer, \
     TimelineEventSerializer, StatisticSerializer, UTMTrackerSerializer
-from permissions import AdminWritePermission
+from permissions import AdminWritePermission, IsAdmin
 
 
 class StaffsListViewSet(
@@ -110,7 +111,7 @@ class NewsListViewSet(
 ):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
-    permission_classes = (AdminWritePermission,)
+    # permission_classes = (AdminWritePermission,)
     filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     filterset_fields = ['importance']
     ordering_fields = ['post_time']
@@ -131,9 +132,11 @@ class TimelineEventListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin
 ):
-    queryset = TimelineEvent.objects.all()
     serializer_class = TimelineEventSerializer
     permission_classes = (AdminWritePermission,)
+
+    def get_queryset(self):
+        return TimelineEvent.objects.all().order_by('order')
 
 
 class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
@@ -142,10 +145,17 @@ class StatisticViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (AdminWritePermission,)
 
 
-class UTMTrackerViewSet(GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
+class UTMTrackerViewSet(GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     queryset = UTMTracker.objects.all()
     serializer_class = UTMTrackerSerializer
     permission_classes = (AdminWritePermission,)
+    lookup_field = 'code'
+
+    def get_permissions(self):
+        permissions = self.permission_classes
+        if self.action == 'list':
+            permissions += (IsAuthenticated, IsAdmin, )
+        return [permission() for permission in permissions]
 
     def retrieve(self, request, *args, **kwargs):
         self.get_object().increase()

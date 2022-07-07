@@ -15,6 +15,30 @@ from decouple import config
 
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+SENTRY_ENABLED = os.getenv('SENTRY_ENABLED', 'False') == 'True'
+SENTRY_DSN = os.getenv('SENTRY_DSN', 'https://sentry.aichallenge.ir/2')
+
+if SENTRY_ENABLED:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+        ],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +49,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ko^^x2))7s(n#ypjs+eakp^-#kf@ku=^07k!p8lfu4zl$w91o3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,7 +65,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'account',
+    'django.contrib.sites',
     'drf_spectacular',
     'allauth',
     'website',
@@ -49,10 +73,15 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'team',
     'django_filters',
+    'django_summernote',
     'communication',
+    'account',
+    'website',
+    'team',
     'challenge',
 ]
 
+# X_FRAME_OPTIONS = 'SAMEORIGIN'
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -170,12 +199,14 @@ REST_FRAMEWORK = {
 # should be placed in .env file later
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-AIC_BACKEND_DOMAIN = config("AIC_DOMAIN", 'https://stg.aichallenge.ir')
+AIC_BACKEND_DOMAIN = config("AIC_BACKEND_DOMAIN", 'https://api.aichallenge.ir')
 AIC_DOMAIN = config("AIC_DOMAIN", 'https://aichallenge.ir')
 EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", 587)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", 'aic22test@gmail.com')
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
+
+IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
 
 UPLOAD_PATHS = {

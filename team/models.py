@@ -78,10 +78,8 @@ class InvitationStatusTypes:
 
 
 class Invitation(models.Model):  # maybe TimeStampedModel
-    user = models.ForeignKey(to=User, related_name='invitations',
-                             on_delete=models.CASCADE)
-    team = models.ForeignKey(to=Team, related_name='invitations',
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, related_name='invitations', on_delete=models.CASCADE)
+    team = models.ForeignKey(to=Team, related_name='invitations', on_delete=models.CASCADE)
     type = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, choices=InvitationTypes.TYPES)
     status = models.CharField(
         max_length=SHORT_TEXT_MAX_LENGTH,

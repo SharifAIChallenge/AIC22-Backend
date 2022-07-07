@@ -1,18 +1,21 @@
 import requests
+
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers, fields
+from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
-from rest_framework.authtoken.models import Token
-from account.models import User, Profile, Skill, JobExperience, GoogleLogin, ResetPasswordToken
+
+from account.exceptions import ProgrammingLanguageNotFound
+from account.models import GoogleLogin, ResetPasswordToken
+from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguage
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
 from utils import ImageURL
-from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguages, ProgrammingLanguage
+from website.models import UTMTracker
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -22,10 +25,11 @@ class UserSerializer(serializers.ModelSerializer):
     password_2 = serializers.CharField(
         style={'input_type': 'password'}
     )
+    utm_id = serializers.CharField(write_only=True, allow_null=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password_1', 'password_2']
+        fields = ['email', 'password_1', 'password_2', 'utm_id']
 
     def validate(self, attrs):
         if attrs.get('password_1') != attrs.get('password_2'):
@@ -46,7 +50,10 @@ class UserSerializer(serializers.ModelSerializer):
         Profile.objects.create(
             user=user,
         )
-
+        utm_tracker = UTMTracker.objects.filter(code=validated_data['utm_id'])
+        if utm_tracker.count() == 1:
+            utm_tracker = utm_tracker.first()
+            utm_tracker.increase_sign_up_count()
         return user
 
 
@@ -106,6 +113,28 @@ class StringListField(serializers.ListField):
                                   allow_blank=True)
 
 
+class ShortProfileSerializer(serializers.ModelSerializer, ImageURL):
+    programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField('_image_url')
+    has_team = serializers.SerializerMethodField('_has_team')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is not None
+
+    class Meta:
+        model = Profile
+        fields = [
+            'firstname_en',
+            'firstname_fa',
+            'lastname_en',
+            'lastname_fa',
+            'programming_languages',
+            'image_url',
+            'has_team',
+        ]
+
+
 class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     skills = SkillSerializer(many=True, read_only=True)
     jobs = JobExperienceSerializer(many=True, read_only=True)
@@ -114,8 +143,7 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
                                   allow_empty=True)
     jobs_list = StringListField(write_only=True, allow_null=True,
                                 allow_empty=True)
-    programming_languages_list = StringListField(write_only=True, allow_null=True,
-                                                 allow_empty=True)
+    programming_languages_list = serializers.CharField(write_only=True, allow_null=True)
     email = serializers.SerializerMethodField('_email')
     # programming_languages = fields.MultipleChoiceField(choices=ProgrammingLanguages.TYPES)
     image_url = serializers.SerializerMethodField('_image_url')
@@ -139,6 +167,37 @@ class ProfileSerializer(serializers.ModelSerializer, ImageURL):
         model = Profile
         exclude = ['user', 'id', ]
 
+    def update(self, instance, validated_data):
+        ProgrammingLanguage.objects.filter(profile=instance).delete()
+        languages = validated_data.get('programming_languages_list', "").split(',')
+        for language in languages:
+            if language.lower() not in ['java', 'c++', 'python 3']:
+                raise ProgrammingLanguageNotFound()
+            ProgrammingLanguage.objects.create(
+                profile=instance,
+                programming_language_title=language,
+            )
+        Skill.objects.filter(profile=instance).delete()
+        for skill in validated_data.get('skills_list', []):
+            Skill.objects.create(
+                profile=instance,
+                skill=skill
+            )
+        JobExperience.objects.filter(profile=instance).delete()
+        job_data = validated_data.get('jobs_list', [])
+        if len(job_data) % 4 != 0:
+            raise Exception
+        for i in range(0, len(job_data), 4):
+            JobExperience.objects.create(
+                profile=instance,
+                company=job_data[i],
+                position=job_data[i+1],
+                working_years=int(job_data[i+2]),
+                description=job_data[i+3]
+            )
+
+        return super().update(instance, validated_data)
+
 
 class GoogleLoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -148,8 +207,8 @@ class GoogleLoginSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         response = requests.get(
-            f'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token='
-            f'{validated_data["id_token"]}'
+            f'https://www.googleapis.com/oauth2/v3/tokeninfo?access_token='
+            f'{validated_data["access_token"]}'
         )
 
         if response.status_code != 200:
@@ -170,11 +229,11 @@ class GoogleLoginSerializer(serializers.ModelSerializer):
                 password=password_generator(),
                 is_active=True
             )
-            profile = Profile.objects.create(
+            Profile.objects.create(
                 user=user
             )
 
-        google_login = super().create(validated_data)
+        super().create(validated_data)
         token, created = Token.objects.get_or_create(user=user)
         return token
 
@@ -200,3 +259,11 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+    profile = ShortProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['profile', 'email', 'id']

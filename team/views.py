@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -17,7 +16,6 @@ from constants import TEAM_MAX_MEMBERS
 class TeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
-    parser_classes = [MultiPartParser, ]
     queryset = Team.objects.all()
 
     def get(self, request):
@@ -32,10 +30,6 @@ class TeamAPIView(GenericAPIView):
         team = self.get_serializer(data=request.data)
         team.is_valid(raise_exception=True)
         team.save()
-        _user = request.user
-        _user.team = team
-        _user.save()
-        _user.reject_all_pending_invites()
 
         return Response(
             data=team.data,
@@ -84,8 +78,10 @@ class TeamSearchAPIView(GenericAPIView):
     def get(self, request):
         term = request.GET.get('search')
         if term is None or term == '':
-            return Response(data={"message": "Provide search parameter"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                data={"message": "Provide search parameter"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         teams = self.get_queryset().filter(name__icontains=term)
         page = self.paginate_queryset(teams)
         results = self.get_serializer(page, many=True).data
@@ -113,12 +109,9 @@ class TeamInfoAPIView(GenericAPIView):
 class IncompleteTeamInfoListAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamInfoSerializer
-    queryset = Team.objects.all()
 
     def get(self, request):
-        incomplete_teams = Team.objects.annotate(
-            memebers_count=Count('members')
-        ).filter(members_count=TEAM_MAX_MEMBERS)
+        incomplete_teams = self.get_queryset()
         page = self.paginate_queryset(incomplete_teams)
         data = self.get_serializer(instance=page, many=True).data
 
@@ -127,9 +120,13 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
         )
 
     def get_queryset(self):
-        name = self.request.query_params.get('name')
-        queryset = Team.objects.all()
+        queryset = Team.objects.annotate(
+            memebers_count=Count('members')
+        ).exclude(
+            members_count=TEAM_MAX_MEMBERS
+        )
 
+        name = self.request.query_params.get('name')
         if name:
             queryset = queryset.filter(name__icontains=name)
 
@@ -233,8 +230,7 @@ class TeamAnswerInvitationAPIView(GenericAPIView):
 
     def put(self, request, invitation_id):
         invitation = get_object_or_404(Invitation, id=invitation_id)
-        serializer = self.get_serializer(instance=invitation,
-                                         data=request.data)
+        serializer = self.get_serializer(instance=invitation, data=request.data)
         serializer.context['invitation_id'] = invitation_id
         serializer.is_valid(raise_exception=True)
         serializer.save()

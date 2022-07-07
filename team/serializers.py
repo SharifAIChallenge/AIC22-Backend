@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
@@ -6,18 +5,18 @@ from rest_framework.exceptions import PermissionDenied
 
 from constants import IMAGE_MAX_SIZE
 from utils import ImageURL
-from account.serializers import ProfileSerializer
+from account.serializers import ShortProfileSerializer
 from account.models import User
 from .models import Team, Invitation
 from .exceptions import TeamIsFullException, DuplicatePendingInviteException, HasTeamException
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
+    profile = ShortProfileSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'id', 'profile']
+        fields = ['email', 'profile']
 
 
 class TeamSerializer(serializers.ModelSerializer, ImageURL):
@@ -28,8 +27,7 @@ class TeamSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'members', 'creator',
-                  'image_url', ]
+        fields = ['name', 'image', 'members', 'creator', 'image_url', 'id']
 
     def create(self, data):
         current_user = self.context['request'].user
@@ -57,7 +55,7 @@ class TeamInfoSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'creator', 'members', 'id', 'image_url']
+        fields = ['name', 'image', 'creator', 'members', 'image_url', 'id']
 
 
 class UserToTeamInvitationSerializer(serializers.ModelSerializer):
@@ -71,19 +69,16 @@ class UserToTeamInvitationSerializer(serializers.ModelSerializer):
         data['type'] = 'user_to_team'
         current_user = self.context['request'].user
         data['user'] = current_user
-        data['team'] = get_object_or_404(Team, id=self.context['request'].data[
-            'team_id'])
+        data['team'] = get_object_or_404(Team, id=self.context['request'].data['team_id'])
         invitation = Invitation.objects.create(**data)
         return invitation
 
     def validate(self, data):
         request = self.context['request']
-        team = get_object_or_404(Team,
-                                 id=self.context['request'].data['team_id'])
+        team = get_object_or_404(Team, id=self.context['request'].data['team_id'])
         if team.is_complete():
             raise TeamIsFullException()
-        elif Invitation.objects.filter(team=team, user=request.user,
-                                       status='pending').exists():
+        elif Invitation.objects.filter(team=team, user=request.user, status='pending').exists():
             raise DuplicatePendingInviteException()
         return data
 
@@ -99,9 +94,7 @@ class TeamToUserInvitationSerializer(serializers.ModelSerializer):
         current_user = self.context['request'].user
         data['team'] = current_user.team
         data['type'] = 'team_to_user'
-        data['user'] = get_object_or_404(User,
-                                         email=self.context['request'].data[
-                                             'user_email'])
+        data['user'] = get_object_or_404(User, email=self.context['request'].data['user_email'])
         invitation = Invitation.objects.create(**data)
         return invitation
 
@@ -112,9 +105,11 @@ class TeamToUserInvitationSerializer(serializers.ModelSerializer):
             raise TeamIsFullException()
         elif target_user.team is not None:
             raise HasTeamException()
-        elif Invitation.objects.filter(team=request.user.team,
-                                       user=target_user,
-                                       status='pending').exists():
+        elif Invitation.objects.filter(
+                team=request.user.team,
+                user=target_user,
+                status='pending'
+        ).exists():
             raise DuplicatePendingInviteException()
         return data
 
@@ -124,8 +119,7 @@ class UserReceivedInvitationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context['request']
-        invitation = get_object_or_404(Invitation,
-                                       id=self.context['invitation_id'])
+        invitation = get_object_or_404(Invitation, id=self.context['invitation_id'])
         answer = request.query_params.get('answer', "no")
 
         if request.user != invitation.user:
@@ -148,8 +142,7 @@ class TeamPendingInvitationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context['request']
-        invitation = get_object_or_404(Invitation,
-                                       id=self.context['invitation_id'])
+        invitation = get_object_or_404(Invitation, id=self.context['invitation_id'])
 
         answer = request.query_params.get('answer', 'no')
         if request.user.team != invitation.team:

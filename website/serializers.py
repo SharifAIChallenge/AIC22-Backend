@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from account.models import User
 from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, \
     StaffTeam, TimelineEvent, Statistic, UTMTracker
 from utils import ImageURL
@@ -60,7 +61,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        exclude = ('id',)
+        fields = '__all__'
 
 
 class NewsTagSerializer(serializers.ModelSerializer):
@@ -76,6 +77,12 @@ class TimelineEventSerializer(serializers.ModelSerializer):
 
 
 class StatisticSerializer(serializers.ModelSerializer):
+    # todo this must refactor
+    value = serializers.SerializerMethodField('_get_value')
+
+    def _get_value(self, obj):
+        return User.objects.count()
+
     class Meta:
         model = Statistic
         exclude = ('id',)
@@ -84,4 +91,4 @@ class StatisticSerializer(serializers.ModelSerializer):
 class UTMTrackerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UTMTracker
-        exclude = ('count',)
+        fields = '__all__'

@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH, URL_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH
 
@@ -10,6 +8,10 @@ def staff_upload_path(instance, filename):
 
 def tweet_upload_path(instance, filename):
     return f'tweet/{filename}'
+
+
+def pastaic_upload_path(instance, filename):
+    return f'pastaic/{instance.title_en}/{filename}'
 
 
 class StaffGroup(models.Model):
@@ -34,7 +36,8 @@ class Staff(models.Model):
     last_name_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     last_name_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     role = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True, null=False)
-    url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
+    linkedin_url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
+    github_url = models.CharField(max_length=URL_MAX_LENGTH, null=True, blank=True)
     image = models.ImageField(upload_to=staff_upload_path)
 
     def __str__(self):
@@ -59,7 +62,7 @@ class Prize(models.Model):
 
 class PastAIC(models.Model):
     event_year = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
-    image = models.ImageField()
+    image = models.ImageField(upload_to=pastaic_upload_path)
     title_en = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, blank=True)
     description_fa = models.TextField(max_length=LONG_TEXT_MAX_LENGTH, null=True)
 
@@ -104,6 +107,7 @@ class TimelineEvent(models.Model):
 
 
 class Statistic(models.Model):
+    model = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     value = models.IntegerField(default=0)
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
     title_fa = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH)
@@ -112,8 +116,13 @@ class Statistic(models.Model):
 class UTMTracker(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, null=True, blank=True)
     count = models.IntegerField(default=0)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    code = models.CharField(max_length=4, null=False, blank=False)
+    sign_up_count = models.PositiveSmallIntegerField(default=0)
 
     def increase(self):
         self.count += 1
         self.save()
+
+    def increase_sign_up_count(self):
+        self.sign_up_count += 1
+        self.save(update_fields=['sign_up_count'])

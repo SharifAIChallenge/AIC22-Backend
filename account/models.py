@@ -9,10 +9,8 @@ from django.shortcuts import get_object_or_404
 
 from AIC22_Backend import settings
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
-# from team.models import Team
 from .utils import send_email
-
-from multiselectfield import MultiSelectField
+from utils import compress_image
 
 
 class DegreeTypes:
@@ -41,6 +39,14 @@ class ProgrammingLanguages:
     )
 
 
+def profile_upload_path(instance, filename):
+    return f'profile/{instance.user.username}/{filename}'
+
+
+def resume_upload_path(instance, filename):
+    return f'resume/{instance.user.username}/{filename}'
+
+
 class User(AbstractUser):
     team = models.ForeignKey(to='team.Team',
                              on_delete=models.SET_NULL,
@@ -48,7 +54,7 @@ class User(AbstractUser):
 
     def send_activation_email(self):
         activate_user_token = ActivateUserToken(
-            token=secrets.token_urlsafe(32),
+            token=secrets.token_urlsafe(32)[:15],
             eid=urlsafe_base64_encode(force_bytes(self.email)),
         )
         activate_user_token.save()
@@ -61,9 +67,21 @@ class User(AbstractUser):
         }
 
         send_email(
-            subject='فعالسازی حساب AIC22',
+            subject='فعالسازی حساب AI Challenge 2022',
             context=context,
             template_name='accounts/email/registerifinal.html',
+            receipts=[self.email]
+        )
+
+    def send_successful_register_email(self):
+        context = {
+            'domain': settings.AIC_DOMAIN,
+            'first_name': self.profile.firstname_en
+        }
+        send_email(
+            subject='ثبت نام موفق AI Challenge 2022',
+            context=context,
+            template_name='accounts/email/successful_register.htm',
             receipts=[self.email]
         )
 
@@ -76,7 +94,7 @@ class User(AbstractUser):
         ResetPasswordToken.objects.filter(uid=uid).delete()
         reset_password_token = ResetPasswordToken(
             uid=uid,
-            token=secrets.token_urlsafe(32),
+            token=secrets.token_urlsafe(32)[:15],
             expiration_date=timezone.now() + timezone.timedelta(hours=24),
         )
         reset_password_token.save()
@@ -87,7 +105,7 @@ class User(AbstractUser):
             'token': reset_password_token.token,
         }
         send_email(
-            subject='تغییر رمز عبور AIC22',
+            subject='بازیابی رمز عبور AI Challenge 2022',
             context=context,
             template_name='accounts/email/user_reset_password.html',
             receipts=[self.email]
@@ -95,8 +113,7 @@ class User(AbstractUser):
 
     @classmethod
     def activate(cls, eid, token):
-        activate_user_token = get_object_or_404(ActivateUserToken,
-                                                eid=eid, token=token)
+        activate_user_token = get_object_or_404(ActivateUserToken, eid=eid, token=token)
 
         email = urlsafe_base64_decode(eid).decode('utf-8')
         user = cls.objects.get(email=email)
@@ -130,28 +147,43 @@ class Profile(models.Model):
     # Job and Social Information
     linkedin = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, blank=True, null=True)
     github = models.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, null=True, blank=True)
-    resume = models.FileField(upload_to="resumes", null=True, blank=True)
+    resume = models.FileField(upload_to=resume_upload_path, null=True, blank=True)
     # programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
 
     # Others
-    image = models.ImageField(upload_to='profile_images', null=True, blank=True)
+    image = models.ImageField(upload_to=profile_upload_path, null=True, blank=True)
     hide_profile_info = models.BooleanField(default=False)
     can_sponsors_see = models.BooleanField(default=True)
+
+    # def save(self, *args, **kwargs):
+    #     instance = super(Profile, self).save(*args, **kwargs)
+    #     compress_image(image=instance.image)
+    #     return instance
 
     @property
     def is_complete(self):
         return all(
             (
-                self.university, self.university_degree, self.major,
-                self.phone_number, self.birth_year, self.firstname_fa,
+                self.university,
+                self.university_degree,
+                self.major,
+                self.phone_number,
+                self.birth_year,
+                self.firstname_fa,
                 self.lastname_fa
             )
         )
 
     @staticmethod
     def sensitive_fields():
-        return ('hide_profile_info', 'can_sponsors_see', 'phone_number',
-                'province', 'is_complete', 'resume',)
+        return (
+            'hide_profile_info',
+            'can_sponsors_see',
+            'phone_number',
+            'province',
+            'is_complete',
+            'resume',
+        )
 
 
 class ProgrammingLanguage(models.Model):
@@ -203,10 +235,6 @@ class ResetPasswordToken(models.Model):
 
 class GoogleLogin(models.Model):
     access_token = models.CharField(max_length=1024)
-    expires_at = models.PositiveIntegerField()
-    expires_in = models.PositiveIntegerField()
-    id_token = models.TextField()
-    scope = models.TextField()
+    code = models.CharField(max_length=1024, blank=True, null=True)
     is_signup = models.BooleanField(default=False)
     email = models.EmailField(blank=True, null=True)
-

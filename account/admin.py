@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-from import_export.admin import ImportExportModelAdmin
-# Register your models here.
-from account.models import User, Skill, JobExperience, Profile
+from account.models import User, Skill, JobExperience, Profile, ProgrammingLanguage
 
 
 @admin.register(User)
@@ -35,4 +33,9 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(JobExperience)
 class JobExperienceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ProgrammingLanguage)
+class ProgrammingLanguageAdmin(admin.ModelAdmin):
     pass
