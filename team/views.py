@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -17,7 +16,6 @@ from constants import TEAM_MAX_MEMBERS
 class TeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
-    parser_classes = [MultiPartParser, ]
     queryset = Team.objects.all()
 
     def get(self, request):
@@ -32,10 +30,6 @@ class TeamAPIView(GenericAPIView):
         team = self.get_serializer(data=request.data)
         team.is_valid(raise_exception=True)
         team.save()
-        _user = request.user
-        _user.team = team
-        _user.save()
-        _user.reject_all_pending_invites()
 
         return Response(
             data=team.data,

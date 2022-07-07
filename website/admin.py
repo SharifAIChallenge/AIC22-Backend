@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import (Staff, TimelineEvent, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag,
                      StaffTeam, StaffGroup, Statistic, UTMTracker)
-from django_summernote.admin import SummernoteModelAdmin
 
 
 @admin.register(Staff)
