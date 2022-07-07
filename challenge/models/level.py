@@ -1,6 +1,6 @@
 from django.db import models
-from ...challenge.models.match import MatchStatusTypes
-from ...challenge.models.level_match import LevelMatch
+from challenge.models.match import MatchStatusTypes
+from challenge.models.level_match import LevelMatch
 
 
 class Level(models.Model):

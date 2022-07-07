@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils.models import TimeStampedModel
-from ...challenge.models.tournament import Tournament
-from ...challenge.models.level import Level
+from challenge.models.tournament import Tournament
+from challenge.models.level import Level
 
 import math
 
