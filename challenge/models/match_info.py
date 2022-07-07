@@ -1,6 +1,8 @@
 from django.db import models
 from model_utils.models import TimeStampedModel
 
+from challenge.models.submission import Submission
+
 
 class MatchInfo(TimeStampedModel):
     team1_score = models.PositiveIntegerField(
@@ -12,13 +14,13 @@ class MatchInfo(TimeStampedModel):
         null=True
     )
     team1_code = models.ForeignKey(
-        to='challenge.Submission',
+        Submission,
         related_name='matches_first',
         on_delete=models.SET_NULL,
         null=True
     )
     team2_code = models.ForeignKey(
-        to='challenge.Submission',
+        Submission,
         related_name='matches_second',
         on_delete=models.SET_NULL,
         null=True
