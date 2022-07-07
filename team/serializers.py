@@ -5,18 +5,18 @@ from rest_framework.exceptions import PermissionDenied
 
 from constants import IMAGE_MAX_SIZE
 from utils import ImageURL
-from account.serializers import ProfileSerializer
+from account.serializers import ShortProfileSerializer
 from account.models import User
 from .models import Team, Invitation
 from .exceptions import TeamIsFullException, DuplicatePendingInviteException, HasTeamException
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
+    profile = ShortProfileSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'id', 'profile']
+        fields = ['email', 'profile']
 
 
 class TeamSerializer(serializers.ModelSerializer, ImageURL):
