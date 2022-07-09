@@ -10,16 +10,110 @@ from rest_framework_tracking.mixins import LoggingErrorsMixin
 from team.permissions import HasTeam, IsFinalist, TeamHasFinalSubmission
 from .models.level_based_tournament import LevelBasedTournament
 from .models.match import Match
+from .models.request import Request, RequestStatusTypes, RequestTypes
 from .models.submission import Submission
 from .models.tournament import TournamentTypes, Tournament
 from .serializers.level_based_tournament import LevelBasedTournamentCreateSerializer, \
     LevelBasedTournamentAddTeamsSerializer
+from .serializers.request import RequestSerializer
 from .serializers.submission import SubmissionSerializer
 from .serializers.match import MatchSerializer
 from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUpdateSerializer
 from .serializers.lobby import LobbyQueueSerializer
 from .services.lobby import LobbyService
 from .models.lobby import LobbyQueue
+
+
+class RequestListAPIView(GenericAPIView):
+    serializer_class = RequestSerializer
+    permission_classes = (IsAuthenticated, HasTeam, TeamHasFinalSubmission,
+                          IsFinalist)
+    queryset = Request.objects.all()
+
+    def get(self, request):
+        data = self.get_serializer(
+            instance=self.get_queryset(),
+            many=True
+        ).data
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )
+
+    def post(self, request):
+        serializer = self.get_serializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            data={'data': serializer.data},
+            status=status.HTTP_200_OK
+        )
+
+    def get_queryset(self):
+        source = self.request.query_params.get(
+            key='source',
+            default=1
+        )
+        try:
+            source = int(source)
+        except ValueError:
+            source = 1
+
+        request_type = self.request.query_params.get(
+            key='type',
+            default=None
+        )
+        queryset = self.queryset
+
+        queryset = (queryset.filter(source_team=self.request.user.team)
+                    if source else
+                    queryset.filter(target_team=self.request.user.team))
+
+        queryset = (queryset.filter(type=request_type)
+                    if request_type else
+                    queryset)
+
+        return queryset
+
+
+class RequestAPIView(GenericAPIView):
+    serializer_class = RequestSerializer
+    permission_classes = (IsAuthenticated, HasTeam, TeamHasFinalSubmission,
+                          IsFinalist)
+    queryset = Request.objects.all()
+
+    def put(self, request, request_id):
+        team_request = get_object_or_404(
+            Request,
+            id=request_id,
+            target_team=request.user.team,
+            status=RequestStatusTypes.PENDING
+        )
+        answer = self.request.query_params.get('answer', 1)
+        try:
+            answer = int(answer)
+        except ValueError:
+            answer = 1
+
+        if answer == 1:
+            team_request.status = RequestStatusTypes.ACCEPTED
+            if team_request.type == RequestTypes.FRIENDLY_MATCH:
+                Match.create_friendly_match(
+                    team1=team_request.source_team,
+                    team2=team_request.target_team,
+                )
+        elif answer == 0:
+            team_request.status = RequestStatusTypes.REJECTED
+
+        team_request.save()
+
+        return Response(
+            data={"status": True},
+            status=status.HTTP_200_OK
+        )
 
 
 class SubmissionsListAPIView(GenericAPIView):
