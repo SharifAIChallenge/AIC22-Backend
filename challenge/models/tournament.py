@@ -1,6 +1,7 @@
 from django.db import models
 from model_utils.models import TimeStampedModel
 
+from challenge.models.scoreboard import Scoreboard
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
 
@@ -47,8 +48,6 @@ class Tournament(TimeStampedModel):
                           is_friendly=False, team_list=None,
                           is_scoreboard_freeze=False,
                           tournament_type=TournamentTypes.NORMAL):
-        # from apps.challenge.models import Scoreboard
-
         if team_list is None:
             team_list = []
 
@@ -59,14 +58,14 @@ class Tournament(TimeStampedModel):
             is_hidden=is_hidden,
             type=tournament_type
         )
-        # scoreboard = Scoreboard.objects.create(
-        #     tournament=tournament,
-        #     freeze=is_scoreboard_freeze
-        # )
-        # for team in team_list:
-        #     scoreboard.add_scoreboard_row(
-        #         team=team
-        #     )
+        scoreboard = Scoreboard.objects.create(
+            tournament=tournament,
+            freeze=is_scoreboard_freeze
+        )
+        for team in team_list:
+            scoreboard.add_scoreboard_row(
+                team=team
+            )
 
         return tournament
 

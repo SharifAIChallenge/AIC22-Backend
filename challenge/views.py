@@ -11,11 +11,14 @@ from team.permissions import HasTeam, IsFinalist, TeamHasFinalSubmission
 from .models.level_based_tournament import LevelBasedTournament
 from .models.match import Match
 from .models.request import Request, RequestStatusTypes, RequestTypes
+from .models.scoreboard import ScoreboardRow
 from .models.submission import Submission
 from .models.tournament import TournamentTypes, Tournament
+from .paginations import ScoreboardRowPagination, MatchPagination
 from .serializers.level_based_tournament import LevelBasedTournamentCreateSerializer, \
     LevelBasedTournamentAddTeamsSerializer
 from .serializers.request import RequestSerializer
+from .serializers.scoreboard import ScoreboardRowSerializer
 from .serializers.submission import SubmissionSerializer
 from .serializers.match import MatchSerializer
 from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUpdateSerializer
@@ -210,7 +213,7 @@ class MatchAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, HasTeam]
     serializer_class = MatchSerializer
     queryset = Match.objects.all()
-    # pagination_class = MatchPagination
+    pagination_class = MatchPagination
 
     def get(self, request):
         queryset = self.get_queryset()
@@ -221,12 +224,8 @@ class MatchAPIView(GenericAPIView):
             many=True
         ).data
 
-        # return self.get_paginated_response(
-        #     data={'data': data},
-        # )
-        return Response(
+        return self.get_paginated_response(
             data={'data': data},
-            status=status.HTTP_200_OK
         )
 
     def get_queryset(self):
@@ -327,3 +326,32 @@ class LevelBasedTournamentAddTeamsAPIView(GenericAPIView):
         serializer.save()
 
         return Response(data="OK", status=status.HTTP_200_OK)
+
+
+class ScoreboardAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ScoreboardRowSerializer
+    pagination_class = ScoreboardRowPagination
+    queryset = ScoreboardRow.objects.all()
+
+    def get(self, request, tournament_id):
+        scoreboard_rows = self.get_corrected_queryset(tournament_id)
+        page = self.paginate_queryset(scoreboard_rows)
+        data = self.get_serializer(instance=page, many=True).data
+
+        return self.get_paginated_response(
+            data={'data': data}
+        )
+
+    def get_corrected_queryset(self, tournament_id):
+        no_match_teams = ScoreboardRow.objects.filter(
+            scoreboard__tournament_id=tournament_id).filter(
+            wins=0
+        ).filter(losses=0).filter(draws=0).values_list('id', flat=True)
+
+        has_match_teams = ScoreboardRow.objects.exclude(
+            id__in=no_match_teams).filter(
+            scoreboard__tournament_id=tournament_id).order_by('-score')
+        no_match_teams = ScoreboardRow.objects.filter(id__in=no_match_teams)
+
+        return list(has_match_teams) + list(no_match_teams)

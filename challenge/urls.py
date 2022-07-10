@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (SubmissionsListAPIView, SubmissionAPIView, TournamentAPIView, MatchAPIView,
-                    LobbyAPIView, RequestAPIView, RequestListAPIView)
+                    LobbyAPIView, RequestAPIView, RequestListAPIView, ScoreboardAPIView)
 urlpatterns = [
     path('submission', view=SubmissionAPIView.as_view(), name='submission_api'),
     path('submissions', view=SubmissionsListAPIView.as_view(),
@@ -10,4 +10,6 @@ urlpatterns = [
     path('lobby', view=LobbyAPIView.as_view(), name='lobby'),
     path('request', view=RequestListAPIView.as_view(), name='request_list'),
     path('request/<int:request_id>', view=RequestAPIView.as_view(), name='request'),
+    path('scoreboard/<int:tournament_id>', view=ScoreboardAPIView.as_view(),
+         name='scoreboard'),
 ]
