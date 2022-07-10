@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'website',
     'team',
     'challenge',
+    'django_crontab',
 ]
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -180,3 +181,7 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", 'aic22test@gmail.com')
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
 
 IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
+
+CRONJOBS = [
+    ('* * * * *', 'website.cron.handle')
+]
