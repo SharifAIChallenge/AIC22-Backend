@@ -113,6 +113,28 @@ class StringListField(serializers.ListField):
                                   allow_blank=True)
 
 
+class ShortProfileSerializer(serializers.ModelSerializer, ImageURL):
+    programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField('_image_url')
+    has_team = serializers.SerializerMethodField('_has_team')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is not None
+
+    class Meta:
+        model = Profile
+        fields = [
+            'firstname_en',
+            'firstname_fa',
+            'lastname_en',
+            'lastname_fa',
+            'programming_languages',
+            'image_url',
+            'has_team',
+        ]
+
+
 class ProfileSerializer(serializers.ModelSerializer, ImageURL):
     skills = SkillSerializer(many=True, read_only=True)
     jobs = JobExperienceSerializer(many=True, read_only=True)
@@ -237,3 +259,11 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+    profile = ShortProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['profile', 'email', 'id']
