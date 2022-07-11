@@ -207,5 +207,5 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
 IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
 CRONJOBS = [
-    ('* * * * *', 'website.cron.handle')
+    ('*/5 * * * *', 'website.cron.handle')
 ]
