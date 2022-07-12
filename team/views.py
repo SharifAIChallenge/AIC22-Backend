@@ -126,7 +126,7 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
             members_count=TEAM_MAX_MEMBERS
         )
 
-        name = self.request.query_params.get('name')
+        name = self.request.query_params.get('name', '')
         if name:
             queryset = queryset.filter(name__icontains=name)
 
