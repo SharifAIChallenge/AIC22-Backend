@@ -121,7 +121,7 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
 
     def get_queryset(self):
         queryset = Team.objects.annotate(
-            memebers_count=Count('members')
+            members_count=Count('members')
         ).exclude(
             members_count=TEAM_MAX_MEMBERS
         )
