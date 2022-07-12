@@ -75,6 +75,7 @@ class TeamSearchAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
+    pagination_class = CustomPagination
 
     def get(self, request):
         term = request.GET.get('search')
