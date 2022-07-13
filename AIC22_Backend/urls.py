@@ -29,7 +29,9 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('api/v1/', include(AIC_v1_router.urls)),
                   path('api/v1/account/', include('account.urls')),
+                  path('api/v1/challenge/', include('challenge.urls')),
                   path('api-doc/schema/', SpectacularAPIView.as_view(), name='schema'),
+                  path('api-auth/', include('rest_framework.urls')),
                   path('summernote/', include('django_summernote.urls')),
                   path(
                       'api-doc/schema/swagger-ui/',
