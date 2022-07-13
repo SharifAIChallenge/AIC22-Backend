@@ -294,7 +294,7 @@ class UserSentInvitationListAPIView(GenericAPIView):
         invitations = self.get_queryset().filter(
             user=request.user,
             type=InvitationTypes.USER_TO_TEAM
-        )
+        ).reverse()
         data = self.get_serializer(instance=invitations, many=True).data
         return Response(
             data={'data': data},
