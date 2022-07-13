@@ -11,6 +11,7 @@ from account.models import GoogleLogin, ResetPasswordToken
 from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguage
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
+from team.models import Invitation, InvitationTypes
 from utils import ImageURL
 from website.models import UTMTracker
 
@@ -263,7 +264,21 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class UserViewSerializer(serializers.ModelSerializer):
     profile = ShortProfileSerializer()
+    team_status = serializers.SerializerMethodField('_get_status')
+
+    def _get_status(self, obj):
+        user_team = self.context['request'].user.team
+        if not user_team:
+            return None
+        last_invitation = Invitation.objects.filter(
+            user=obj,
+            type=InvitationTypes.TEAM_TO_USER,
+            team=user_team
+        ).last()
+        if not last_invitation:
+            return None
+        return last_invitation.status
 
     class Meta:
         model = User
-        fields = ['profile', 'email', 'id']
+        fields = ['profile', 'email', 'id', 'team_status']
