@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'account',
     'team',
     'challenge',
+    'django_crontab',
 ]
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -206,9 +207,13 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
 
 IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
-
 UPLOAD_PATHS = {
     'MAP': '',
     'MATCH_LOGS': '',
     'CLAN_IMAGE': ''
 }
+
+CRONJOBS = [
+    ('* * * * *', 'website.cron.handle')
+]
+

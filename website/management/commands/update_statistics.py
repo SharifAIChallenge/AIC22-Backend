@@ -12,7 +12,9 @@ class Command(BaseCommand):
         for statistic in Statistic.objects.all():
             if statistic.model is None:
                 continue
-            model = apps.get_model(app_label='website', model_name=statistic.model)
+            if statistic.app_name is None:
+                continue
+            model = apps.get_model(app_label=statistic.app_name, model_name=statistic.model)
             model_counter = model.objects.count()
             statistic.value = model_counter
             statistic.save()

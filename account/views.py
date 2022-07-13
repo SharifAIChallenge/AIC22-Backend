@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User, ResetPasswordToken
-from account.paginations import UsersPagination
+from account.paginations import CustomPagination
 from account.permissions import ProfileComplete
 from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
     ChangePasswordSerializer, ResetPasswordConfirmSerializer, UserViewSerializer
@@ -175,7 +175,7 @@ class ProfileAPIView(GenericAPIView):
 class UserWithoutTeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ProfileComplete]
     serializer_class = UserViewSerializer
-    pagination_class = UsersPagination
+    pagination_class = CustomPagination
 
     def get(self, request):
 
