@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ...challenge.models.clanwar import ClanWar
+from challenge.models.clanwar import ClanWar
 
 
 class ClanWarSerializer(serializers.ModelSerializer):
