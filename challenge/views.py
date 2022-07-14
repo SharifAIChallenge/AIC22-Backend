@@ -128,7 +128,7 @@ class SubmissionsListAPIView(GenericAPIView):
         data = self.get_serializer(
             self.get_queryset().filter(team=request.user.team),
             many=True).data
-        return Response(data={'submissions': data}, status=status.HTTP_200_OK)
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
@@ -184,7 +184,7 @@ class TournamentAPIView(GenericAPIView):
         data = self.get_serializer(queryset, many=True).data
 
         return Response(
-            data={'data': data},
+            data=data,
             status=status.HTTP_200_OK
         )
 
@@ -204,7 +204,7 @@ class NextTournamentAPIView(GenericAPIView):
         data = self.get_serializer(tournament).data
 
         return Response(
-            data={'data': data},
+            data=data,
             status=status.HTTP_200_OK
         )
 
@@ -225,7 +225,7 @@ class MatchAPIView(GenericAPIView):
         ).data
 
         return self.get_paginated_response(
-            data={'data': data},
+            data=data,
         )
 
     def get_queryset(self):
@@ -272,9 +272,7 @@ class LobbyAPIView(GenericAPIView):
             many=True
         ).data
 
-        return Response(data={
-            'data': data
-        }, status=status.HTTP_200_OK)
+        return Response(data=data, status=status.HTTP_200_OK)
 
     def post(self, request):
         lobby_q = self.get_serializer(data=request.data)
@@ -296,7 +294,7 @@ class LevelBasedTournamentAPIView(GenericAPIView):
 
         serializer.save()
 
-        return Response(data="OK", status=status.HTTP_200_OK)
+        return Response(data={"response": "OK"}, status=status.HTTP_200_OK)
 
     def put(self, request):
         level_based_tournament = get_object_or_404(
@@ -310,7 +308,7 @@ class LevelBasedTournamentAPIView(GenericAPIView):
 
         serializer.save()
 
-        return Response(data="OK", status=status.HTTP_200_OK)
+        return Response(data={"response": "OK"}, status=status.HTTP_200_OK)
         # TODO : Return the object data if needed
 
 
@@ -325,7 +323,7 @@ class LevelBasedTournamentAddTeamsAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(data="OK", status=status.HTTP_200_OK)
+        return Response(data={"response": "OK"}, status=status.HTTP_200_OK)
 
 
 class ScoreboardAPIView(GenericAPIView):
@@ -340,7 +338,7 @@ class ScoreboardAPIView(GenericAPIView):
         data = self.get_serializer(instance=page, many=True).data
 
         return self.get_paginated_response(
-            data={'data': data}
+            data=data
         )
 
     def get_corrected_queryset(self, tournament_id):
