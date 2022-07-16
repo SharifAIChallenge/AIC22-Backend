@@ -77,11 +77,6 @@ class TimelineEventSerializer(serializers.ModelSerializer):
 
 
 class StatisticSerializer(serializers.ModelSerializer):
-    # todo this must refactor
-    value = serializers.SerializerMethodField('_get_value')
-
-    def _get_value(self, obj):
-        return User.objects.count()
 
     class Meta:
         model = Statistic

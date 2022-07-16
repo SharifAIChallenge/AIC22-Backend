@@ -11,6 +11,8 @@ from account.models import GoogleLogin, ResetPasswordToken
 from account.models import User, Profile, Skill, JobExperience, ProgrammingLanguage
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
+from team.models import Invitation, InvitationTypes
+from utils import ImageURL
 from website.models import UTMTracker
 from utils.image_url import ImageURL
 
@@ -111,6 +113,28 @@ class JobExperienceSerializer(serializers.ModelSerializer):
 class StringListField(serializers.ListField):
     child = serializers.CharField(max_length=MEDIUM_TEXT_MAX_LENGTH, allow_null=True,
                                   allow_blank=True)
+
+
+class ShortProfileSerializer(serializers.ModelSerializer, ImageURL):
+    programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField('_image_url')
+    has_team = serializers.SerializerMethodField('_has_team')
+
+    @staticmethod
+    def _has_team(obj: Profile):
+        return obj.user.team is not None
+
+    class Meta:
+        model = Profile
+        fields = [
+            'firstname_en',
+            'firstname_fa',
+            'lastname_en',
+            'lastname_fa',
+            'programming_languages',
+            'image_url',
+            'has_team',
+        ]
 
 
 class ProfileSerializer(serializers.ModelSerializer, ImageURL):
@@ -237,3 +261,25 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+    profile = ShortProfileSerializer()
+    team_status = serializers.SerializerMethodField('_get_status')
+
+    def _get_status(self, obj):
+        user_team = self.context['request'].user.team
+        if not user_team:
+            return None
+        last_invitation = Invitation.objects.filter(
+            user=obj,
+            type=InvitationTypes.TEAM_TO_USER,
+            team=user_team
+        ).last()
+        if not last_invitation:
+            return None
+        return last_invitation.status
+
+    class Meta:
+        model = User
+        fields = ['profile', 'email', 'id', 'team_status']

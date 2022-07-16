@@ -1,5 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.db.models import Value
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
@@ -10,8 +12,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User, ResetPasswordToken
+from account.paginations import CustomPagination
+from account.permissions import ProfileComplete
 from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
-    ChangePasswordSerializer, ResetPasswordConfirmSerializer
+    ChangePasswordSerializer, ResetPasswordConfirmSerializer, UserViewSerializer
 
 
 class GoogleLoginAPIView(GenericAPIView):
@@ -166,3 +170,64 @@ class ProfileAPIView(GenericAPIView):
 
     def delete(self, request):
         pass
+
+
+class UserWithoutTeamAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated, ProfileComplete]
+    serializer_class = UserViewSerializer
+    pagination_class = CustomPagination
+
+    def get(self, request):
+
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        data = self.get_serializer(
+            instance=page,
+            many=True
+        ).data
+
+        return self.get_paginated_response(
+            data={'data': data},
+        )
+
+    def get_queryset(self):
+        name = self.request.query_params.get('name')
+        email = self.request.query_params.get('email')
+        university = self.request.query_params.get('university')
+        programming_language = self.request.query_params.get('programming_language')
+        major = self.request.query_params.get('major')
+
+        queryset = User.objects.all().filter(team=None).exclude(profile=None)
+
+        if name:
+            queryset = queryset.annotate(
+                name=Concat('profile__firstname_fa', Value(' '),
+                            'profile__lastname_fa')
+            ).filter(name__icontains=name)
+
+        if email:
+            queryset = queryset.filter(
+                email__icontains=email
+            )
+
+        if university:
+            queryset = queryset.filter(
+                profile__university__icontains=university
+            )
+
+        if programming_language:
+            queryset = queryset.filter(
+                profile__programming_language=programming_language
+            )
+
+        if major:
+            queryset = queryset.filter(
+                profile__major__icontains=major
+            )
+        complete_profiles = [user.id for user in
+                             filter(lambda user: user.profile.is_complete,
+                                    queryset
+                                    )
+                             ]
+        queryset = queryset.filter(id__in=complete_profiles)
+        return queryset

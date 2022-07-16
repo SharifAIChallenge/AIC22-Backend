@@ -4,6 +4,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from constants import IMAGE_MAX_SIZE
+from utils import ImageURL
+from account.serializers import ShortProfileSerializer
 from utils.image_url import ImageURL
 from account.serializers import ProfileSerializer
 from account.models import User
@@ -12,11 +14,11 @@ from .exceptions import TeamIsFullException, DuplicatePendingInviteException, Ha
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
+    profile = ShortProfileSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'id', 'profile']
+        fields = ['email', 'profile']
 
 
 class TeamSerializer(serializers.ModelSerializer, ImageURL):
@@ -27,8 +29,7 @@ class TeamSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'members', 'creator',
-                  'image_url', ]
+        fields = ['name', 'image', 'members', 'creator', 'image_url', 'id']
 
     def create(self, data):
         current_user = self.context['request'].user
@@ -56,7 +57,7 @@ class TeamInfoSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'creator', 'members', 'id', 'image_url']
+        fields = ['name', 'image', 'creator', 'members', 'image_url', 'id']
 
 
 class UserToTeamInvitationSerializer(serializers.ModelSerializer):
@@ -70,19 +71,16 @@ class UserToTeamInvitationSerializer(serializers.ModelSerializer):
         data['type'] = 'user_to_team'
         current_user = self.context['request'].user
         data['user'] = current_user
-        data['team'] = get_object_or_404(Team, id=self.context['request'].data[
-            'team_id'])
+        data['team'] = get_object_or_404(Team, id=self.context['request'].data['team_id'])
         invitation = Invitation.objects.create(**data)
         return invitation
 
     def validate(self, data):
         request = self.context['request']
-        team = get_object_or_404(Team,
-                                 id=self.context['request'].data['team_id'])
+        team = get_object_or_404(Team, id=self.context['request'].data['team_id'])
         if team.is_complete():
             raise TeamIsFullException()
-        elif Invitation.objects.filter(team=team, user=request.user,
-                                       status='pending').exists():
+        elif Invitation.objects.filter(team=team, user=request.user, status='pending').exists():
             raise DuplicatePendingInviteException()
         return data
 
