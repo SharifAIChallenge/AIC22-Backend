@@ -12,7 +12,6 @@ from account.models import User, Profile, Skill, JobExperience, ProgrammingLangu
 from account.utils import password_generator
 from constants import MEDIUM_TEXT_MAX_LENGTH
 from team.models import Invitation, InvitationTypes
-from utils import ImageURL
 from website.models import UTMTracker
 from utils.image_url import ImageURL
 
