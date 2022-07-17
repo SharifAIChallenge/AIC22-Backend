@@ -64,16 +64,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_tracking',
     'corsheaders',
-    'django.contrib.sites',
     'drf_spectacular',
     'allauth',
+    'website',
     'drf_yasg',
+    'django.contrib.sites',
     'django_filters',
     'django_summernote',
     'communication',
     'account',
-    'website',
     'team',
     'challenge',
     'django_crontab',
@@ -216,3 +217,4 @@ UPLOAD_PATHS = {
 CRONJOBS = [
     ('* * * * *', 'website.cron.handle')
 ]
+

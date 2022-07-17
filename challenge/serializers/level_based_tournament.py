@@ -2,12 +2,12 @@ from django.db.models import Case, When
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from ...challenge.models.level_based_tournament import LevelBasedTournament
-from ...challenge.models.match import Match
-from ...challenge.models.map import Map
-from ...challenge.models.level_match import LevelMatch
-from ...challenge.models.level import Level
-from ...team.models import Team
+from challenge.models.level_based_tournament import LevelBasedTournament
+from challenge.models.match import Match
+from challenge.models.map import Map
+from challenge.models.level_match import LevelMatch
+from challenge.models.level import Level
+from team.models import Team
 from constants import LONG_TEXT_MAX_LENGTH
 
 

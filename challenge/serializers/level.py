@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ...challenge.models.level import Level
+from challenge.models.level import Level
 
 
 class LevelSerializer(serializers.ModelSerializer):
