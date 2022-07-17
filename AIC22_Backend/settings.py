@@ -65,17 +65,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'django.contrib.sites',
     'drf_spectacular',
     'allauth',
-    'website',
     'drf_yasg',
-    'django.contrib.sites',
     'django_filters',
     'django_summernote',
     'communication',
     'account',
+    'website',
     'team',
     'challenge',
+    'django_crontab',
 ]
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -211,3 +212,7 @@ UPLOAD_PATHS = {
     'MATCH_LOGS': '',
     'CLAN_IMAGE': ''
 }
+
+CRONJOBS = [
+    ('* * * * *', 'website.cron.handle')
+]

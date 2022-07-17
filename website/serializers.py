@@ -3,7 +3,7 @@ from rest_framework import serializers
 from account.models import User
 from .models import Staff, Tweet, Prize, PastAIC, FrequentlyAskedQuestions, News, NewsTag, StaffGroup, \
     StaffTeam, TimelineEvent, Statistic, UTMTracker
-from utils import ImageURL
+from utils.image_url import ImageURL
 
 
 class StaffGroupSerializer(serializers.ModelSerializer):
@@ -77,11 +77,6 @@ class TimelineEventSerializer(serializers.ModelSerializer):
 
 
 class StatisticSerializer(serializers.ModelSerializer):
-    # todo this must refactor
-    value = serializers.SerializerMethodField('_get_value')
-
-    def _get_value(self, obj):
-        return User.objects.count()
 
     class Meta:
         model = Statistic

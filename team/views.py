@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from account.paginations import CustomPagination
 from .serializers import TeamSerializer, TeamInfoSerializer, UserReceivedInvitationSerializer, \
     TeamPendingInvitationSerializer, TeamToUserInvitationSerializer, UserToTeamInvitationSerializer
 from .models import Team, Invitation, InvitationStatusTypes, InvitationTypes
@@ -74,6 +75,7 @@ class TeamSearchAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
+    pagination_class = CustomPagination
 
     def get(self, request):
         term = request.GET.get('search')
@@ -109,6 +111,7 @@ class TeamInfoAPIView(GenericAPIView):
 class IncompleteTeamInfoListAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamInfoSerializer
+    pagination_class = CustomPagination
 
     def get(self, request):
         incomplete_teams = self.get_queryset()
@@ -121,12 +124,12 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
 
     def get_queryset(self):
         queryset = Team.objects.annotate(
-            memebers_count=Count('members')
+            members_count=Count('members')
         ).exclude(
             members_count=TEAM_MAX_MEMBERS
         )
 
-        name = self.request.query_params.get('name')
+        name = self.request.query_params.get('name', '')
         if name:
             queryset = queryset.filter(name__icontains=name)
 
@@ -291,7 +294,7 @@ class UserSentInvitationListAPIView(GenericAPIView):
         invitations = self.get_queryset().filter(
             user=request.user,
             type=InvitationTypes.USER_TO_TEAM
-        )
+        ).reverse()
         data = self.get_serializer(instance=invitations, many=True).data
         return Response(
             data={'data': data},

@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
-from django.db.models import Value
+from django.db.models import Value, Q
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from account.models import Profile, User, ResetPasswordToken
-from account.paginations import UsersPagination
+from account.paginations import CustomPagination
 from account.permissions import ProfileComplete
 from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
     ChangePasswordSerializer, ResetPasswordConfirmSerializer, UserViewSerializer
@@ -175,7 +175,7 @@ class ProfileAPIView(GenericAPIView):
 class UserWithoutTeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ProfileComplete]
     serializer_class = UserViewSerializer
-    pagination_class = UsersPagination
+    pagination_class = CustomPagination
 
     def get(self, request):
 
@@ -201,9 +201,25 @@ class UserWithoutTeamAPIView(GenericAPIView):
 
         if name:
             queryset = queryset.annotate(
-                name=Concat('profile__firstname_fa', Value(' '),
-                            'profile__lastname_fa')
-            ).filter(name__icontains=name)
+                name_fa=Concat(
+                    'profile__firstname_fa',
+                    Value(' '),
+                    'profile__lastname_fa'
+                )
+            ).annotate(
+                name_en=Concat(
+                    'profile__firstname_en',
+                    Value(' '),
+                    'profile__lastname_en'
+                )
+
+            ).filter(
+                Q(
+                    Q(name_fa__icontains=name) |
+                    Q(email__icontains=name) |
+                    Q(name_en__icontains=name)
+                )
+            ).distinct()
 
         if email:
             queryset = queryset.filter(
