@@ -1,13 +1,4 @@
 from django.conf import settings
-from PIL import Image
-from django.db.models.fields.files import ImageFieldFile
-
-
-def compress_image(image: ImageFieldFile):
-    image: Image.Image = Image.open(image.path)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-        image.save(image.path)
 
 
 class ImageURL:

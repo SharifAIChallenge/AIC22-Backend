@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from AIC22_Backend import settings
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 from .utils import send_email
-from utils import compress_image
+from utils.fields import WEBPField
 
 
 class DegreeTypes:
@@ -151,14 +151,9 @@ class Profile(models.Model):
     # programming_languages = MultiSelectField(choices=ProgrammingLanguages.TYPES, max_choices=3, default=None)
 
     # Others
-    image = models.ImageField(upload_to=profile_upload_path, null=True, blank=True)
+    image = WEBPField(upload_to='profile_images', null=True, blank=True)
     hide_profile_info = models.BooleanField(default=False)
     can_sponsors_see = models.BooleanField(default=True)
-
-    # def save(self, *args, **kwargs):
-    #     instance = super(Profile, self).save(*args, **kwargs)
-    #     compress_image(image=instance.image)
-    #     return instance
 
     @property
     def is_complete(self):
