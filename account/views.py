@@ -62,6 +62,24 @@ class SignUpAPIView(GenericAPIView):
 LoginAPIView = ObtainAuthToken
 
 
+class CustomLoginAPIView(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        username = data['username']
+        if User.objects.filter(username=username).count() > 0:
+            user = User.objects.filter(username=username).first()
+            if user.is_active:
+                try:
+                    return super().post(request, *args, **kwargs)
+                except serializers.ValidationError:
+                    return Response(data={"detail": _("Password doesnt match.")}, status=400)
+            else:
+                return Response(data={"detail": _("Account is not activated.")}, status=403)
+        else:
+            return Response(data={"detail": _("Username not found.")}, status=404)
+
+
 class LogoutAPIView(GenericAPIView):
     queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
