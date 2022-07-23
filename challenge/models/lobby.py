@@ -14,7 +14,8 @@ class LobbyTypes:
 
 class LobbyQueue(TimeStampedModel):
     team = models.ForeignKey(
-        to='team.Team', on_delete=models.CASCADE,
+        to='team.Team',
+        on_delete=models.CASCADE,
         related_name='lobby_queues'
     )
     game_type = models.CharField(
