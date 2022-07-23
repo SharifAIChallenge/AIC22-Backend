@@ -43,7 +43,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
                 < timedelta(minutes=SUBMISSION_COOLDOWN_IN_MINUTES):
             raise serializers.ValidationError(
                 f"You have to wait at least "
-                f"{5} "
+                f"{SUBMISSION_COOLDOWN_IN_MINUTES} "
                 f"minute between each submission!"
             )
 
