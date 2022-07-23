@@ -41,17 +41,22 @@ class SubmissionStatusTypes:
 
 
 def get_submission_file_directory(instance, filename):
-    return os.path.join(instance.team.name, str(instance.user.id),
-                        filename + uuid.uuid4().__str__() + '.zip')
+    return os.path.join(
+        instance.team.name,
+        str(instance.user.id),
+        filename + uuid.uuid4().__str__() + '.zip'
+    )
 
 
 class Submission(models.Model):
     team = models.ForeignKey(
-        Team, related_name='submissions',
+        Team,
+        related_name='submissions',
         on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        User, related_name='submissions',
+        User,
+        related_name='submissions',
         on_delete=models.CASCADE
     )
     language = models.CharField(
