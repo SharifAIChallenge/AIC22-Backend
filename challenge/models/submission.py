@@ -5,6 +5,7 @@ import logging
 from django.db import models
 from django.shortcuts import get_object_or_404
 
+from challenge.tasks import handle_submission
 from team.models import Team
 from account.models import User
 from constants import SHORT_TEXT_MAX_LENGTH, MEDIUM_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
@@ -123,8 +124,7 @@ class Submission(models.Model):
         self.save()
 
     def handle(self):
-        # handle_submission.delay(self.id)
-        # handle_submission(self.id)
+        handle_submission(self.id)
         pass
 
     def upload(self):  # todo
@@ -135,14 +135,6 @@ class Submission(models.Model):
         self.save()
 
     def compile(self):  # todo
-        # from ..logics import compile_submissions
-        # result = compile_submissions([self])
-        # if result[0]['success']:
-        #     self.status = SubmissionStatusTypes.COMPILING
-        #     self.infra_compile_token = result[0]['run_id']
-        # else:
-        #     logger.error(result[0][self.infra_token]['errors'])
-        # self.save()
         pass
 
     @classmethod
