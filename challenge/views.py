@@ -127,7 +127,8 @@ class SubmissionsListAPIView(GenericAPIView):
     def get(self, request):
         data = self.get_serializer(
             self.get_queryset().filter(team=request.user.team),
-            many=True).data
+            many=True
+        ).data
         return Response(data=data, status=status.HTTP_200_OK)
 
 
@@ -139,7 +140,8 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
     def get(self, request):
         data = self.get_serializer(
             self.get_queryset().filter(team=request.user.team),
-            many=True).data
+            many=True
+        ).data
         return Response(data=data, status=status.HTTP_200_OK)
 
     def post(self, request):
