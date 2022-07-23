@@ -22,20 +22,33 @@ class MatchStatusTypes:
 
 
 class Match(TimeStampedModel):
-    team1 = models.ForeignKey(to='team.Team', on_delete=models.CASCADE,
-                              related_name='matches_first')
-    team2 = models.ForeignKey(to='team.Team', on_delete=models.CASCADE,
-                              related_name='matches_second')
+    team1 = models.ForeignKey(
+        to='team.Team',
+        on_delete=models.CASCADE,
+        related_name='matches_first'
+    )
+    team2 = models.ForeignKey(
+        to='team.Team',
+        on_delete=models.CASCADE,
+        related_name='matches_second'
+    )
     status = models.CharField(
         max_length=SHORT_TEXT_MAX_LENGTH,
         choices=MatchStatusTypes.TYPES,
         default=MatchStatusTypes.FREEZE
     )
-    winner = models.ForeignKey(to='team.Team', on_delete=models.CASCADE,
-                               related_name='won_matches', null=True,
-                               blank=True)
-    log = models.FileField(upload_to=settings.UPLOAD_PATHS['MATCH_LOGS'],
-                           null=True, blank=True)
+    winner = models.ForeignKey(
+        to='team.Team',
+        on_delete=models.CASCADE,
+        related_name='won_matches',
+        null=True,
+        blank=True
+    )
+    log = models.FileField(
+        upload_to=settings.UPLOAD_PATHS['MATCH_LOGS'],
+        null=True,
+        blank=True
+    )
     log_file_token = models.CharField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     tournament = models.ForeignKey(
         to='challenge.Tournament',
@@ -87,8 +100,7 @@ class Match(TimeStampedModel):
         #     priority=priority
         # )
         # self.save()
-        pass # TODO
-
+        pass  # TODO
 
     @staticmethod
     def run_matches(matches, priority=0):
