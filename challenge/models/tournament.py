@@ -69,7 +69,7 @@ class Tournament(TimeStampedModel):
 
         return tournament
 
-    def make_league_for_tournament(self, match_map, two_way=False): ## HERE
+    def make_league_for_tournament(self, match_map, two_way=False):  ## HERE
         from itertools import combinations
 
         from challenge.models.match import Match
@@ -112,7 +112,7 @@ class Tournament(TimeStampedModel):
         self.__run_swiss_round(self.scoreboard, game_maps)
 
     def __run_swiss_round(self, scoreboard, game_maps):
-        pass # TODO
+        pass  # TODO
 
     def init_swiss_league(self, src_tournament: 'Tournament', game_maps):
         self.__run_swiss_round(src_tournament.scoreboard, game_maps)

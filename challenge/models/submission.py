@@ -126,14 +126,14 @@ class Submission(models.Model):
         # handle_submission(self.id)
         pass
 
-    def upload(self): # todo
+    def upload(self):  # todo
         from ..logics import upload_code
 
         self.infra_token = upload_code(self)
         self.status = SubmissionStatusTypes.UPLOADED
         self.save()
 
-    def compile(self): # todo
+    def compile(self):  # todo
         # from ..logics import compile_submissions
         # result = compile_submissions([self])
         # if result[0]['success']:
@@ -145,7 +145,7 @@ class Submission(models.Model):
         pass
 
     @classmethod
-    def update_submission(cls, infra_token, status, infra_message=''): # todo
+    def update_submission(cls, infra_token, status, infra_message=''):  # todo
         submission = get_object_or_404(cls, infra_token=infra_token)
 
         submission.status = status
