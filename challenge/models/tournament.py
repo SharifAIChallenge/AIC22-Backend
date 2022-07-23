@@ -35,7 +35,8 @@ class Tournament(TimeStampedModel):
     @staticmethod
     def get_friendly_tournament():
         return Tournament.objects.filter(
-            type=TournamentTypes.FRIENDLY).first()
+            type=TournamentTypes.FRIENDLY
+        ).first()
 
     @staticmethod
     def get_bot_tournament():
@@ -44,10 +45,12 @@ class Tournament(TimeStampedModel):
         ).first()
 
     @staticmethod
-    def create_tournament(name, start_time, end_time, is_hidden,
-                          is_friendly=False, team_list=None,
-                          is_scoreboard_freeze=False,
-                          tournament_type=TournamentTypes.NORMAL):
+    def create_tournament(
+            name, start_time, end_time, is_hidden,
+            is_friendly=False, team_list=None,
+            is_scoreboard_freeze=False,
+            tournament_type=TournamentTypes.NORMAL
+    ):
         if team_list is None:
             team_list = []
 
