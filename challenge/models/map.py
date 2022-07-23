@@ -22,7 +22,7 @@ class Map(TimeStampedModel, UUIDModel):
     )
 
     def pre_save(self):
-        pass # TODO
+        pass  # TODO
 
     def save(self, *args, **kwargs):
         self.pre_save()
