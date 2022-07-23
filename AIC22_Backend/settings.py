@@ -218,3 +218,4 @@ CRONJOBS = [
     ('* * * * *', 'website.cron.handle')
 ]
 
+INFRA_GATEWAY_HOST = os.getenv('INFRA_GATEWAY_HOST', 'gateway.aichallenge.ir')
