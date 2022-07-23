@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework import serializers
 
+from AIC22_Backend.settings import SUBMISSION_COOLDOWN_IN_MINUTES
 from challenge.models.submission import Submission
 from constants import FILE_SIZE_LIMIT
 
@@ -37,9 +38,9 @@ class SubmissionSerializer(serializers.ModelSerializer):
         if attrs['file'].size > FILE_SIZE_LIMIT:
             raise serializers.ValidationError('File size limit exceeded')
         submissions = user.team.submissions.all()
-        if submissions.exists() and (
-                timezone.now() - submissions.order_by('-submit_time')[0].submit_time
-        ) < timedelta(minutes=5):
+        if submissions.exists() and \
+                timezone.now() - submissions.order_by('-submit_time')[0].submit_time \
+                < timedelta(minutes=SUBMISSION_COOLDOWN_IN_MINUTES):
             raise serializers.ValidationError(
                 f"You have to wait at least "
                 f"{5} "

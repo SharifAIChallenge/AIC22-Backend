@@ -219,3 +219,4 @@ CRONJOBS = [
 ]
 
 INFRA_GATEWAY_HOST = os.getenv('INFRA_GATEWAY_HOST', 'gateway.aichallenge.ir')
+SUBMISSION_COOLDOWN_IN_MINUTES = int(os.getenv('SUBMISSION_COOLDOWN_IN_MINUTES', '5'))

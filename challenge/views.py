@@ -135,7 +135,11 @@ class SubmissionsListAPIView(GenericAPIView):
 class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
-    permission_classes = (IsAuthenticated, HasTeam, IsFinalist)
+    permission_classes = (
+        IsAuthenticated,
+        HasTeam,
+        # IsFinalist
+    )
 
     def get(self, request):
         data = self.get_serializer(
