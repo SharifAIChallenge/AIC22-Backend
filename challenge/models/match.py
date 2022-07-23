@@ -108,8 +108,7 @@ class Match(TimeStampedModel):
             match.run_match(priority=priority)
 
     @staticmethod
-    def create_match(team1, team2, tournament, match_map, is_freeze=False,
-                     priority=0):
+    def create_match(team1, team2, tournament, match_map, is_freeze=False, priority=0):
         from challenge.models.match_info import MatchInfo
 
         team1_final_submission = team1.final_submission()
@@ -149,8 +148,7 @@ class Match(TimeStampedModel):
             raise Exception(
                 "Admin should initialize a friendly tournament first ...")
 
-        return Match.create_match(team1, team2, friendly_tournament, game_map,
-                                  priority=1)
+        return Match.create_match(team1, team2, friendly_tournament, game_map, priority=1)
 
     @staticmethod
     def create_bot_match(bot, team, game_map=None):
@@ -166,5 +164,4 @@ class Match(TimeStampedModel):
                 "Admin should initialize a bot tournament first ..."
             )
 
-        return Match.create_match(bot, team, bot_tournament, game_map,
-                                  priority=1)
+        return Match.create_match(bot, team, bot_tournament, game_map, priority=1)
