@@ -1,10 +1,9 @@
 from datetime import timedelta
 from django.utils import timezone
 
-from django.conf import settings
 from rest_framework import serializers
 
-from AIC22_Backend.settings import SUBMISSION_COOLDOWN_IN_MINUTES
+from AIC22_Backend.settings import SUBMISSION_COOLDOWN_IN_MINUTES, AIC_BACKEND_DOMAIN
 from challenge.models.submission import Submission
 from constants import FILE_SIZE_LIMIT
 
@@ -15,8 +14,8 @@ class SubmissionSerializer(serializers.ModelSerializer):
     @staticmethod
     def _download_link(obj: Submission):
         url = obj.file.url
-        if settings.DOMAIN not in url:
-            return settings.DOMAIN + url
+        if AIC_BACKEND_DOMAIN not in url:
+            return AIC_BACKEND_DOMAIN + url
         return url
 
     class Meta:
