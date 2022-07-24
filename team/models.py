@@ -8,9 +8,44 @@ class Team(models.Model):
     name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, unique=True)
     image = models.ImageField(upload_to='team_images', null=True, blank=True)
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='created_team')
+    is_finalist = models.BooleanField(default=False)
 
     def is_complete(self):
         return self.members.count() == TEAM_MAX_MEMBERS
+
+    def has_final_submission(self):
+        return self.submissions.filter(is_final=True).first() is not None
+
+    def final_submission(self):
+        return self.submissions.filter(is_final=True).first()
+
+    def rival_teams_wins(self):
+        as_second_teams = self.matches_first.exclude(winner=None).exclude(
+            winner=self).values_list(
+            'team2_id', flat=True
+        )
+        as_first_teams = self.matches_second.exclude(winner=None).exclude(winner=self).values_list(
+            'team1_id', flat=True
+        )
+        return list(as_first_teams) + list(as_second_teams)
+
+    def has_won_me(self, team):
+        as_second_teams = self.matches_first.filter(winner=team).exists()
+        as_first_teams = self.matches_second.filter(winner=team).exists()
+
+        return as_second_teams or as_first_teams
+
+    def has_match_with_me(self, team, tournament):
+        as_second_teams = self.matches_first.filter(
+            team2=team,
+            tournament=tournament
+        ).exists()
+        as_first_teams = self.matches_second.filter(
+            team1=team,
+            tournament=tournament
+        ).exists()
+
+        return as_second_teams or as_first_teams
 
     def reject_all_pending_invitations(self):
         invitations = self.invitations.filter(status="pending")

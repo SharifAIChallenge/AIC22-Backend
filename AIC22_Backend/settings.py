@@ -64,16 +64,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_tracking',
     'corsheaders',
-    'django.contrib.sites',
     'drf_spectacular',
     'allauth',
+    'website',
     'drf_yasg',
+    'django.contrib.sites',
     'django_filters',
     'django_summernote',
     'communication',
     'account',
-    'website',
     'team',
     'challenge',
     'django_crontab',
@@ -206,6 +207,18 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", 'wzxmjcqftxmuhggu')
 
 IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
+
+UPLOAD_PATHS = {
+    'MAP': '',
+    'MATCH_LOGS': '',
+    'CLAN_IMAGE': ''
+}
+
 CRONJOBS = [
     ('* * * * *', 'website.cron.handle')
 ]
+
+INFRA_GATEWAY_HOST = os.getenv('INFRA_GATEWAY_HOST', 'gateway.aichallenge.ir')
+INFRA_GATEWAY_AUTH_TOKEN = os.getenv('INFRA_GATEWAY_AUTH_TOKEN', 'a2lydG96ZW5kZWdp')
+SUBMISSION_COOLDOWN_IN_MINUTES = int(os.getenv('SUBMISSION_COOLDOWN_IN_MINUTES', '5'))
+RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic:aic22challenge@rabbitmq:5672')
