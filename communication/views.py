@@ -57,9 +57,9 @@ class UserTicketsListAPIView(GenericAPIView):
         )
 
     def get(self, request):
-        tickets = Ticket.objects.filter(
-            author=request.user
-        )
+        tickets = Ticket.objects.all().order_by('-status')
+        if not request.user.is_staff:
+            tickets = tickets.filter(author=request.user)
         data = LimitedTicketSerializer(instance=tickets, many=True).data
 
         return Response(
