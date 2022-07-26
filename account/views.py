@@ -42,9 +42,9 @@ class SignUpAPIView(GenericAPIView):
         try:
             with transaction.atomic():
                 user = serializer.save()
-                user.send_activation_email()
+                # user.send_activation_email()
                 # for without activation signup system
-                # user.send_successful_register_email()
+                user.send_successful_register_email()
         except Exception as e:
             print(e)
             # TODO: logger.error
