@@ -34,6 +34,7 @@ urlpatterns = [
                   path('api-auth/', include('rest_framework.urls')),
                   path('summernote/', include('django_summernote.urls')),
                   path('api/v1/team/', include('team.urls')),
+                  path('api/v1/communication/', include('communication.urls')),
                   path(
                       'api-doc/schema/swagger-ui/',
                       SpectacularSwaggerView.as_view(url_name='schema'),
@@ -45,8 +46,3 @@ urlpatterns = [
                       name='redoc',
                   ),
               ] + static(STATIC_URL, document_root=STATIC_ROOT) + static(MEDIA_URL, document_root=MEDIA_ROOT)
-
-if not IS_PRODUCTION:
-    urlpatterns += [
-        path('api/v1/communication/', include('communication.urls')),
-    ]
