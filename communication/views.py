@@ -80,6 +80,20 @@ class PublicTicketsListAPIView(GenericAPIView):
         )
 
 
+class AdminTicketsListAPIView(GenericAPIView):
+    serializer_class = LimitedTicketSerializer
+    queryset = Ticket.objects.all()
+    permission_classes = (IsAdminUser,)
+
+    def get(self, request):
+        tickets = self.get_queryset().order_by('-status')
+        data = self.get_serializer(instance=tickets, many=True).data
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )
+
+
 class ReplyListAPIView(GenericAPIView):
     serializer_class = ReplySerializer
     queryset = Reply.objects.all()
@@ -87,7 +101,8 @@ class ReplyListAPIView(GenericAPIView):
 
     def get(self, request, ticket_id):
         replies = self.get_queryset().filter(ticket__id=ticket_id)
-        data = ReplySerializer(replies, many=True, context={'request': request}).data
+        # data = ReplySerializer(replies, many=True, context={'request': request}).data
+        data = self.get_serializer(replies, many=True).data
         return Response(data)
 
     def post(self, request, ticket_id):
