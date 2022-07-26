@@ -42,6 +42,8 @@ class SignUpAPIView(GenericAPIView):
         try:
             with transaction.atomic():
                 user = serializer.save()
+                user.is_active = True
+                user.save()
                 # user.send_activation_email()
                 # for without activation signup system
                 # user.send_successful_register_email()
