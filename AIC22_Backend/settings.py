@@ -221,4 +221,4 @@ CRONJOBS = [
 INFRA_GATEWAY_HOST = os.getenv('INFRA_GATEWAY_HOST', 'gateway.aichallenge.ir')
 INFRA_GATEWAY_AUTH_TOKEN = os.getenv('INFRA_GATEWAY_AUTH_TOKEN', 'a2lydG96ZW5kZWdp')
 SUBMISSION_COOLDOWN_IN_MINUTES = int(os.getenv('SUBMISSION_COOLDOWN_IN_MINUTES', '5'))
-RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic:aic22challenge@rabbitmq:5672')
+RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic2022:aichallenge2022@rabbitmq:5672')
