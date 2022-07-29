@@ -130,7 +130,7 @@ class Submission(models.Model):
     def upload(self):  # todo
         from ..logics import upload_code
 
-        self.infra_token = upload_code(self.file)
+        self.infra_token = upload_code(self)
         self.status = SubmissionStatusTypes.UPLOADED
         self.save()
 
