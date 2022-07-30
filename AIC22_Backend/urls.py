@@ -35,6 +35,7 @@ urlpatterns = [
                   path('summernote/', include('django_summernote.urls')),
                   path('api/v1/team/', include('team.urls')),
                   path('api/v1/communication/', include('communication.urls')),
+                  path('api/infra-gateway/', include('infra_gateway.urls')),
                   path(
                       'api-doc/schema/swagger-ui/',
                       SpectacularSwaggerView.as_view(url_name='schema'),
