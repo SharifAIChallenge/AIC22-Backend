@@ -15,6 +15,8 @@ class InfraEventPushAPIView(GenericAPIView):
             data=request.data
         )
         print(request.data)
+        print('--------------------------------')
+        print(request.headers)
 
         serializer.is_valid(raise_exception=True)
 
