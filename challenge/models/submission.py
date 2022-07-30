@@ -133,6 +133,7 @@ class Submission(models.Model):
         self.infra_token = upload_code(self)
         self.status = SubmissionStatusTypes.UPLOADED
         self.save()
+        print('savedddddddddddd tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
 
     def compile(self):  # todo
         pass
