@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from account.serializers import ProfileSerializer
-from .models import Tag, Reply, Ticket
+from website.models import StaffGroup
+from .models import Tag, Reply, Ticket, Notification
 from account.models import User
 
 
@@ -82,3 +83,9 @@ class TicketSerializer(serializers.ModelSerializer):
         ).data
 
         return data
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
