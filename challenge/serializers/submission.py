@@ -14,9 +14,11 @@ class SubmissionSerializer(serializers.ModelSerializer):
     @staticmethod
     def _download_link(obj: Submission):
         url = obj.file.url
-        url_end = url[-40:]
-        final_url = AIC_MINIGAME_DOMAIN + '/code/' + url_end
-        return final_url
+        if url:
+            url_end = url[-40:]
+            final_url = AIC_MINIGAME_DOMAIN + '/code/' + url_end
+            return final_url
+        return "null"
 
     class Meta:
         model = Submission
