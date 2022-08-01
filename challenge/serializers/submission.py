@@ -16,7 +16,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
         url = obj.file.url
         if url:
             code_id = url[-40:-4]
-            final_url = AIC_MINIO_DOMAIN + '/code/' + code_id
+            final_url = AIC_MINIO_DOMAIN + '/code/' + code_id + '.zip'  # shit this code
             return final_url
         return "null"
 
