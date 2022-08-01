@@ -10,7 +10,7 @@ def upload_code(submission):
     :param submission: Submission Model
     :return: file token or raises error with error message
     """
-
+    print('----- trying to upload code to infra ---- ', submission.id, submission.language)
     response = requests.post(
         settings.INFRA_GATEWAY_HOST + "/upload/code",
         files={'file': submission.file},
