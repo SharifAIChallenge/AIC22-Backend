@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from AIC22_Backend.settings import SUBMISSION_COOLDOWN_IN_MINUTES, AIC_GATEWAY_DOMAIN
+from AIC22_Backend.settings import SUBMISSION_COOLDOWN_IN_MINUTES, AIC_MINIO_DOMAIN
 from challenge.models.submission import Submission
 from constants import FILE_SIZE_LIMIT
 
@@ -16,7 +16,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
         url = obj.file.url
         if url:
             code_id = url[-40:-4]
-            final_url = AIC_GATEWAY_DOMAIN + '/download/code?code_id=' + code_id
+            final_url = AIC_MINIO_DOMAIN + '/code/' + code_id
             return final_url
         return "null"
 
