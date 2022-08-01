@@ -46,7 +46,7 @@ stages:
   script:
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} --constraint-add node.labels.job==backend  --mount-add type=volume,source=django-volume,target=/app/media aic_backend_core_${ENVIRONMENT}"
     - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${STATIC_IMAGE} --constraint-add node.labels.job==backend --mount-add type=volume,source=django-volume,target=/app/media aic_backend_static_${ENVIRONMENT}"
-    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} --constraint-add node.labels.job==backend  --mount-add type=volume,source=django-volume,target=/app/media --entrypoint 'celery -A AIC22_Backend worker -l info -E --concurrency=10' celery
+    - ssh -i $SSH_PRIVATE_KEY -o "StrictHostKeyChecking=no" ${SWARM_MASTER_NODE} -t "docker service update --image ${CORE_IMAGE} --constraint-add node.labels.job==backend  --mount-add type=volume,source=django-volume,target=/app/media --entrypoint 'celery -A AIC22_Backend worker -l info -E --concurrency=10' celery"
 
 
 stg-build:
