@@ -4,17 +4,18 @@ from AIC22_Backend import settings
 from challenge.models import Match
 
 
-def upload_code(file):
+def upload_code(submission):
     """
     This function uploads a code file to infrastructure synchronously
-    :param file: File field from TeamSubmission model
+    :param submission: Submission Model
     :return: file token or raises error with error message
     """
 
     response = requests.post(
         settings.INFRA_GATEWAY_HOST + "/upload/code",
-        files={'file': file},
-        headers={'Authorization': f'Token {settings.INFRA_GATEWAY_AUTH_TOKEN}'}
+        files={'file': submission.file},
+        data={'language': submission.language},
+        headers={'Authorization': f'{settings.INFRA_GATEWAY_AUTH_TOKEN}'}
     )
     print(response.status_code, response.json(), "==== Upload Code ====")
 

@@ -164,17 +164,17 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
             status=status.HTTP_406_NOT_ACCEPTABLE
         )
 
-    # def put(self, request, submission_id):
-    #     submission = get_object_or_404(Submission, id=submission_id)
-    #     try:
-    #         submission.set_final()
-    #         return Response(
-    #             data={'details': 'Final submission changed successfully'},
-    #             status=status.HTTP_200_OK
-    #         )
-    #     except ValueError as e:
-    #         return Response(data={'errors': [str(e)]},
-    #                         status=status.HTTP_406_NOT_ACCEPTABLE)
+    def put(self, request, submission_id):
+        submission = get_object_or_404(Submission, id=submission_id)
+        try:
+            submission.set_final()
+            return Response(
+                data={'details': 'Final submission changed successfully'},
+                status=status.HTTP_200_OK
+            )
+        except ValueError as e:
+            return Response(data={'errors': [str(e)]},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class TournamentAPIView(GenericAPIView):

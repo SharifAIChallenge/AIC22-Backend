@@ -80,3 +80,14 @@ class Tag(TimeStampedModel):
 
     def __str__(self):
         return f'{self.title}'
+
+
+class Notification(models.Model):
+    body = models.TextField(default="")
+    title = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    final_event = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ('-created_at', )

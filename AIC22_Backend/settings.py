@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'team',
     'challenge',
     'django_crontab',
+    'infra_gateway',
 ]
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -199,6 +200,7 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 AIC_BACKEND_DOMAIN = config("AIC_BACKEND_DOMAIN", 'https://api.aichallenge.ir')
+AIC_MINIGAME_DOMAIN = config("AIC_MINIGAME_DOMAIN", "https://minio.aichallenge.ir")
 AIC_DOMAIN = config("AIC_DOMAIN", 'https://aichallenge.ir')
 EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", 587)
@@ -221,4 +223,5 @@ CRONJOBS = [
 INFRA_GATEWAY_HOST = os.getenv('INFRA_GATEWAY_HOST', 'gateway.aichallenge.ir')
 INFRA_GATEWAY_AUTH_TOKEN = os.getenv('INFRA_GATEWAY_AUTH_TOKEN', 'a2lydG96ZW5kZWdp')
 SUBMISSION_COOLDOWN_IN_MINUTES = int(os.getenv('SUBMISSION_COOLDOWN_IN_MINUTES', '5'))
-RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic:aic22challenge@rabbitmq:5672')
+RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic2022:aichallenge2022@188.121.111.163:5672')
+INFRA_TOKEN = os.getenv('INFRA_TOKEN', 'a2lydG96ZW5kZWdp')

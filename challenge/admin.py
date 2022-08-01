@@ -9,6 +9,7 @@ from challenge.models.match_info import MatchInfo
 from challenge.models.tournament import Tournament
 from challenge.models.level_based_tournament import LevelBasedTournament
 from challenge.models.map import Map
+from .models import Submission
 
 from .resources import MatchResource
 
@@ -58,3 +59,15 @@ class MapAdmin(ModelAdmin):
     list_editable = ('file', 'active')
     list_filter = ('active',)
     search_fields = ('name', 'infra_token')
+
+
+@admin.register(Submission)
+class SubmissionAdmin(ModelAdmin):
+    list_display = ('id', 'team', 'user', 'file', 'submit_time', 'is_final',
+                    'status', 'infra_token', 'is_mini_game',
+                    'is_mini_game_final')
+    list_display_links = ('id',)
+
+    list_filter = ('is_final', 'status', 'submit_time', 'is_mini_game',
+                   'is_mini_game_final')
+    search_fields = ('infra_token',)

@@ -1,13 +1,16 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated, \
     IsAdminUser
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from account.permissions import ProfileComplete
-from .serializers import LimitedTicketSerializer, ReplySerializer, TagSerializer, TicketSerializer
-from .models import Reply, Tag, Ticket
+from permissions import AdminWritePermission
+from .serializers import LimitedTicketSerializer, ReplySerializer, TagSerializer, TicketSerializer, \
+    NotificationSerializer
+from .models import Reply, Tag, Ticket, Notification
 from .services.telegram import TelegramInterface
 
 
@@ -173,5 +176,22 @@ class TagAPIView(GenericAPIView):
 
         return Response(
             data={"detail": "Tag is created"},
+            status=status.HTTP_200_OK
+        )
+
+
+class NotificationViewSet(GenericAPIView):
+    permission_classes = (IsAuthenticated, ProfileComplete | IsAdminUser)
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+
+    def get(self, request):
+        data = self.get_serializer(
+            instance=self.get_queryset(),
+            many=True
+        ).data
+
+        return Response(
+            data={'data': data},
             status=status.HTTP_200_OK
         )
