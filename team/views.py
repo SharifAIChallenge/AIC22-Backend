@@ -317,7 +317,7 @@ class AllTeamsAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamInfoSerializer
     pagination_class = TeamPagination
-    queryset = Team.humans.all()
+    queryset = Team.objects.all()
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
