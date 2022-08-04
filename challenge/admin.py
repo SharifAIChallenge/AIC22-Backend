@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from import_export.admin import ImportExportModelAdmin
+#from import_export.admin import ImportExportModelAdmin
 
 from challenge.models.match import Match
 from challenge.models.league import League
@@ -24,7 +24,7 @@ class LeagueAdmin(ModelAdmin):
 
 
 @admin.register(Match)
-class MatchAdmin(ImportExportModelAdmin):
+class MatchAdmin(ModelAdmin):
     list_display = ('id', 'team1', 'team2', 'status', 'winner', 'tournament',
                     'infra_token')
     list_display_links = ('id',)
