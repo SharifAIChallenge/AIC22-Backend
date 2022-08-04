@@ -212,9 +212,9 @@ IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
 
 UPLOAD_PATHS = {
-    'MAP': '',
-    'MATCH_LOGS': '',
-    'CLAN_IMAGE': ''
+    'MAP': '/map/',
+    'MATCH_LOGS': '/match_logs/',
+    'CLAN_IMAGE': '/clan_images/'
 }
 
 CRONJOBS = [
