@@ -1,8 +1,11 @@
+import math
+
 from django.conf import settings
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
 
+from challenge.models.tournament import TournamentTypes
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
 
@@ -163,3 +166,40 @@ class Match(TimeStampedModel):
             )
 
         return Match.create_match(bot, team, bot_tournament, game_map, priority=1)
+
+    def update_score(self, k=30):
+        if self.tournament.scoreboard.freeze:
+            return
+        winner_number = self.winner_number
+
+        team1_row = self.tournament.scoreboard.get_team_row(team=self.team1)
+        team2_row = self.tournament.scoreboard.get_team_row(team=self.team2)
+
+        p1 = (1.0 / (1.0 + math.pow(
+            10,
+            (team2_row.score - team1_row.score) / 400
+        )))
+        p2 = (1.0 / (1.0 + math.pow(
+            10,
+            (team1_row.score - team2_row.score) / 400
+        )))
+
+        if self.tournament.type not in [TournamentTypes.NORMAL,
+                                        TournamentTypes.FINAL]:
+            team1_row.score = team1_row.score + k * (2 - winner_number - p1)
+            team2_row.score = team2_row.score + k * (winner_number - 1 - p2)
+        else:
+            if winner_number == 1:
+                team1_row.score += 15
+            elif winner_number == 2:
+                team2_row.score += 15
+
+        if winner_number == 1:
+            team1_row.wins += 1
+            team2_row.losses += 1
+        elif winner_number == 2:
+            team2_row.wins += 1
+            team1_row.losses += 1
+
+        team1_row.save()
+        team2_row.save()

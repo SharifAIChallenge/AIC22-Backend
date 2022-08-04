@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (SubmissionsListAPIView, SubmissionAPIView, TournamentAPIView, MatchAPIView,
                     LobbyAPIView, RequestAPIView, RequestListAPIView, LevelBasedTournamentAPIView,
-                    LevelBasedTournamentAddTeamsAPIView, ScoreboardAPIView)
+                    LevelBasedTournamentAddTeamsAPIView, ScoreboardAPIView, FriendlyScoreboardAPIView)
 
 urlpatterns = [
     path('submission', view=SubmissionAPIView.as_view(), name='submission_api'),
@@ -21,4 +21,5 @@ urlpatterns = [
         name='level_based_tournament_add_teams'
     ),
     path('scoreboard/<int:tournament_id>', view=ScoreboardAPIView.as_view(), name='scoreboard'),
+    path('friendly_scoreboard', view=FriendlyScoreboardAPIView.as_view(), name='friendly_scoreboard'),
 ]

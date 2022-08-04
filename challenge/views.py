@@ -359,3 +359,11 @@ class ScoreboardAPIView(GenericAPIView):
         no_match_teams = ScoreboardRow.objects.filter(id__in=no_match_teams)
 
         return list(has_match_teams) + list(no_match_teams)
+
+
+class FriendlyScoreboardAPIView(GenericAPIView):
+    def get(self, request):
+        return ScoreboardAPIView.as_view()(
+            request._request,
+            Tournament.get_friendly_tournament().id
+        )
