@@ -321,13 +321,13 @@ class AllTeamsAPIView(GenericAPIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
-        page = self.paginate_queryset(self.get_queryset())
+        page = self.paginate_queryset(self.get_queryset(request))
         data = self.get_serializer(instance=page, many=True).data
         return self.get_paginated_response(
             data={'data': data}
         )
 
-    def get_queryset(self):
+    def get_queryset(self, request):
         name = self.request.query_params.get('name')
 
         queryset = Team.objects.all()  # todo: restrict this to humans
