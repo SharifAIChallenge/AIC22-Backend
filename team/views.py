@@ -338,7 +338,10 @@ class AllTeamsAPIView(GenericAPIView):
                                                   queryset
                                                   )
                                            ]
-
+        try:
+            teams_with_final_sublission_ids.remove(request.user.team.id)
+        except ValueError:
+            pass
         queryset = queryset.filter(
             id__in=teams_with_final_sublission_ids)
 
