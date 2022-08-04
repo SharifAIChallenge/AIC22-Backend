@@ -10,6 +10,7 @@ from challenge.models.tournament import Tournament
 from challenge.models.level_based_tournament import LevelBasedTournament
 from challenge.models.map import Map
 from .models import Submission
+from .models.request import Request
 
 from .resources import MatchResource
 
@@ -59,6 +60,11 @@ class MapAdmin(ModelAdmin):
     list_editable = ('file', 'active')
     list_filter = ('active',)
     search_fields = ('name', 'infra_token')
+
+
+@admin.register(Request)
+class RequestAdmin(ModelAdmin):
+    pass
 
 
 @admin.register(Submission)
