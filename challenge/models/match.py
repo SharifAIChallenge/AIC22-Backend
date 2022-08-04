@@ -144,8 +144,7 @@ class Match(TimeStampedModel):
         friendly_tournament = Tournament.get_friendly_tournament()
 
         if friendly_tournament is None:
-            raise Exception(
-                "Admin should initialize a friendly tournament first ...")
+            raise Exception("Admin should initialize a friendly tournament first ...")
 
         return Match.create_match(team1, team2, friendly_tournament, game_map, priority=1)
 
