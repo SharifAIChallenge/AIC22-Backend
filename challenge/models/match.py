@@ -167,6 +167,13 @@ class Match(TimeStampedModel):
 
         return Match.create_match(bot, team, bot_tournament, game_map, priority=1)
 
+    @property
+    def winner_number(self):
+        if self.winner == self.team1:
+            return 1
+        if self.winner == self.team2:
+            return 2
+
     def update_score(self, k=30):
         if self.tournament.scoreboard.freeze:
             return
