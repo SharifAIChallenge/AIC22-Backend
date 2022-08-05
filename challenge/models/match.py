@@ -5,6 +5,7 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
 
+from challenge.logics import download_log
 from challenge.models.tournament import TournamentTypes
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
@@ -210,3 +211,25 @@ class Match(TimeStampedModel):
 
         team1_row.save()
         team2_row.save()
+
+    @property
+    def game_log(self):
+
+        if self.winner:
+            return download_log(
+                match_infra_token=self.infra_token
+            )
+
+        return ''
+
+    @property
+    def server_log(self):
+
+        if self.status not in [MatchStatusTypes.FREEZE,
+                               MatchStatusTypes.PENDING,
+                               MatchStatusTypes.RUNNING]:
+            return download_log(
+                match_infra_token=self.infra_token,
+                file_infra_token=f'{self.infra_token}.out'
+            )
+        return ''

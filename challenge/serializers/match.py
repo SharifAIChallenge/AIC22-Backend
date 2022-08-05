@@ -28,6 +28,7 @@ class MatchSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Match):
         data = super().to_representation(instance)
+        data['log'] = f'https://cnd.aichallenge.ir/log/{instance.infra_token}.log'
         # data['log'] = instance.game_log
         # data['server_log'] = instance.server_log
 
