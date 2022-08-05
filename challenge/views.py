@@ -79,7 +79,7 @@ class RequestListAPIView(GenericAPIView):
                     if request_type else
                     queryset)
 
-        return queryset
+        return queryset.order_by('-id')
 
 
 class RequestAPIView(GenericAPIView):
