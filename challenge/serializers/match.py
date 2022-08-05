@@ -30,6 +30,8 @@ class MatchSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         if instance.status in ['successful', 'failed']:
             data['log'] = f'https://cdn.aichallenge.ir/log/{instance.infra_token}/{instance.infra_token}.log'
+        if self.context['request'].user.team.name == data['team2']['name']:
+            data['team1'], data['team2'] = data['team2'], data['team1']
         # data['log'] = instance.game_log
         # data['server_log'] = instance.server_log
 
