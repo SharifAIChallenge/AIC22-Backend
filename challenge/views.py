@@ -31,7 +31,7 @@ class RequestListAPIView(GenericAPIView):
     serializer_class = RequestSerializer
     permission_classes = (IsAuthenticated, HasTeam, TeamHasFinalSubmission,
                           IsFinalist)
-    queryset = Request.objects.all()
+    queryset = Request.objects.all().order_by('-id')
 
     def get(self, request):
         data = self.get_serializer(
@@ -79,7 +79,7 @@ class RequestListAPIView(GenericAPIView):
                     if request_type else
                     queryset)
 
-        return queryset.order_by('-id')
+        return queryset
 
 
 class RequestAPIView(GenericAPIView):
