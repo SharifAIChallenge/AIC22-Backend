@@ -11,7 +11,7 @@ from challenge.models.level_based_tournament import LevelBasedTournament
 from challenge.models.map import Map
 from .models import Submission
 from .models.request import Request
-from .models.scoreboard import Scoreboard
+from .models.scoreboard import Scoreboard, ScoreboardRow
 
 from .resources import MatchResource
 
@@ -56,6 +56,11 @@ class LevelBasedTournamentAdmin(ModelAdmin):
 
 @admin.register(Scoreboard)
 class ScoreboardAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(ScoreboardRow)
+class ScoreboardRowAdmin(ModelAdmin):
     pass
 
 
