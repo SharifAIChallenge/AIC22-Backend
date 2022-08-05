@@ -5,7 +5,6 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
 
-from challenge.logics import download_log
 from challenge.models.tournament import TournamentTypes
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
@@ -214,6 +213,7 @@ class Match(TimeStampedModel):
 
     @property
     def game_log(self):
+        from challenge.logics import download_log
 
         if self.winner:
             return download_log(
@@ -224,6 +224,7 @@ class Match(TimeStampedModel):
 
     @property
     def server_log(self):
+        from challenge.logics import download_log
 
         if self.status not in [MatchStatusTypes.FREEZE,
                                MatchStatusTypes.PENDING,
