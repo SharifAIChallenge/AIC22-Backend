@@ -18,10 +18,13 @@ class InfraEventPushAPIView(GenericAPIView):
         print('--------------------------------')
         print(request.headers)
 
+        print("////// Check validation //////")
         serializer.is_valid(raise_exception=True)
 
+        print("/////////////// Save ///////////////")
         serializer.save()
 
+        print("/////////// Send response ///////")
         return Response(
             data={
                 "data": serializer.data

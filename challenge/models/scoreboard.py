@@ -20,6 +20,29 @@ class Scoreboard(TimeStampedModel):
             return row
         return None
 
+    def get_team_row(self, team):
+        row = self.rows.filter(team=team).last()
+        if not row:
+            row = ScoreboardRow.objects.create(scoreboard=self, team=team)
+
+        return row
+
+    @staticmethod
+    def merge_scoreboards(src: 'Scoreboard', dest: 'Scoreboard',
+                          cost=1000, coef=1):
+        for row in src.rows.all():
+            dest_row = dest.rows.filter(team_id=row.team_id).last()
+            if not dest_row:
+                continue
+            dest_row.wins += row.wins
+            dest_row.losses += row.losses
+            dest_row.draws += row.draws
+            dest_row.score += (row.score - cost) * coef
+            dest_row.save()
+
+    def __str__(self):
+        return f'{self.tournament.name}'
+
 
 class ScoreboardRow(TimeStampedModel):
     scoreboard = models.ForeignKey(

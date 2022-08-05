@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
 from account.paginations import CustomPagination
+from .paginations import TeamPagination
 from .serializers import TeamSerializer, TeamInfoSerializer, UserReceivedInvitationSerializer, \
     TeamPendingInvitationSerializer, TeamToUserInvitationSerializer, UserToTeamInvitationSerializer
 from .models import Team, Invitation, InvitationStatusTypes, InvitationTypes
@@ -309,3 +311,41 @@ class UserSentInvitationListAPIView(GenericAPIView):
             data={"message": "your invitation sent"},
             status=status.HTTP_201_CREATED
         )
+
+
+class AllTeamsAPIView(GenericAPIView):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = TeamInfoSerializer
+    pagination_class = TeamPagination
+    queryset = Team.objects.all()
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get(self, request):
+        page = self.paginate_queryset(self.get_queryset(request))
+        data = self.get_serializer(instance=page, many=True).data
+        return self.get_paginated_response(
+            data={'data': data}
+        )
+
+    def get_queryset(self, request):
+        name = self.request.query_params.get('name')
+
+        queryset = Team.objects.all()  # todo: restrict this to humans
+
+        teams_with_final_sublission_ids = [team.id for team in
+                                           filter(lambda
+                                                      team: team.has_final_submission(),
+                                                  queryset
+                                                  )
+                                           ]
+        try:
+            teams_with_final_sublission_ids.remove(request.user.team.id)
+        except ValueError:
+            pass
+        queryset = queryset.filter(
+            id__in=teams_with_final_sublission_ids)
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        return queryset

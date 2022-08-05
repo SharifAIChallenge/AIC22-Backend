@@ -1,8 +1,11 @@
+import math
+
 from django.conf import settings
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
 
+from challenge.models.tournament import TournamentTypes
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
 
@@ -94,13 +97,12 @@ class Match(TimeStampedModel):
         return match
 
     def run_match(self, priority=0):
-        # from apps.infra_gateway.functions import run_match
-        # self.infra_token = run_match(
-        #     match=self,
-        #     priority=priority
-        # )
-        # self.save()
-        pass  # TODO
+        from ..logics import run_match
+        self.infra_token = run_match(
+            match=self,
+            priority=priority
+        )
+        self.save()
 
     @staticmethod
     def run_matches(matches, priority=0):
@@ -145,8 +147,7 @@ class Match(TimeStampedModel):
         friendly_tournament = Tournament.get_friendly_tournament()
 
         if friendly_tournament is None:
-            raise Exception(
-                "Admin should initialize a friendly tournament first ...")
+            raise Exception("Admin should initialize a friendly tournament first ...")
 
         return Match.create_match(team1, team2, friendly_tournament, game_map, priority=1)
 
@@ -165,3 +166,71 @@ class Match(TimeStampedModel):
             )
 
         return Match.create_match(bot, team, bot_tournament, game_map, priority=1)
+
+    @property
+    def winner_number(self):
+        if self.winner == self.team1:
+            return 1
+        if self.winner == self.team2:
+            return 2
+
+    def update_score(self, k=30):
+        if self.tournament.scoreboard.freeze:
+            return
+        winner_number = self.winner_number
+
+        team1_row = self.tournament.scoreboard.get_team_row(team=self.team1)
+        team2_row = self.tournament.scoreboard.get_team_row(team=self.team2)
+
+        p1 = (1.0 / (1.0 + math.pow(
+            10,
+            (team2_row.score - team1_row.score) / 400
+        )))
+        p2 = (1.0 / (1.0 + math.pow(
+            10,
+            (team1_row.score - team2_row.score) / 400
+        )))
+
+        if self.tournament.type not in [TournamentTypes.NORMAL,
+                                        TournamentTypes.FINAL]:
+            team1_row.score = team1_row.score + k * (2 - winner_number - p1)
+            team2_row.score = team2_row.score + k * (winner_number - 1 - p2)
+        else:
+            if winner_number == 1:
+                team1_row.score += 15
+            elif winner_number == 2:
+                team2_row.score += 15
+
+        if winner_number == 1:
+            team1_row.wins += 1
+            team2_row.losses += 1
+        elif winner_number == 2:
+            team2_row.wins += 1
+            team1_row.losses += 1
+
+        team1_row.save()
+        team2_row.save()
+
+    @property
+    def game_log(self):
+        from challenge.logics import download_log
+
+        if self.winner:
+            return download_log(
+                match_infra_token=self.infra_token
+            )
+
+        return ''
+
+    @property
+    def server_log(self):
+        from challenge.logics import download_log
+
+        if self.status not in [MatchStatusTypes.FREEZE,
+                               MatchStatusTypes.PENDING,
+                               MatchStatusTypes.RUNNING]:
+            return download_log(
+                match_infra_token=self.infra_token,
+                file_infra_token=f'{self.infra_token}.out'
+            )
+        return ''

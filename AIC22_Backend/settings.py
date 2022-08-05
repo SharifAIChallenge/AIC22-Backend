@@ -201,7 +201,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 AIC_BACKEND_DOMAIN = config("AIC_BACKEND_DOMAIN", 'https://api.aichallenge.ir')
 AIC_GATEWAY_DOMAIN = config("AIC_GATEWAY_DOMAIN", "https://gateway.aichallenge.ir")
-AIC_MINIO_DOMAIN = config("AIC_GATEWAY_DOMAIN", "https://minio.aichallenge.ir")
+AIC_MINIO_DOMAIN = config("AIC_MINIO_DOMAIN", "https://cdn.aichallenge.ir")
 AIC_DOMAIN = config("AIC_DOMAIN", 'https://aichallenge.ir')
 EMAIL_HOST = config("EMAIL_HOST", 'smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", 587)
@@ -212,9 +212,9 @@ IS_PRODUCTION = config("ENVIRONMENT", "stg") == 'prod'
 
 
 UPLOAD_PATHS = {
-    'MAP': '',
-    'MATCH_LOGS': '',
-    'CLAN_IMAGE': ''
+    'MAP': 'map/',
+    'MATCH_LOGS': 'match_logs/',
+    'CLAN_IMAGE': 'clan_images/'
 }
 
 CRONJOBS = [

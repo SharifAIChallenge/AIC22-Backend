@@ -6,4 +6,4 @@ from challenge.models.map import Map
 class MapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
-        fields = ('id', 'name', 'active', 'file')
+        fields = ('id', 'name', 'active', 'file', 'config_file')

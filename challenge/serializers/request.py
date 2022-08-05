@@ -37,8 +37,10 @@ class RequestSerializer(serializers.ModelSerializer):
             raise NoFinalSubmission()
         if target_team == request.user.team:
             raise SelfRequestException()
-        elif Request.objects.filter(target_team=target_team,
-                                    source_team=request.user.team,
-                                    status='pending').exists():
+        elif Request.objects.filter(
+                target_team=target_team,
+                source_team=request.user.team,
+                status='pending'
+        ).exists():
             raise DuplicatePendingRequestException()
         return data

@@ -22,11 +22,11 @@ def upload_code(submission):
     return response.json()['code_id']
 
 
-def upload_map(file):
+def upload_map(file, config_file):
     print("ommad upload kone", file.size)
     response = requests.post(
         settings.INFRA_GATEWAY_HOST + "/upload/map",
-        files={'file': file},
+        files={'file': file, 'json-file': config_file},
         headers={'Authorization': f'{settings.INFRA_GATEWAY_AUTH_TOKEN}'}
     )
     print(response.status_code, response.json(), "==== Upload Map ====")

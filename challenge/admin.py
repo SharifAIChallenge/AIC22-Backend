@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from import_export.admin import ImportExportModelAdmin
+#from import_export.admin import ImportExportModelAdmin
 
 from challenge.models.match import Match
 from challenge.models.league import League
@@ -10,6 +10,8 @@ from challenge.models.tournament import Tournament
 from challenge.models.level_based_tournament import LevelBasedTournament
 from challenge.models.map import Map
 from .models import Submission
+from .models.request import Request
+from .models.scoreboard import Scoreboard, ScoreboardRow
 
 from .resources import MatchResource
 
@@ -24,7 +26,7 @@ class LeagueAdmin(ModelAdmin):
 
 
 @admin.register(Match)
-class MatchAdmin(ImportExportModelAdmin):
+class MatchAdmin(ModelAdmin):
     list_display = ('id', 'team1', 'team2', 'status', 'winner', 'tournament',
                     'infra_token')
     list_display_links = ('id',)
@@ -52,6 +54,16 @@ class LevelBasedTournamentAdmin(ModelAdmin):
     pass
 
 
+@admin.register(Scoreboard)
+class ScoreboardAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(ScoreboardRow)
+class ScoreboardRowAdmin(ModelAdmin):
+    pass
+
+
 @admin.register(Map)
 class MapAdmin(ModelAdmin):
     list_display = ('id', 'name', 'file', 'active', 'infra_token')
@@ -59,6 +71,11 @@ class MapAdmin(ModelAdmin):
     list_editable = ('file', 'active')
     list_filter = ('active',)
     search_fields = ('name', 'infra_token')
+
+
+@admin.register(Request)
+class RequestAdmin(ModelAdmin):
+    pass
 
 
 @admin.register(Submission)
