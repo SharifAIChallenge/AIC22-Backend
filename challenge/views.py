@@ -186,7 +186,7 @@ class TournamentAPIView(GenericAPIView):
     ).filter(is_hidden=False)
 
     def get(self, request):
-        queryset = self.get_queryset().order_by('id')
+        queryset = self.get_queryset().order_by('-id')
         data = self.get_serializer(queryset, many=True).data
 
         return Response(
