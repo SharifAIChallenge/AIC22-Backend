@@ -6,7 +6,7 @@ from challenge.models.tournament import Tournament
 class TournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tournament
-        fields = ('id', 'name', 'type', 'start_time', 'end_time', 'participants')
+        fields = ('id', 'name', 'type', 'start_time', 'end_time')
 
     def to_representation(self, instance: Tournament):
         data = super().to_representation(instance)
