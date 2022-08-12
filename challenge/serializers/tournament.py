@@ -10,7 +10,9 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Tournament):
         data = super().to_representation(instance)
-        data['participants'] = len(instance.teams())
+        teams = instance.teams()
+        data['participants'] = len(teams)
+        data['is_member'] = self.context['request'].user.team.id in teams
 
         return data
 
