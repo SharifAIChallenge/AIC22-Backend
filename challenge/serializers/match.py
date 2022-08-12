@@ -21,6 +21,7 @@ class MatchSerializer(serializers.ModelSerializer):
     team1 = MatchTeamSerializer(read_only=True)
     team2 = MatchTeamSerializer(read_only=True)
     winner = MatchTeamSerializer(read_only=True)
+    tournament = MatchTournamentSerializer(read_only=True)
 
     class Meta:
         model = Match

@@ -244,11 +244,8 @@ class MatchAPIView(GenericAPIView):
             tournament_id = int(tournament_id)
         except TypeError:
             tournament_id = None
-
-        if not tournament_id:
-            queryset = self.queryset.exclude(
-                tournament__type=TournamentTypes.NORMAL)
-        else:
+        queryset = self.queryset
+        if tournament_id:
             queryset = self.queryset.filter(
                 tournament_id=tournament_id
             )
