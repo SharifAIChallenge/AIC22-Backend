@@ -8,6 +8,14 @@ class TournamentSerializer(serializers.ModelSerializer):
         model = Tournament
         fields = ('id', 'name', 'type', 'start_time', 'end_time')
 
+    def to_representation(self, instance: Tournament):
+        data = super().to_representation(instance)
+        teams = instance.teams()
+        data['participants'] = len(teams)
+        data['is_member'] = self.context['request'].user.team in teams
+
+        return data
+
 
 class LevelBasedTournamentUpdateSerializer(serializers.ModelSerializer):
     class Meta:

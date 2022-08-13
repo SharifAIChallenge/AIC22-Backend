@@ -186,7 +186,7 @@ class TournamentAPIView(GenericAPIView):
     ).filter(is_hidden=False)
 
     def get(self, request):
-        queryset = self.get_queryset().order_by('id')
+        queryset = self.get_queryset().order_by('-id')
         data = self.get_serializer(queryset, many=True).data
 
         return Response(
@@ -244,11 +244,8 @@ class MatchAPIView(GenericAPIView):
             tournament_id = int(tournament_id)
         except TypeError:
             tournament_id = None
-
-        if not tournament_id:
-            queryset = self.queryset.exclude(
-                tournament__type=TournamentTypes.NORMAL)
-        else:
+        queryset = self.queryset
+        if tournament_id:
             queryset = self.queryset.filter(
                 tournament_id=tournament_id
             )

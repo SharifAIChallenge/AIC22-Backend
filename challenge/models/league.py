@@ -16,10 +16,10 @@ class League(models.Model):
     def pre_save(self):
 
         if not self.id:
-            queryset = Team.objects.filter(is_finalist=True)
+            queryset = Team.objects.filter(is_finalist=False)
 
             teams = [team for team in queryset if team.has_final_submission()]
-
+            print(len(teams), '*****', flush=True)
             tournament = Tournament.create_tournament(
                 name=self.tournament_name,
                 start_time=self.start_time,
