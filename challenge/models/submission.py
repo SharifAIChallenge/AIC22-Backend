@@ -44,10 +44,14 @@ class SubmissionStatusTypes:
 def get_submission_file_directory(instance, filename):
     return os.path.join(
         'submissions',
-        instance.team.name,
+        normalize_team_name(instance.team.name),
         str(instance.user.id),
         filename + uuid.uuid4().__str__() + '.zip'
     )
+
+
+def normalize_team_name(name: str) -> str:
+    return name.replace('/', '-')
 
 
 class Submission(models.Model):
