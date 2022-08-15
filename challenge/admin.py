@@ -9,6 +9,7 @@ from challenge.models.match_info import MatchInfo
 from challenge.models.tournament import Tournament
 from challenge.models.level_based_tournament import LevelBasedTournament
 from challenge.models.map import Map
+from django.http import HttpResponse
 from .models import Submission
 from .models.request import Request
 from .models.scoreboard import Scoreboard, ScoreboardRow
