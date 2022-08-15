@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
 # from import_export.admin import ImportExportModelAdmin
+import csv
 
 from challenge.models.match import Match
 from challenge.models.league import League
