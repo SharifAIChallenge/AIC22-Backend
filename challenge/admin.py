@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-#from import_export.admin import ImportExportModelAdmin
+# from import_export.admin import ImportExportModelAdmin
 
 from challenge.models.match import Match
 from challenge.models.league import League
@@ -80,6 +80,24 @@ class RequestAdmin(ModelAdmin):
 
 @admin.register(Submission)
 class SubmissionAdmin(ModelAdmin):
+    actions = ["export_as_csv"]
+
+    def export_as_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    export_as_csv.short_description = "Export Selected"
+
     list_display = ('id', 'team', 'user', 'file', 'submit_time', 'is_final',
                     'status', 'infra_token', 'is_mini_game',
                     'is_mini_game_final')
