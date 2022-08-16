@@ -42,7 +42,7 @@ class StaffsListViewSet(
         url_path=r'teams/(?P<group_pk>\w+)'
     )
     def teams(self, request, group_pk):
-        queryset = StaffTeam.objects.filter(group=group_pk)
+        queryset = StaffTeam.humans.filter(group=group_pk)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

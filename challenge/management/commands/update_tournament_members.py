@@ -12,7 +12,7 @@ class Command(BaseCommand):
         tournament = Tournament.objects.all().order_by('-id').first()
         if tournament.start_time > datetime.now().replace(tzinfo=pytz.UTC):
             tournament_teams = tournament.teams()
-            total_teams = [team for team in Team.objects.all() if team.has_final_submission()]
+            total_teams = [team for team in Team.humans.all() if team.has_final_submission()]
             for team in total_teams:
                 if team not in tournament_teams:
                     tournament.scoreboard.add_scoreboard_row(
