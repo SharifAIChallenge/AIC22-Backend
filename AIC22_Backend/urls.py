@@ -34,6 +34,7 @@ urlpatterns = [
                   path('api-auth/', include('rest_framework.urls')),
                   path('summernote/', include('django_summernote.urls')),
                   path('api/v1/team/', include('team.urls')),
+                  path('api/v1/payment/', include('payment.urls')),
                   path('api/v1/communication/', include('communication.urls')),
                   path('api/infra-gateway/', include('infra_gateway.urls')),
                   path(
