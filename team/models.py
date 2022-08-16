@@ -15,6 +15,7 @@ class BotQueryManager(models.Manager):
 
 
 class Team(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, unique=True)
     image = models.ImageField(upload_to='team_images', null=True, blank=True)
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='created_team')
