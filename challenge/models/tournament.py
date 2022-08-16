@@ -76,7 +76,7 @@ class Tournament(TimeStampedModel):
         from team.models import Team
         team_ids = self.scoreboard.rows.values_list('team_id', flat=True)
 
-        return Team.objects.filter(id__in=team_ids)
+        return Team.humans.filter(id__in=team_ids)
         
     def make_league_for_tournament(self, match_map, two_way=False):  ## HERE
         from itertools import combinations

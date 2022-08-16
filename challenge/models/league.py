@@ -16,7 +16,7 @@ class League(models.Model):
     def pre_save(self):
 
         if not self.id:
-            queryset = Team.objects.filter(is_finalist=False)
+            queryset = Team.humans.filter(is_finalist=False)
 
             teams = [team for team in queryset if team.has_final_submission()]
             print(len(teams), '*****', flush=True)

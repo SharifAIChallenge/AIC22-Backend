@@ -19,7 +19,7 @@ from constants import TEAM_MAX_MEMBERS
 class TeamAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
-    queryset = Team.objects.all()
+    queryset = Team.humans.all()
 
     def get(self, request):
         team = request.user.team
@@ -76,7 +76,7 @@ class TeamAPIView(GenericAPIView):
 class TeamSearchAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamSerializer
-    queryset = Team.objects.all()
+    queryset = Team.humans.all()
     pagination_class = CustomPagination
 
     def get(self, request):
@@ -98,7 +98,7 @@ class TeamSearchAPIView(GenericAPIView):
 class TeamInfoAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamInfoSerializer
-    queryset = Team.objects.all()
+    queryset = Team.humans.all()
 
     def get(self, request, team_id):
         team = get_object_or_404(Team, id=team_id)
@@ -125,7 +125,7 @@ class IncompleteTeamInfoListAPIView(GenericAPIView):
         )
 
     def get_queryset(self):
-        queryset = Team.objects.annotate(
+        queryset = Team.humans.annotate(
             members_count=Count('members')
         ).exclude(
             members_count=TEAM_MAX_MEMBERS
@@ -317,7 +317,7 @@ class AllTeamsAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = TeamInfoSerializer
     pagination_class = TeamPagination
-    queryset = Team.objects.all()
+    queryset = Team.humans.all()
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
@@ -330,7 +330,7 @@ class AllTeamsAPIView(GenericAPIView):
     def get_queryset(self, request):
         name = self.request.query_params.get('name')
 
-        queryset = Team.objects.all()  # todo: restrict this to humans
+        queryset = Team.humans.all()  # todo: restrict this to humans
 
         teams_with_final_sublission_ids = [team.id for team in
                                            filter(lambda
