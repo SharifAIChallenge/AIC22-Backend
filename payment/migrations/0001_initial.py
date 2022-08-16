@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('id', model_utils.fields.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('amount', models.PositiveIntegerField(default=30000)),
+                ('amount', models.PositiveIntegerField(default=100000)),
                 ('description', models.TextField()),
             ],
             options={

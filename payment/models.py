@@ -32,5 +32,5 @@ class PaymentRequest(TimeStampedModel, UUIDModel, SoftDeletableModel):
 
 
 class PaymentConfig(TimeStampedModel, UUIDModel):
-    amount = models.PositiveIntegerField(default=30000)
+    amount = models.PositiveIntegerField(default=100000)
     description = models.TextField()
