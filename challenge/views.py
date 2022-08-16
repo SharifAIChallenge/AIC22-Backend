@@ -170,7 +170,7 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
             submission.set_final()
             return Response(
                 data={'details': 'Final submission changed successfully'},
-                status=status.HTTP_200_OKsubmission
+                status=status.HTTP_200_OK
             )
         except ValueError as e:
             return Response(data={'errors': [str(e)]},
