@@ -139,6 +139,22 @@ class Match(TimeStampedModel):
         return None
 
     @staticmethod
+    def create_bot_match(bot, team, game_map=None):
+        from apps.challenge.models import Map, Tournament
+
+        if game_map is None:
+            game_map = Map.get_random_map()
+        bot_tournament = Tournament.get_bot_tournament()
+
+        if bot_tournament is None:
+            raise Exception(
+                "Admin should initialize a bot tournament first ..."
+            )
+
+        return Match.create_match(bot, team, bot_tournament, game_map,
+                                  priority=1)
+
+    @staticmethod
     def create_friendly_match(team1, team2, game_map=None):
         from challenge.models.map import Map
         from challenge.models.tournament import Tournament
