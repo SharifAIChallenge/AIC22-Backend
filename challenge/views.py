@@ -364,3 +364,55 @@ class FriendlyScoreboardAPIView(GenericAPIView):
             request._request,
             Tournament.get_friendly_tournament().id
         )
+
+
+class BotAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated, HasTeam)
+
+    def get(self, request):
+        next_bot = Team.get_next_level_bot(request.user.team)
+        if next_bot is None:
+            next_bot = Team.bots.all().order_by('bot_number').last()
+        opened_bots = Team.bots.filter(bot_number__lte=next_bot.bot_number)
+
+        data = [{'number': bot.bot_number, 'name': bot.name} for bot in
+                opened_bots]
+
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )
+
+    def post(self, request, bot_number):
+        next_bot = Team.get_next_level_bot(request.user.team)
+        if next_bot is None:
+            next_bot = Team.bots.all().order_by('bot_number').last()
+        if bot_number < 1 or bot_number > next_bot.bot_number:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        bot = Team.bots.get(bot_number=bot_number)
+
+        Match.create_bot_match(bot, request.user.team)
+
+        return Response(
+            status=status.HTTP_200_OK
+        )
+
+
+class TeamsWonBotAPIView(GenericAPIView):
+
+    def get(self, request):
+        bots = Team.bots.all()
+        data = {}
+
+        for bot in bots:
+            team_ids = bot.rival_teams_wins()
+            teams = Team.humans.filter(
+                id__in=team_ids).values_list('name', flat=True)
+
+            data[bot.name] = list(teams)
+
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )

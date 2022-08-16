@@ -4,11 +4,44 @@ from constants import SHORT_TEXT_MAX_LENGTH, TEAM_MAX_MEMBERS
 from account.models import User
 
 
+class NotBotQueryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_bot=False)
+
+
+class BotQueryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_bot=True)
+
+
 class Team(models.Model):
     name = models.CharField(max_length=SHORT_TEXT_MAX_LENGTH, unique=True)
     image = models.ImageField(upload_to='team_images', null=True, blank=True)
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='created_team')
     is_finalist = models.BooleanField(default=False)
+    MAX_BOT_NUMBER = 5
+    humans = NotBotQueryManager()
+    bots = BotQueryManager()
+
+    is_bot = models.BooleanField(
+        default=False
+    )
+    bot_number = models.PositiveSmallIntegerField(
+        unique=True,
+        blank=True,
+        null=True
+    )
+
+    @staticmethod
+    def get_next_level_bot(team):
+        bots = Team.bots.all().order_by('bot_number')
+        next_bot = None
+        for bot in bots:
+            if not bot.has_won_me(team):
+                next_bot = bot
+                break
+
+        return next_bot
 
     def is_complete(self):
         return self.members.count() == TEAM_MAX_MEMBERS
