@@ -39,6 +39,7 @@ class ProfileAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
 
         writer.writerow(field_names)
+        
         for obj in queryset:
             data = [getattr(obj, field) for field in field_names[:21]]
             data += [obj.user.team.name if obj.user.team is not None else ""]
