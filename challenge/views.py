@@ -387,7 +387,7 @@ class BotAPIView(GenericAPIView):
         )
 
     def post(self, request, bot_number):
-        last_match = Match.objects.filter(team1__is_bot=True).order_by('-created_at').first()
+        last_match = Match.objects.filter(team1__is_bot=True, team2=request.user.team).order_by('-created_at').first()
         if last_match and (timezone.now() - last_match.created_at < timedelta(minutes=5)):
             return Response(status=status.HTTP_403_FORBIDDEN,
                             data={"message": "You have to wait at least 5 minutes between each bot game!"})
