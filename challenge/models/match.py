@@ -1,6 +1,7 @@
 import math
 
 from django.conf import settings
+from django.utils.timezone import now
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
@@ -52,6 +53,7 @@ class Match(TimeStampedModel):
         null=True,
         blank=True
     )
+    created_at = models.DateTimeField(auto_now_add=True)
     log_file_token = models.CharField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     tournament = models.ForeignKey(
         to='challenge.Tournament',

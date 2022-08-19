@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
@@ -385,6 +387,10 @@ class BotAPIView(GenericAPIView):
         )
 
     def post(self, request, bot_number):
+        last_match = Match.objects.filter(team1__is_bot=True).order_by('-created_at').first()
+        if last_match and (timezone.now() - last_match.created_at < timedelta(minutes=5)):
+            return Response(status=status.HTTP_403_FORBIDDEN,
+                            data={"message": "You have to wait at least 5 minutes between each bot game!"})
         next_bot = Team.get_next_level_bot(request.user.team)
         if next_bot is None:
             next_bot = Team.bots.all().order_by('bot_number').last()
