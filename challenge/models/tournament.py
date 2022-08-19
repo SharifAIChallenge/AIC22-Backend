@@ -45,7 +45,7 @@ class Tournament(TimeStampedModel):
         ).first()
 
     def update_members(self):
-        for row in self.scoreboard.rows.objects:
+        for row in self.scoreboard.rows.filter():
             row.delete()
 
         queryset = Team.humans.filter(is_finalist=False)
