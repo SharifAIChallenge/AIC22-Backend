@@ -25,6 +25,7 @@ from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUp
 from .serializers.lobby import LobbyQueueSerializer
 from .services.lobby import LobbyService
 from .models.lobby import LobbyQueue
+from team.models import Team
 
 
 class RequestListAPIView(GenericAPIView):
