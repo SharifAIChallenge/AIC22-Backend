@@ -30,7 +30,7 @@ class LeagueAdmin(ModelAdmin):
 @admin.register(Match)
 class MatchAdmin(ModelAdmin):
     list_display = ('id', 'team1', 'team2', 'status', 'winner', 'tournament',
-                    'infra_token')
+                    'infra_token', 'created_at')
     list_display_links = ('id',)
     list_filter = ('tournament', 'status')
     search_fields = ('infra_token',)
