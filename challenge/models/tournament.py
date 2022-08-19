@@ -1,6 +1,6 @@
 from django.db import models
 from model_utils.models import TimeStampedModel
-
+from team.models import Team
 from challenge.models.scoreboard import Scoreboard
 from constants import SHORT_TEXT_MAX_LENGTH, LONG_TEXT_MAX_LENGTH
 
@@ -43,6 +43,17 @@ class Tournament(TimeStampedModel):
         return Tournament.objects.filter(
             type=TournamentTypes.BOT
         ).first()
+
+    def update_members(self):
+        for row in self.scoreboard.rows:
+            row.delete()
+
+        queryset = Team.humans.filter(is_finalist=False)
+        teams = [team for team in queryset if team.has_final_submission()]
+        for team in teams:
+            self.scoreboard.add_scoreboard_row(
+                team=team
+            )
 
     @staticmethod
     def create_tournament(
