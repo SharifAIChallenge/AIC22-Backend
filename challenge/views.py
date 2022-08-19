@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
-from team.permissions import HasTeam, IsFinalist, TeamHasFinalssion
+from team.permissions import HasTeam, IsFinalist, TeamHasFinalSubmission
 from .models.level_based_tournament import LevelBasedTournament
 from .models.match import Match
 from .models.request import Request, RequestStatusTypes, RequestTypes
