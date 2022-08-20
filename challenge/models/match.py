@@ -85,14 +85,13 @@ class Match(TimeStampedModel):
             match.message = message
 
         if stats and not match.winner:
-            winner = stats.get('stats').get('winner', 0)
-            print(winner)
+            winner = stats.get('stats').get('winner', -1)
             if winner == 0:
                 match.winner = match.team1
             elif winner == 1:
                 match.winner = match.team2
-
-            match.update_score()
+            if winner != -1:
+                match.update_score()
 
         match.status = status
         match.save()
