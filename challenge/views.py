@@ -336,12 +336,9 @@ class ScoreboardAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ScoreboardRowSerializer
     pagination_class = ScoreboardRowPagination
-    queryset = ScoreboardRow.objects.all()
+    queryset = ScoreboardRow.objects.exclude(scoreboard__tournament__type=TournamentTypes.BOT)
 
     def get(self, request, tournament_id):
-        tournament = Tournament.objects.get(id=tournament_id)
-        if tournament and tournament.type == TournamentTypes.BOT:
-            return 'not available(:'
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
