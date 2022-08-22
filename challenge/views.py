@@ -336,9 +336,12 @@ class ScoreboardAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ScoreboardRowSerializer
     pagination_class = ScoreboardRowPagination
-    queryset = ScoreboardRow.objects.exclude(scoreboard__tournament__type=TournamentTypes.BOT)
+    queryset = ScoreboardRow.objects.all()
 
     def get(self, request, tournament_id):
+        tournament = Tournament.objects.get(id=tournament_id)
+        if tournament and tournament.type == TournamentTypes.BOT:
+            return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
@@ -348,7 +351,7 @@ class ScoreboardAPIView(GenericAPIView):
         )
 
     def get_corrected_queryset(self, tournament_id):
-        no_match_teams = self.queryset.filter(
+        no_match_teams = ScoreboardRow.objects.filter(
             scoreboard__tournament_id=tournament_id).filter(
             wins=0
         ).filter(losses=0).filter(draws=0).values_list('id', flat=True)
