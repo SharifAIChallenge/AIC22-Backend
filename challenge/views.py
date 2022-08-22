@@ -348,7 +348,7 @@ class ScoreboardAPIView(GenericAPIView):
         )
 
     def get_corrected_queryset(self, tournament_id):
-        no_match_teams = ScoreboardRow.objects.filter(
+        no_match_teams = self.queryset.filter(
             scoreboard__tournament_id=tournament_id).filter(
             wins=0
         ).filter(losses=0).filter(draws=0).values_list('id', flat=True)
