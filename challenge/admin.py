@@ -4,7 +4,7 @@ from django.contrib.admin import ModelAdmin
 # from import_export.admin import ImportExportModelAdmin
 import csv
 
-from challenge.models.match import Match
+from challenge.models.match import Match, MatchStatusTypes
 from challenge.models.league import League
 from challenge.models.match_info import MatchInfo
 from challenge.models.tournament import Tournament
@@ -27,6 +27,31 @@ class LeagueAdmin(ModelAdmin):
     list_display_links = ('id',)
 
 
+class FailMatches:
+    short_description = "Mark selected matches as failed"
+
+    def __new__(cls, modeladmin, request, queryset):
+        result = cls.make_matches_fail(modeladmin, request, queryset)
+        return result
+
+    @classmethod
+    def make_matches_fail(cls, modeladmin, request, queryset):
+        queryset.update(status=MatchStatusTypes.FAILED)
+
+
+class RunMatches:
+    short_description = "Run matches again!"
+
+    def __new__(cls, modeladmin, request, queryset):
+        result = cls.run_matches(modeladmin, request, queryset)
+        return result
+
+    @classmethod
+    def run_matches(cls, modeladmin, request, queryset):
+        for match in queryset.all():
+            match.run_match(priority=1)
+
+
 @admin.register(Match)
 class MatchAdmin(ModelAdmin):
     list_display = ('id', 'team1', 'team2', 'status', 'winner', 'tournament',
@@ -35,6 +60,7 @@ class MatchAdmin(ModelAdmin):
     list_filter = ('tournament', 'status')
     search_fields = ('infra_token',)
     resource_class = MatchResource
+    actions = [FailMatches, RunMatches]
 
 
 @admin.register(MatchInfo)
