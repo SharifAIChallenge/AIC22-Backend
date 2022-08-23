@@ -49,7 +49,7 @@ class RunMatches:
     @classmethod
     def run_matches(cls, modeladmin, request, queryset):
         for match in queryset.all():
-            match.run_match(priority=1)
+            match.run_match(priority=0)
 
 
 @admin.register(Match)
