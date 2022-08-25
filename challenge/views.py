@@ -186,7 +186,7 @@ class TournamentAPIView(GenericAPIView):
     queryset = Tournament.objects.filter(
         type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]).exclude(
         start_time=None
-    ).filter(is_hidden=False)
+    )
 
     def get(self, request):
         queryset = self.get_queryset().order_by('-id')
@@ -256,6 +256,7 @@ class MatchAPIView(GenericAPIView):
         queryset = queryset.filter(
             Q(team1=self.request.user.team) | Q(team2=self.request.user.team)
         )
+        queryset.exclude(tournament__is_hidden=True)
 
         if match_status:
             queryset = queryset.filter(
