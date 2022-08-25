@@ -1,3 +1,4 @@
+import random
 from datetime import timedelta
 
 from django.shortcuts import get_object_or_404
@@ -344,6 +345,9 @@ class ScoreboardAPIView(GenericAPIView):
         if tournament and tournament.type == TournamentTypes.BOT:
             return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
+
+        if tournament.scoreboard.freeze:
+            random.shuffle(scoreboard_rows)
 
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
