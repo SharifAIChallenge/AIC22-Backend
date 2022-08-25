@@ -208,7 +208,7 @@ class NextTournamentAPIView(GenericAPIView):
             type=TournamentTypes.NORMAL
         ).exclude(start_time=None).filter(
             start_time__gt=curr_time
-        ).order_by('start_time').first()
+        ).order_by('-start_time').first()
 
         data = self.get_serializer(tournament).data
 
