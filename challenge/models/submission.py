@@ -105,8 +105,8 @@ class Submission(models.Model):
             This makes sure that only one instance of TeamSubmission has
             is_final flag set to True.
         """
-        # if self.status != 'compiled':
-        #     raise ValueError('This submission is not compiled yet.')
+        if self.status != 'compiled':
+            raise ValueError('This submission is not compiled yet.')
 
         if self.is_mini_game:
             Submission.objects.filter(

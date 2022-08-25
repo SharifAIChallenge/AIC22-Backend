@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
@@ -25,6 +27,7 @@ from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUp
 from .serializers.lobby import LobbyQueueSerializer
 from .services.lobby import LobbyService
 from .models.lobby import LobbyQueue
+from team.models import Team
 
 
 class RequestListAPIView(GenericAPIView):
@@ -170,7 +173,7 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
             submission.set_final()
             return Response(
                 data={'details': 'Final submission changed successfully'},
-                status=status.HTTP_200_OKsubmission
+                status=status.HTTP_200_OK
             )
         except ValueError as e:
             return Response(data={'errors': [str(e)]},
@@ -336,6 +339,9 @@ class ScoreboardAPIView(GenericAPIView):
     queryset = ScoreboardRow.objects.all()
 
     def get(self, request, tournament_id):
+        tournament = Tournament.objects.get(id=tournament_id)
+        if tournament and tournament.type == TournamentTypes.BOT:
+            return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
@@ -363,4 +369,60 @@ class FriendlyScoreboardAPIView(GenericAPIView):
         return ScoreboardAPIView.as_view()(
             request._request,
             Tournament.get_friendly_tournament().id
+        )
+
+
+class BotAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated, HasTeam)
+
+    def get(self, request):
+        next_bot = Team.get_next_level_bot(request.user.team)
+        if next_bot is None:
+            next_bot = Team.bots.all().order_by('bot_number').last()
+        opened_bots = Team.bots.filter(bot_number__lte=next_bot.bot_number)
+
+        data = [{'number': bot.bot_number, 'name': bot.name} for bot in
+                opened_bots]
+
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
+        )
+
+    def post(self, request, bot_number):
+        last_match = Match.objects.filter(team1__is_bot=True, team2=request.user.team).order_by('-created_at').first()
+        if last_match and (timezone.now() - last_match.created_at < timedelta(minutes=5)):
+            return Response(status=status.HTTP_403_FORBIDDEN,
+                            data={"message": "You have to wait at least 5 minutes between each bot game!"})
+        next_bot = Team.get_next_level_bot(request.user.team)
+        if next_bot is None:
+            next_bot = Team.bots.all().order_by('bot_number').last()
+        if bot_number < 1 or bot_number > next_bot.bot_number:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        bot = Team.bots.get(bot_number=bot_number)
+
+        Match.create_bot_match(bot, request.user.team)
+
+        return Response(
+            status=status.HTTP_200_OK
+        )
+
+
+class TeamsWonBotAPIView(GenericAPIView):
+
+    def get(self, request):
+        bots = Team.bots.all()
+        data = {}
+
+        for bot in bots:
+            team_ids = bot.rival_teams_wins()
+            teams = Team.humans.filter(
+                id__in=team_ids).values_list('name', flat=True)
+
+            data[bot.name] = list(teams)
+
+        return Response(
+            data={'data': data},
+            status=status.HTTP_200_OK
         )

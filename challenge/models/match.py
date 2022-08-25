@@ -1,6 +1,7 @@
 import math
 
 from django.conf import settings
+from django.utils.timezone import now
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
@@ -52,6 +53,7 @@ class Match(TimeStampedModel):
         null=True,
         blank=True
     )
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     log_file_token = models.CharField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     tournament = models.ForeignKey(
         to='challenge.Tournament',
@@ -83,14 +85,13 @@ class Match(TimeStampedModel):
             match.message = message
 
         if stats and not match.winner:
-            winner = stats.get('stats').get('winner', 0)
-            print(winner)
+            winner = stats.get('stats').get('winner', -1)
             if winner == 0:
                 match.winner = match.team1
             elif winner == 1:
                 match.winner = match.team2
-
-            match.update_score()
+            if winner != -1:
+                match.update_score()
 
         match.status = status
         match.save()
@@ -137,6 +138,22 @@ class Match(TimeStampedModel):
 
             return match
         return None
+
+    @staticmethod
+    def create_bot_match(bot, team, game_map=None):
+        from apps.challenge.models import Map, Tournament
+
+        if game_map is None:
+            game_map = Map.get_random_map()
+        bot_tournament = Tournament.get_bot_tournament()
+
+        if bot_tournament is None:
+            raise Exception(
+                "Admin should initialize a bot tournament first ..."
+            )
+
+        return Match.create_match(bot, team, bot_tournament, game_map,
+                                  priority=1)
 
     @staticmethod
     def create_friendly_match(team1, team2, game_map=None):
