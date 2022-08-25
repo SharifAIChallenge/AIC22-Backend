@@ -32,12 +32,6 @@ class PaymentRequestAPIView(LoggingErrorsMixin, GenericAPIView):
             team_name=request.user.team.name
         )
 
-        if amount <= 0:
-            self.request.user.profile.payed = True
-            self.request.user.profile.save()
-
-            return Response(status=status.HTTP_201_CREATED)
-
         result = client.service.PaymentRequest(
             settings.MERCHANT_ID,
             payment_request.amount,
@@ -78,7 +72,6 @@ class PaymentVerifyAPIView(LoggingErrorsMixin, GenericAPIView):
                 payment_request.save()
                 team = payment_request.get_team()
 
-                # team.level_one_payed = True
                 team.final_payed = True
                 team.save()
 
