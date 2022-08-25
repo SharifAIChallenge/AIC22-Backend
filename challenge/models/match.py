@@ -193,8 +193,8 @@ class Match(TimeStampedModel):
             return 2
 
     def update_score(self, k=30):
-        if self.tournament.scoreboard.freeze:
-            return
+        # if self.tournament.scoreboard.freeze:
+        #     return
         winner_number = self.winner_number
 
         team1_row = self.tournament.scoreboard.get_team_row(team=self.team1)
