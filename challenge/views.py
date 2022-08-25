@@ -1,3 +1,4 @@
+import random
 from datetime import timedelta
 
 from django.shortcuts import get_object_or_404
@@ -186,7 +187,7 @@ class TournamentAPIView(GenericAPIView):
     queryset = Tournament.objects.filter(
         type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]).exclude(
         start_time=None
-    ).filter(is_hidden=False)
+    )
 
     def get(self, request):
         queryset = self.get_queryset().order_by('-id')
@@ -256,6 +257,7 @@ class MatchAPIView(GenericAPIView):
         queryset = queryset.filter(
             Q(team1=self.request.user.team) | Q(team2=self.request.user.team)
         )
+        queryset = queryset.exclude(tournament__is_hidden=True)
 
         if match_status:
             queryset = queryset.filter(
@@ -343,8 +345,19 @@ class ScoreboardAPIView(GenericAPIView):
         if tournament and tournament.type == TournamentTypes.BOT:
             return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
+
+        if tournament.scoreboard.freeze:
+            random.shuffle(scoreboard_rows)
+
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
+
+        if tournament.scoreboard.freeze:
+            for item in data:
+                item['score'] = 0
+                item['win'] = 0
+                item['losses'] = 0
+                item['draws'] = 0
 
         return self.get_paginated_response(
             data=data
