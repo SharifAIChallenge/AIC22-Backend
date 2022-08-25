@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     path('scoreboard/<int:tournament_id>', view=ScoreboardAPIView.as_view(), name='scoreboard'),
     path('friendly_scoreboard', view=FriendlyScoreboardAPIView.as_view(), name='friendly_scoreboard'),
-    path('bot', view=BotAPIView.as_view(), name='bot'),
-    path('bot/<int:bot_number>', view=BotAPIView.as_view(), name='bot_match'),
+    # path('bot', view=BotAPIView.as_view(), name='bot'),
+    # path('bot/<int:bot_number>', view=BotAPIView.as_view(), name='bot_match'),
     path('teams-won-bot', view=TeamsWonBotAPIView.as_view(), name='teams_won_bot'),
 ]
