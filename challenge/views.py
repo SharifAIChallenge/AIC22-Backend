@@ -343,8 +343,16 @@ class ScoreboardAPIView(GenericAPIView):
         if tournament and tournament.type == TournamentTypes.BOT:
             return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
+
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
+
+        if tournament.scoreboard.freeze:
+            for item in data:
+                item['score'] = 0
+                item['win'] = 0
+                item['losses'] = 0
+                item['draws'] = 0
 
         return self.get_paginated_response(
             data=data
