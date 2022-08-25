@@ -257,7 +257,7 @@ class MatchAPIView(GenericAPIView):
         queryset = queryset.filter(
             Q(team1=self.request.user.team) | Q(team2=self.request.user.team)
         )
-        queryset.exclude(tournament__is_hidden=True)
+        queryset = queryset.exclude(tournament__is_hidden=True)
 
         if match_status:
             queryset = queryset.filter(
