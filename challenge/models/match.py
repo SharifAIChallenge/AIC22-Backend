@@ -91,8 +91,11 @@ class Match(TimeStampedModel):
                 loser_row = match.tournament.scoreboard.get_team_row(team=match.team2 if match.team1 == last_winner else match.team1)
                 winner_row.wins -= 1
                 winner_row.score -= 15
-                winner_row.losses -= 1
+                loser_row.losses -= 1
                 match.winner = None
+                match.save()
+                winner_row.save()
+                loser_row.save()
 
             winner = stats.get('stats').get('winner', -1)
             if winner == 0:
