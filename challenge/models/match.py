@@ -84,7 +84,16 @@ class Match(TimeStampedModel):
         if message:
             match.message = message
 
-        if stats and not match.winner:
+        if stats:
+            if match.winner:
+                last_winner = match.winner
+                winner_row = match.tournament.scoreboard.get_team_row(team=last_winner)
+                loser_row = match.tournament.scoreboard.get_team_row(team=match.team2 if match.team1 == last_winner else match.team1)
+                winner_row.wins -= 1
+                winner_row.score -= 15
+                winner_row.losses -= 1
+                match.winner = None
+
             winner = stats.get('stats').get('winner', -1)
             if winner == 0:
                 match.winner = match.team1
