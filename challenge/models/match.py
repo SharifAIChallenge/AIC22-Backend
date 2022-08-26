@@ -1,6 +1,7 @@
 import math
 
 from django.conf import settings
+from django.utils.timezone import now
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.generics import get_object_or_404
@@ -52,6 +53,7 @@ class Match(TimeStampedModel):
         null=True,
         blank=True
     )
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     log_file_token = models.CharField(max_length=LONG_TEXT_MAX_LENGTH, null=True, blank=True)
     tournament = models.ForeignKey(
         to='challenge.Tournament',
@@ -83,14 +85,13 @@ class Match(TimeStampedModel):
             match.message = message
 
         if stats and not match.winner:
-            winner = stats.get('stats').get('winner', 0)
-            print(winner)
+            winner = stats.get('stats').get('winner', -1)
             if winner == 0:
                 match.winner = match.team1
             elif winner == 1:
                 match.winner = match.team2
-
-            match.update_score()
+            if winner != -1:
+                match.update_score()
 
         match.status = status
         match.save()
@@ -192,8 +193,8 @@ class Match(TimeStampedModel):
             return 2
 
     def update_score(self, k=30):
-        if self.tournament.scoreboard.freeze:
-            return
+        # if self.tournament.scoreboard.freeze:
+        #     return
         winner_number = self.winner_number
 
         team1_row = self.tournament.scoreboard.get_team_row(team=self.team1)

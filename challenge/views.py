@@ -1,3 +1,6 @@
+import random
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
@@ -25,6 +28,7 @@ from .serializers.tournament import TournamentSerializer, LevelBasedTournamentUp
 from .serializers.lobby import LobbyQueueSerializer
 from .services.lobby import LobbyService
 from .models.lobby import LobbyQueue
+from team.models import Team
 
 
 class RequestListAPIView(GenericAPIView):
@@ -183,7 +187,7 @@ class TournamentAPIView(GenericAPIView):
     queryset = Tournament.objects.filter(
         type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]).exclude(
         start_time=None
-    ).filter(is_hidden=False)
+    )
 
     def get(self, request):
         queryset = self.get_queryset().order_by('-id')
@@ -253,6 +257,7 @@ class MatchAPIView(GenericAPIView):
         queryset = queryset.filter(
             Q(team1=self.request.user.team) | Q(team2=self.request.user.team)
         )
+        queryset = queryset.exclude(tournament__is_hidden=True)
 
         if match_status:
             queryset = queryset.filter(
@@ -336,9 +341,25 @@ class ScoreboardAPIView(GenericAPIView):
     queryset = ScoreboardRow.objects.all()
 
     def get(self, request, tournament_id):
+        if tournament_id == 49:
+            return Response(data={'response': 'not yet!'}, status=status.HTTP_404_NOT_FOUND)
+        tournament = Tournament.objects.get(id=tournament_id)
+        if tournament and tournament.type == TournamentTypes.BOT:
+            return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
         scoreboard_rows = self.get_corrected_queryset(tournament_id)
+
+        if tournament.scoreboard.freeze:
+            random.shuffle(scoreboard_rows)
+
         page = self.paginate_queryset(scoreboard_rows)
         data = self.get_serializer(instance=page, many=True).data
+
+        if tournament.scoreboard.freeze:
+            for item in data:
+                item['score'] = 0
+                item['win'] = 0
+                item['losses'] = 0
+                item['draws'] = 0
 
         return self.get_paginated_response(
             data=data
@@ -384,6 +405,10 @@ class BotAPIView(GenericAPIView):
         )
 
     def post(self, request, bot_number):
+        last_match = Match.objects.filter(team1__is_bot=True, team2=request.user.team).order_by('-created_at').first()
+        if last_match and (timezone.now() - last_match.created_at < timedelta(minutes=5)):
+            return Response(status=status.HTTP_403_FORBIDDEN,
+                            data={"message": "You have to wait at least 5 minutes between each bot game!"})
         next_bot = Team.get_next_level_bot(request.user.team)
         if next_bot is None:
             next_bot = Team.bots.all().order_by('bot_number').last()
