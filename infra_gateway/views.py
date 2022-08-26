@@ -5,6 +5,7 @@ from rest_framework import status
 from infra_gateway.permissions import IsInfra
 from infra_gateway.serializers import InfraEventPushSerializer
 
+from challenge.models.match import Match
 
 class InfraEventPushAPIView(GenericAPIView):
     serializer_class = InfraEventPushSerializer
@@ -29,5 +30,15 @@ class InfraEventPushAPIView(GenericAPIView):
             data={
                 "data": serializer.data
             },
+            status=status.HTTP_200_OK
+        )
+
+class InfraCheckGameAPIView(GenericAPIView):
+    def get(self, request):
+        token = request.query_params.get("token")
+        matches = Match.objects.filter(infra_token=token)
+        if not matches:
+            return Response(status=404) 
+        return Response(
             status=status.HTTP_200_OK
         )
