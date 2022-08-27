@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
-from .serializers import PaymentConfigSerializer
+from .serializers import PaymentConfigSerializer, PaymentRequestSerializer
 
 from zeep import Client
 
@@ -25,6 +25,11 @@ class PaymentRequestAPIView(LoggingErrorsMixin, GenericAPIView):
         client = Client(settings.ZARRIN_PAL_CLIENT)
 
         amount = PaymentConfig.objects.last().amount
+
+        nahar = request.data.get('nahar', 0)
+
+        if nahar:
+            amount += 160000
 
         payment_request = PaymentRequest.objects.create(
             user=request.user,
@@ -67,11 +72,8 @@ class PaymentVerifyAPIView(LoggingErrorsMixin, GenericAPIView):
             )
             if result.Status == 100:
                 payment_request.ref_id = str(result.RefID)
+                payment_request.user.profile.is_paid = True
                 payment_request.save()
-                team = payment_request.get_team()
-
-                # team.final_payed = True
-                team.save()
 
                 return redirect(
                     f'https://aichallenge.ir/dashboard/payment'
@@ -100,7 +102,12 @@ class PaymentConfigAPIView(LoggingErrorsMixin, GenericAPIView):
     def get(self, request):
         config = PaymentConfig.objects.all().last()
 
+        nahar = request.GET.get('nahar', 0)
+
         amount = config.amount
+
+        if nahar:
+            amount += 160000
 
         return Response(
             data={'config': {

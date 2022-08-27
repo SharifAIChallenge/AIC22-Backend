@@ -19,7 +19,7 @@ class PaymentRequest(TimeStampedModel, UUIDModel, SoftDeletableModel):
         related_name='payment_requests',
         on_delete=models.DO_NOTHING
     )
-    callback_url = models.URLField(default='https://aichallenge.ir/api/payment/callback')
+    callback_url = models.URLField(default='https://api.aichallenge.ir/api/v1/payment/callback')
 
     team_name = models.CharField(
         max_length=128
