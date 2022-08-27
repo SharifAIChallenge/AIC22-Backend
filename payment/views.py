@@ -28,7 +28,7 @@ class PaymentRequestAPIView(LoggingErrorsMixin, GenericAPIView):
 
         nahar = request.data.get('nahar', 0)
 
-        if nahar:
+        if nahar == '1':
             amount += 160000
 
         payment_request = PaymentRequest.objects.create(
@@ -106,7 +106,7 @@ class PaymentConfigAPIView(LoggingErrorsMixin, GenericAPIView):
 
         amount = config.amount
 
-        if nahar:
+        if nahar == '1':
             amount += 160000
 
         return Response(
