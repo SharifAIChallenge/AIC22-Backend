@@ -28,7 +28,7 @@ class TeamSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'members', 'creator', 'image_url', 'id', 'is_finalist', 'final_payed']
+        fields = ['name', 'image', 'members', 'creator', 'image_url', 'id', 'is_finalist', ]
 
     def create(self, data):
         current_user = self.context['request'].user
@@ -56,7 +56,7 @@ class TeamInfoSerializer(serializers.ModelSerializer, ImageURL):
 
     class Meta:
         model = Team
-        fields = ['name', 'image', 'creator', 'members', 'image_url', 'id', 'is_finalist', 'final_payed']
+        fields = ['name', 'image', 'creator', 'members', 'image_url', 'id', 'is_finalist', ]
 
 
 class UserToTeamInvitationSerializer(serializers.ModelSerializer):
