@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
-from .serializers import PaymentConfigSerializer, PaymentRequestSerializer
+from .serializers import PaymentConfigSerializer
 
 from zeep import Client
 
