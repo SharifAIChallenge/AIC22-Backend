@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from rest_framework_tracking.mixins import LoggingErrorsMixin
 
+import payment.models
 from .serializers import PaymentConfigSerializer
 
 from zeep import Client
@@ -73,6 +74,7 @@ class PaymentVerifyAPIView(LoggingErrorsMixin, GenericAPIView):
             if result.Status == 100:
                 payment_request.ref_id = str(result.RefID)
                 payment_request.user.profile.is_paid = True
+                payment_request.user.profile.save()
                 payment_request.save()
 
                 return redirect(
