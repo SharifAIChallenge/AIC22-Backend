@@ -46,9 +46,7 @@ class PaymentRequestAPIView(LoggingErrorsMixin, GenericAPIView):
             if len(payment_request.authority) != 36:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             payment_request.save()
-            url = settings.ZARRIN_PAL_START_PAY.format(
-                payment_request.authority
-            )
+            url = settings.ZARRIN_PAL_START_PAY + payment_request.authority
 
             return Response(data={'url': url}, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
