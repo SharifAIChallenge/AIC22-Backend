@@ -32,6 +32,7 @@ class Team(models.Model):
         blank=True,
         null=True
     )
+    final_payed = models.BooleanField(default=False)
 
     @staticmethod
     def get_next_level_bot(team):
