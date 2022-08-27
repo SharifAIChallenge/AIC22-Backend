@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'challenge',
     'django_crontab',
     'infra_gateway',
+    'payment',
 ]
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -228,3 +229,6 @@ RABBITMQ_BROKER = os.getenv('RABBITMQ_BROKER', 'amqp://aic2022:aichallenge2022@1
 INFRA_TOKEN = os.getenv('INFRA_TOKEN', 'a2lydG96ZW5kZWdp')
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
+
+ZARRIN_PAL_CLIENT = os.getenv('ZARRIN_PAL_CLIENT')
+ZARRIN_PAL_START_PAY = os.getenv('ZARRIN_PAL_START_PAY')
