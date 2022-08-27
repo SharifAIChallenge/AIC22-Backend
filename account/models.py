@@ -155,6 +155,8 @@ class Profile(models.Model):
     hide_profile_info = models.BooleanField(default=False)
     can_sponsors_see = models.BooleanField(default=True)
 
+    is_paid = models.BooleanField(default=False)
+
     @property
     def is_complete(self):
         return all(
