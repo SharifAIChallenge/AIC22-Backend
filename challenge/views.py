@@ -355,7 +355,7 @@ class ScoreboardAPIView(GenericAPIView):
         if tournament.scoreboard.freeze:
             for item in data:
                 item['score'] = 0
-                item['win'] = 0
+                item['wins'] = 0
                 item['losses'] = 0
                 item['draws'] = 0
 
