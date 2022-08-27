@@ -341,8 +341,6 @@ class ScoreboardAPIView(GenericAPIView):
     queryset = ScoreboardRow.objects.all()
 
     def get(self, request, tournament_id):
-        if tournament_id == 49:
-            return Response(data={'response': 'not yet!'}, status=status.HTTP_404_NOT_FOUND)
         tournament = Tournament.objects.get(id=tournament_id)
         if tournament and tournament.type == TournamentTypes.BOT:
             return Response(data={'response': 'be to che!'}, status=status.HTTP_404_NOT_FOUND)
