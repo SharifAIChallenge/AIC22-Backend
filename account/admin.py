@@ -44,6 +44,7 @@ class ProfileAdmin(admin.ModelAdmin):
             data = [getattr(obj, field) for field in field_names[:21]]
             data += [obj.user.team.name if obj.user.team is not None else ""]
             data += [obj.user.email]
+            data += ["paid" if obj.is_paid else "not_yet"]
             row = writer.writerow(data)
 
         return response
