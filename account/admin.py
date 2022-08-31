@@ -31,7 +31,7 @@ class ProfileAdmin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
         meta = Profile._meta
         field_names = [field.name for field in meta.fields]
-        field_names += ['team', 'email']
+        field_names += ['team', 'email', 'paid']
         print(len(field_names))
 
         response = HttpResponse(content_type='text/csv')
