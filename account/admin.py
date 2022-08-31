@@ -31,7 +31,7 @@ class ProfileAdmin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
         meta = Profile._meta
         field_names = [field.name for field in meta.fields]
-        field_names += ['team', 'email']
+        field_names += ['team', 'email', 'paid']
         print(len(field_names))
 
         response = HttpResponse(content_type='text/csv')
@@ -44,6 +44,7 @@ class ProfileAdmin(admin.ModelAdmin):
             data = [getattr(obj, field) for field in field_names[:21]]
             data += [obj.user.team.name if obj.user.team is not None else ""]
             data += [obj.user.email]
+            data += ["paid" if obj.is_paid else "not_yet"]
             row = writer.writerow(data)
 
         return response
