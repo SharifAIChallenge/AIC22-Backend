@@ -152,8 +152,29 @@ class Match(TimeStampedModel):
         return None
 
     @staticmethod
+    def create_match_from_list(teams, tournament, match_map):
+        if len(teams) % 2 == 1:
+            raise Exception('teams list size must be even not odd!')
+
+        i = 0
+        matches = []
+        while i < len(teams):
+            team1 = teams[i]
+            team2 = teams[i + 1]
+            i += 2
+            match = Match.create_match(
+                team1=team1,
+                team2=team2,
+                tournament=tournament,
+                match_map=match_map,
+            )
+            matches.append(match)
+
+        return matches
+
+    @staticmethod
     def create_bot_match(bot, team, game_map=None):
-        from apps.challenge.models import Map, Tournament
+        from challenge.models import Map, Tournament
 
         if game_map is None:
             game_map = Map.get_random_map()
