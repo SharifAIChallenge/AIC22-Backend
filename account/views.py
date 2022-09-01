@@ -16,6 +16,7 @@ from account.paginations import CustomPagination
 from account.permissions import ProfileComplete
 from account.serializers import UserSerializer, EmailSerializer, ProfileSerializer, GoogleLoginSerializer, \
     ChangePasswordSerializer, ResetPasswordConfirmSerializer, UserViewSerializer
+from team.permissions import IsFinalist
 
 
 class GoogleLoginAPIView(GenericAPIView):
@@ -71,13 +72,14 @@ class CustomLoginAPIView(ObtainAuthToken):
         username = data['username']
         if User.objects.filter(username=username).count() > 0:
             user = User.objects.filter(username=username).first()
-            if user.is_active:
-                try:
-                    return super().post(request, *args, **kwargs)
-                except serializers.ValidationError:
-                    return Response(data={"detail": _("Password doesnt match.")}, status=400)
-            else:
-                return Response(data={"detail": _("Account is not activated.")}, status=403)
+            if user.team and user.team.is_finalist:
+                if user.is_active:
+                    try:
+                        return super().post(request, *args, **kwargs)
+                    except serializers.ValidationError:
+                        return Response(data={"detail": _("Password doesnt match.")}, status=400)
+                else:
+                    return Response(data={"detail": _("Account is not activated.")}, status=403)
         else:
             return Response(data={"detail": _("Username not found.")}, status=404)
 
