@@ -81,3 +81,5 @@ class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
         )
 
         level_matches = LevelMatch.create_level_matches(matches, new_level)
+
+        return level_matches
