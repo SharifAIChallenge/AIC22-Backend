@@ -63,7 +63,6 @@ class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
 
         return attrs
 
-
     def create(self, validated_data):
         level_based_tournament = get_object_or_404(LevelBasedTournament.objects.all(), pk=validated_data.id)
 
@@ -72,7 +71,8 @@ class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
         # TODO : Check the order is the same ...
 
         random_map = Map.get_random_map()
-        matches = Match.create_match_from_list(teams, level_based_tournament.tournament, random_map)  # TODO: implement this method lateer
+        matches = Match.create_match_from_list(teams, level_based_tournament.tournament,
+                                               random_map)  # TODO: implement this method lateer
 
         last_level = LevelBasedTournament.last_level
         new_level = Level.objects.create(
