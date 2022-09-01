@@ -184,10 +184,17 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
 class TournamentAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = TournamentSerializer
-    queryset = Tournament.objects.filter(
-        type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]).exclude(
-        start_time=None
-    )
+
+    def get_queryset(self):
+        queryset = Tournament.objects.filter(
+            type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]
+        ).exclude(
+            start_time=None
+        )
+
+        queryset = queryset.exclude(is_hidden=True)
+
+        return queryset
 
     def get(self, request):
         queryset = self.get_queryset().order_by('-id')
