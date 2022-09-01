@@ -46,7 +46,7 @@ class TeamListField(serializers.ListField):
 
 class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
     id = serializers.UUIDField()
-    teams = TeamListField
+    teams = TeamListField()
 
     def validate(self, attrs):
         get_object_or_404(LevelBasedTournament.objects.all(), pk=attrs['id'])
