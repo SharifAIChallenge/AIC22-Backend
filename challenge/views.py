@@ -186,7 +186,8 @@ class TournamentAPIView(GenericAPIView):
     serializer_class = TournamentSerializer
     queryset = Tournament.objects.filter(
         type__in=[TournamentTypes.NORMAL, TournamentTypes.FINAL]).exclude(
-        start_time=None
+        start_time=None,
+        is_hidden=True
     )
 
     def get(self, request):
