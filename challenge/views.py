@@ -300,6 +300,7 @@ class LevelBasedTournamentAPIView(GenericAPIView):
             data=request.data
         )
 
+        serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(data={"response": "OK"}, status=status.HTTP_200_OK)
