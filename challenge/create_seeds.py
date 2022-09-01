@@ -1,3 +1,5 @@
+import random
+
 from django.utils import timezone
 
 from .models.tournament import Tournament
@@ -20,6 +22,7 @@ def create_seeds(seeds_size, seeds_count, tournament_id):
     groups = [[] for _ in range(seeds_count)]
 
     for seed in seeds:
+        random.shuffle(seed)
         for i, team in enumerate(seed):
             groups[i].append(team)
 
