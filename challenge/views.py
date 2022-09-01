@@ -142,7 +142,7 @@ class SubmissionAPIView(LoggingErrorsMixin, GenericAPIView):
     permission_classes = (
         IsAuthenticated,
         HasTeam,
-        # IsFinalist
+        IsFinalist
     )
 
     def get(self, request):
