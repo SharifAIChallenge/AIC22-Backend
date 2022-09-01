@@ -36,7 +36,7 @@ class Tournament(TimeStampedModel):
     def get_friendly_tournament():
         return Tournament.objects.filter(
             type=TournamentTypes.FRIENDLY
-        ).first()
+        ).last()
 
     @staticmethod
     def get_bot_tournament():
