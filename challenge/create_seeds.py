@@ -1,7 +1,5 @@
-import random
-
 from django.utils import timezone
-
+import random
 from .models.tournament import Tournament
 
 
@@ -10,7 +8,7 @@ def create_seeds(seeds_size, seeds_count, tournament_id):
         '-score')
     final_teams = []
     for row in rows:
-        if row.team.final_submission():
+        if row.team.final_submission() and row.team.is_finalist:
             final_teams.append(row.team)
 
     if len(final_teams) != seeds_size * seeds_count:
@@ -35,3 +33,13 @@ def create_seeds(seeds_size, seeds_count, tournament_id):
             team_list=group
         )
     return groups
+
+
+def run_tournament_groups(start_group_tournament_id, end_group_tournament_id, map_id, two_way):
+    from .models.map import Map
+    map_obj = Map.objects.get(id=map_id)
+    for i in range(start_group_tournament_id, end_group_tournament_id + 1):
+        Tournament.objects.get(id=i).make_league_for_tournament(
+            match_map=map_obj,
+            two_way=two_way
+        )
