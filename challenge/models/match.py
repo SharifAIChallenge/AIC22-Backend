@@ -162,12 +162,12 @@ class Match(TimeStampedModel):
             team1 = teams[i]
             team2 = teams[i + 1]
             i += 2
-            for j in range(3):
+            for m in list(active_maps):
                 match = Match.create_match(
                     team1=team1,
                     team2=team2,
                     tournament=tournament,
-                    match_map=active_maps[j],
+                    match_map=m,
                 )
                 matches.append(match)
 
