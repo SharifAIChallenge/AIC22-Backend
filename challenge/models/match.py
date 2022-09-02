@@ -152,7 +152,7 @@ class Match(TimeStampedModel):
         return None
 
     @staticmethod
-    def create_match_from_list(teams, tournament, match_map):
+    def create_match_from_list(teams, tournament, active_maps):
         if len(teams) % 2 == 1:
             raise Exception('teams list size must be even not odd!')
 
@@ -162,13 +162,14 @@ class Match(TimeStampedModel):
             team1 = teams[i]
             team2 = teams[i + 1]
             i += 2
-            match = Match.create_match(
-                team1=team1,
-                team2=team2,
-                tournament=tournament,
-                match_map=match_map,
-            )
-            matches.append(match)
+            for i in range(3):
+                match = Match.create_match(
+                    team1=team1,
+                    team2=team2,
+                    tournament=tournament,
+                    match_map=active_maps[i],
+                )
+                matches.append(match)
 
         return matches
 

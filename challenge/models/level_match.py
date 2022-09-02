@@ -26,3 +26,14 @@ class LevelMatch(TimeStampedModel):
             level_matches.append(level_match)
 
         return level_matches
+
+    @staticmethod
+    def get_winners_from_3_matchs(level):
+        matchs = LevelMatch.objects.filter(level=level)
+        teams = {}
+        for match in matchs:
+            if match.match.winner.name in teams:
+                teams[match.match.winner.name] += 1
+            else:
+                teams[match.match.winner.name] = 1
+        return teams
