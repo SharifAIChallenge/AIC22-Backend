@@ -9,6 +9,8 @@ from challenge.models.league import League
 from challenge.models.match_info import MatchInfo
 from challenge.models.tournament import Tournament
 from challenge.models.level_based_tournament import LevelBasedTournament
+from challenge.models.level import Level
+from challenge.models.level_match import LevelMatch
 from challenge.models.map import Map
 from django.http import HttpResponse
 from .models import Submission
@@ -80,6 +82,16 @@ class TournamentAdmin(ModelAdmin):
 @admin.register(LevelBasedTournament)
 class LevelBasedTournamentAdmin(ModelAdmin):
     pass
+
+
+@admin.register(Level)
+class LevelAdmin(ModelAdmin):
+    list_display = ('id', 'number', 'level_based_tournament')
+
+
+@admin.register(LevelMatch)
+class LevelMatchAdmin(ModelAdmin):
+    list_display = ('id', 'match', 'level')
 
 
 @admin.register(Scoreboard)
