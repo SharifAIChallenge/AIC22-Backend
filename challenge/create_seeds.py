@@ -79,3 +79,4 @@ def get_groups_winners(from_id, to_id):
             teams_name.append(first[1].team.name)
             teams.append(second[0].team.id)
             teams_name.append(second[0].team.name)
+    return teams, teams_name
