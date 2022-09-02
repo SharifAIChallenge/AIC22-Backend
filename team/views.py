@@ -330,7 +330,7 @@ class AllTeamsAPIView(GenericAPIView):
     def get_queryset(self, request):
         name = self.request.query_params.get('name')
 
-        queryset = Team.humans.all()  # todo: restrict this to humans
+        queryset = Team.humans.filter(is_finalist=True)
 
         teams_with_final_sublission_ids = [team.id for team in
                                            filter(lambda
