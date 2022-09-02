@@ -38,7 +38,7 @@ class LevelBasedTournament(TimeStampedModel):
 
         level_based_tournament = LevelBasedTournament.objects.create(tournament=tournament, size=size)
 
-        levels = Level.create_levels_for_level_based_tournament(level_based_tournament, int(math.log(size, 2)))
+        # levels = Level.create_levels_for_level_based_tournament(level_based_tournament, int(math.log(size, 2)))
 
         # TODO : Do other needed stuff ...
 

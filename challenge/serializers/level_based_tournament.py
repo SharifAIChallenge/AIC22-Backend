@@ -47,6 +47,7 @@ class TeamListField(serializers.ListField):
 class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     teams = TeamListField()
+    level = serializers.IntegerField()
 
     def validate(self, attrs):
         get_object_or_404(LevelBasedTournament.objects.all(), pk=attrs['id'])
@@ -74,9 +75,9 @@ class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
         matches = Match.create_match_from_list(teams, level_based_tournament.tournament,
                                                random_map)  # TODO: implement this method lateer
 
-        last_level = LevelBasedTournament.last_level
+        # last_level = LevelBasedTournament.last_level
         new_level = Level.objects.create(
-            number=last_level.number + 1,
+            number=validated_data.level,
             level_based_tournament=level_based_tournament
         )
 
