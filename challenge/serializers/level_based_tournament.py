@@ -84,3 +84,25 @@ class LevelBasedTournamentAddTeamsSerializer(serializers.Serializer):
         level_matches = LevelMatch.create_level_matches(matches, new_level)
 
         return level_matches
+
+
+def add_teams(id, teams, level):
+    level_based_tournament = get_object_or_404(LevelBasedTournament.objects.all(), pk=id)
+
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(teams)])
+    teams = Team.humans.filter(id__in=teams).order_by(preserved)
+    # TODO : Check the order is the same ...
+
+    random_map = Map.get_random_map()
+    matches = Match.create_match_from_list(teams, level_based_tournament.tournament,
+                                           random_map)  # TODO: implement this method lateer
+
+    # last_level = LevelBasedTournament.last_level
+    new_level = Level.objects.create(
+        number=level,
+        level_based_tournament=level_based_tournament
+    )
+
+    level_matches = LevelMatch.create_level_matches(matches, new_level)
+
+    return level_matches
