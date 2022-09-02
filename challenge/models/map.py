@@ -35,11 +35,19 @@ class Map(TimeStampedModel, UUIDModel):
 
     @staticmethod
     def get_random_map():
-        game_map = Map.objects.filter(active=True).order_by('?').first()
+        game_map = Map.objects.filter(active=True).order_by('id').first()
         if game_map is None:
             raise Exception("There is no map available in the database")
 
         return game_map
+
+    @staticmethod
+    def get_active_maps():
+        game_maps = Map.objects.filter(active=True).order_by('?')
+        if game_maps is None:
+            raise Exception("There is no map available in the database")
+
+        return game_maps
 
     def __str__(self):
         return f'{self.name}'

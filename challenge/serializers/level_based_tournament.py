@@ -93,9 +93,9 @@ def add_teams(id, teams, level):
     teams = Team.humans.filter(id__in=teams).order_by(preserved)
     # TODO : Check the order is the same ...
 
-    random_map = Map.get_random_map()
+    active_maps = Map.get_active_maps()
     matches = Match.create_match_from_list(teams, level_based_tournament.tournament,
-                                           random_map)  # TODO: implement this method lateer
+                                           active_maps)  # TODO: implement this method lateer
 
     # last_level = LevelBasedTournament.last_level
     new_level = Level.objects.create(
