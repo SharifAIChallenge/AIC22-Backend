@@ -14,7 +14,7 @@ urlpatterns = [
     # path('clan', view=ClanAPIView.as_view(), name='clan'),
     path('request', view=RequestListAPIView.as_view(), name='request_list'),
     # path('request/<int:request_id>', view=RequestAPIView.as_view(), name='request'),
-    # path('match', view=MatchAPIView.as_view(), name='matches'),
+    path('match', view=MatchAPIView.as_view(), name='matches'),
     path('level_based_tournament', view=LevelBasedTournamentAPIView.as_view(), name='level_based_tournament'),
     path(
         'level_based_tournament/add_teams',
